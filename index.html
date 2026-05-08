@@ -829,6 +829,392 @@ html, body {
   transition: color 0.5s;
 }
 .timer-value.urgent { color: var(--danger); }
+
+/* ===== JOSEKI OVERLAY ===== */
+.joseki-dot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 18;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #000;
+  animation: joseki-pulse 2s ease infinite;
+}
+@keyframes joseki-pulse {
+  0%,100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* ===== DEAD STONE MARKER ===== */
+.dead-stone-x {
+  position: absolute;
+  pointer-events: none;
+  z-index: 22;
+  color: red;
+  font-size: 16px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  text-shadow: 0 0 4px rgba(0,0,0,0.9);
+}
+
+/* ===== REVIEW OVERLAY ===== */
+.review-move-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,80,80,0.9);
+  z-index: 25;
+  pointer-events: none;
+  animation: rdot 0.6s ease;
+}
+@keyframes rdot {
+  from { transform: scale(2); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== HANDICAP STONES ===== */
+.handicap-badge {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ===== HINT HIGHLIGHT ===== */
+.hint-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+  animation: hint-glow-anim 1s ease infinite;
+}
+@keyframes hint-glow-anim {
+  0%,100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ===== AI MOVE LABEL ===== */
+.move-label-dot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 16;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px;
+  font-weight: 900;
+  color: rgba(255,80,80,0.9);
+  border: 2px solid rgba(255,80,80,0.8);
+  background: rgba(255,80,80,0.15);
+}
+
+
+/* ===== HOW TO PLAY MODAL ===== */
+#rules-modal {
+  position: fixed; inset: 0; z-index: 950;
+  background: rgba(0,0,0,0.97);
+  display: flex; align-items: flex-start; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+  overflow-y: auto;
+  padding: 40px 16px 60px;
+}
+#rules-modal.visible { opacity: 1; pointer-events: all; }
+
+.rules-container {
+  width: min(860px, 98vw);
+  position: relative;
+}
+
+.rules-close-btn {
+  position: fixed;
+  top: 20px; right: 28px;
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 960;
+}
+.rules-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.rules-hero {
+  text-align: center;
+  padding: 48px 0 36px;
+  border-bottom: 1px solid var(--ui-border);
+  margin-bottom: 40px;
+}
+.rules-hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  background: linear-gradient(135deg, #C49A50, #f0d090, #C49A50);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s ease infinite;
+  margin-bottom: 10px;
+}
+.rules-hero-sub {
+  font-size: 13px;
+  color: var(--text-dim);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+/* TAB NAV */
+.rules-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--ui-border);
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.rules-tab {
+  padding: 12px 22px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.rules-tab:hover { color: var(--text); }
+.rules-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.rules-page { display: none; }
+.rules-page.active { display: block; }
+
+/* SECTION HEADINGS */
+.rules-section {
+  margin-bottom: 40px;
+}
+.rules-h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ui-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rules-h2 .icon { font-size: 20px; }
+.rules-h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: 0.15em;
+  margin: 20px 0 10px;
+}
+.rules-p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: rgba(232,224,204,0.85);
+  margin-bottom: 14px;
+}
+.rules-ul {
+  margin: 0 0 16px 0;
+  padding: 0;
+  list-style: none;
+}
+.rules-ul li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(232,224,204,0.85);
+  padding: 6px 0 6px 24px;
+  position: relative;
+  border-bottom: 1px solid rgba(196,154,80,0.07);
+}
+.rules-ul li::before {
+  content: '✦';
+  position: absolute; left: 0;
+  color: var(--accent);
+  font-size: 10px;
+  top: 10px;
+}
+.rules-ul li strong { color: var(--accent); }
+
+/* CALLOUT BOXES */
+.rules-callout {
+  border: 1px solid var(--ui-border);
+  background: rgba(196,154,80,0.05);
+  padding: 18px 22px;
+  margin: 20px 0;
+  position: relative;
+}
+.rules-callout.warning {
+  border-color: rgba(192,57,43,0.4);
+  background: rgba(192,57,43,0.05);
+}
+.rules-callout.tip {
+  border-color: rgba(39,174,96,0.4);
+  background: rgba(39,174,96,0.05);
+}
+.rules-callout-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.rules-callout.warning .rules-callout-label { color: #e74c3c; }
+.rules-callout.tip .rules-callout-label { color: #2ecc71; }
+.rules-callout p {
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0;
+  color: rgba(232,224,204,0.9);
+}
+
+/* DIAGRAM GRID */
+.rules-diagram-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.rules-diagram-card {
+  border: 1px solid var(--ui-border);
+  background: rgba(255,255,255,0.02);
+  padding: 16px;
+  text-align: center;
+}
+.rules-diagram-card canvas {
+  display: block;
+  margin: 0 auto 10px;
+}
+.rules-diagram-card .cap {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  line-height: 1.6;
+}
+.rules-diagram-card .cap strong { color: var(--accent); }
+
+/* RANK TABLE */
+.rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+.rules-table th {
+  background: rgba(196,154,80,0.1);
+  color: var(--accent);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--ui-border);
+}
+.rules-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(196,154,80,0.07);
+  color: rgba(232,224,204,0.85);
+  line-height: 1.6;
+}
+.rules-table tr:hover td { background: rgba(196,154,80,0.04); }
+
+/* TECHNIQUE CARDS */
+.technique-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.technique-card {
+  border: 1px solid var(--ui-border);
+  background: rgba(255,255,255,0.02);
+  padding: 18px;
+  transition: border-color 0.2s;
+}
+.technique-card:hover { border-color: var(--accent); }
+.technique-card .t-icon { font-size: 24px; margin-bottom: 8px; }
+.technique-card .t-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.technique-card .t-jp {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.2em;
+}
+.technique-card .t-desc {
+  font-size: 12px;
+  line-height: 1.7;
+  color: rgba(232,224,204,0.8);
+}
+
+/* MINI BOARD for diagrams */
+.mini-board-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 20px 0;
+  gap: 12px;
+}
+.mini-board-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+/* PROGRESS BAR for difficulty */
+.diff-bar {
+  display: flex; align-items: center; gap: 10px;
+  margin: 4px 0;
+}
+.diff-bar-label { width: 100px; font-size: 12px; color: var(--text-dim); }
+.diff-bar-track {
+  flex: 1; height: 6px; background: var(--ui-border);
+  position: relative; overflow: hidden;
+}
+.diff-bar-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--accent);
+}
+
+/* QUOTE */
+.rules-quote {
+  border-left: 3px solid var(--accent);
+  padding: 12px 20px;
+  margin: 20px 0;
+  font-style: italic;
+  font-size: 15px;
+  color: rgba(232,224,204,0.7);
+  line-height: 1.8;
+}
+.rules-quote cite {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  letter-spacing: 0.2em;
+}
+
 </style>
 </head>
 <body>
@@ -841,7 +1227,9 @@ html, body {
   <div class="splash-title">GO</div>
   <div class="splash-kanji">囲　碁</div>
   <div class="splash-subtitle">The Ancient Game of Surrounding Stones</div>
+  <div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(196,154,80,0.35);letter-spacing:0.35em;text-transform:uppercase;white-space:nowrap;font-family:'Cinzel',serif">Made by James Degenhardt</div>
   <button class="splash-btn" onclick="showSetup()">Begin Your Journey</button>
+  <button onclick="showRules()" style="background:transparent;border:none;color:rgba(196,154,80,0.45);font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.3em;cursor:pointer;margin-top:-8px;text-decoration:underline;text-underline-offset:4px;transition:color 0.2s" onmouseover="this.style.color='rgba(196,154,80,0.9)'" onmouseout="this.style.color='rgba(196,154,80,0.45)'">📖 How to Play</button>
 </div>
 
 <!-- NOTIFICATION -->
@@ -930,7 +1318,39 @@ html, body {
       </div>
     </div>
 
+    <div class="setup-section" id="handicap-section">
+      <span class="setup-label">Handicap Stones (Black advantage — default: none)</span>
+      <div class="setup-options">
+        <button class="opt-btn active" data-group="handicap" data-val="0" onclick="selectOpt(this,'handicap')">None</button>
+        <button class="opt-btn" data-group="handicap" data-val="2" onclick="selectOpt(this,'handicap')">2 Stones</button>
+        <button class="opt-btn" data-group="handicap" data-val="3" onclick="selectOpt(this,'handicap')">3 Stones</button>
+        <button class="opt-btn" data-group="handicap" data-val="4" onclick="selectOpt(this,'handicap')">4 Stones</button>
+        <button class="opt-btn" data-group="handicap" data-val="5" onclick="selectOpt(this,'handicap')">5 Stones</button>
+        <button class="opt-btn" data-group="handicap" data-val="6" onclick="selectOpt(this,'handicap')">6 Stones</button>
+        <button class="opt-btn" data-group="handicap" data-val="9" onclick="selectOpt(this,'handicap')">9 Stones</button>
+      </div>
+    </div>
+
+    <div class="setup-section" id="openingbook-section">
+      <span class="setup-label">Bot Opening Book (vs Bot, Lv.3–4 only — default: off)</span>
+      <div class="setup-options">
+        <button class="opt-btn active" data-group="openingbook" data-val="0" onclick="selectOpt(this,'openingbook')">Off</button>
+        <button class="opt-btn" data-group="openingbook" data-val="1" onclick="selectOpt(this,'openingbook')">On — Pro Fuseki</button>
+      </div>
+    </div>
+
     <button class="start-game-btn" onclick="startGame()">✦ Begin the Game ✦</button>
+
+    <div style="margin-top:18px;border-top:1px solid var(--ui-border);padding-top:18px">
+      <span class="setup-label">Or load an SGF file to review</span>
+      <div style="display:flex;gap:10px;align-items:center">
+        <label style="padding:10px 20px;border:1px solid var(--ui-border);color:var(--text-dim);cursor:pointer;font-size:12px;letter-spacing:0.2em;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)'">
+          📂 Load SGF
+          <input type="file" accept=".sgf" id="sgf-file-input" style="display:none" onchange="loadSGFFile(this)">
+        </label>
+        <span style="font-size:11px;color:var(--text-dim)">Load a .sgf game record for review</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -959,8 +1379,434 @@ html, body {
     </div>
     <div class="win-btns">
       <button class="act-btn primary" style="flex:1" onclick="restartGame()">Play Again</button>
-      <button class="act-btn" style="flex:1" onclick="showSetup()">New Setup</button>
+      <button class="act-btn" style="flex:1" onclick="exportSGF()">💾 Save SGF</button>
+      <button class="act-btn" style="flex:1" onclick="startReview()">▶ Review</button>
     </div>
+    <div style="margin-top:8px">
+      <button class="act-btn" style="width:100%" onclick="showSetup()">⚙ New Setup</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- HOW TO PLAY MODAL -->
+<div id="rules-modal">
+  <button class="rules-close-btn" onclick="hideRules()">✕ Close</button>
+  <div class="rules-container">
+
+    <div class="rules-hero">
+      <div class="rules-hero-title">HOW TO PLAY GO</div>
+      <div class="rules-hero-sub">囲碁 · The Game of Surrounding · Est. ~2500 BCE</div>
+    </div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="rules-tabs">
+      <button class="rules-tab active" onclick="switchRulesTab('basics',this)">The Basics</button>
+      <button class="rules-tab" onclick="switchRulesTab('rules',this)">Core Rules</button>
+      <button class="rules-tab" onclick="switchRulesTab('strategy',this)">Strategy</button>
+      <button class="rules-tab" onclick="switchRulesTab('techniques',this)">Techniques</button>
+      <button class="rules-tab" onclick="switchRulesTab('scoring',this)">Scoring</button>
+      <button class="rules-tab" onclick="switchRulesTab('etiquette',this)">Etiquette</button>
+      <button class="rules-tab" onclick="switchRulesTab('ranks',this)">Ranks & History</button>
+    </div>
+
+    <!-- PAGE: BASICS -->
+    <div class="rules-page active" id="rpage-basics">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🌍</span> What is Go?</div>
+        <p class="rules-p">Go (囲碁, <em>wéiqí</em> in Chinese, <em>baduk</em> in Korean) is a two-player abstract strategy board game originating in ancient China approximately 2,500–4,000 years ago. It is considered one of the oldest board games still played today in its original form, and is widely regarded as the most complex board game ever devised — with more possible positions than atoms in the observable universe.</p>
+        <p class="rules-p">Despite its simple rules, Go demands extraordinary depth of thought. A full 19×19 game has roughly <strong>10<sup>170</sup></strong> possible positions — dwarfing chess by an incomprehensible margin. AlphaGo's 2016 victory over world champion Lee Sedol was considered one of the most significant milestones in artificial intelligence history.</p>
+        <div class="rules-quote">
+          "Go is to Western chess what philosophy is to double-entry accounting."
+          <cite>— Trevanian, Shibumi</cite>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎯</span> The Objective</div>
+        <p class="rules-p">The goal of Go is simple to state but profound in execution: <strong>control more territory than your opponent.</strong> Territory consists of empty intersections completely surrounded by your stones. You also gain points for enemy stones you capture during the game.</p>
+        <p class="rules-p">The player with the higher score at the end wins. White receives a compensation bonus called <strong>komi</strong> (usually 6.5 points) because Black always moves first — giving Black a significant advantage that komi corrects.</p>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">📋</span> Equipment</div>
+        <ul class="rules-ul">
+          <li><strong>Board:</strong> A grid of lines — 19×19 for full games, 13×13 for intermediate, 9×9 for beginners and quick games.</li>
+          <li><strong>Stones:</strong> 181 black stones and 180 white stones (enough to fill a 19×19 board). Black goes first.</li>
+          <li><strong>Bowls:</strong> Traditional stones are stored in lacquered wooden bowls with lids. The clack of a stone on the board is a beloved part of the game's atmosphere.</li>
+          <li><strong>Intersections:</strong> Stones are placed on the <em>intersections</em> of the grid lines, not in the squares. A 19×19 board has 361 intersections.</li>
+          <li><strong>Star points (hoshi):</strong> Nine marked intersections that serve as visual reference. The center star is called <em>tengen</em>.</li>
+        </ul>
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 Beginner Tip</div>
+          <p>Start on a 9×9 board. Games are shorter (15–30 minutes), the concepts are identical, and you'll learn faster than on a full 19×19 board where games can last hours.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🔄</span> How a Turn Works</div>
+        <p class="rules-p">Players alternate turns. On your turn, you may do one of three things:</p>
+        <ul class="rules-ul">
+          <li><strong>Place a stone</strong> on any empty intersection (subject to the rules below).</li>
+          <li><strong>Pass</strong> — voluntarily skip your turn. In this game, each player gets exactly one pass.</li>
+          <li><strong>Resign</strong> — concede the game if you believe your position is hopeless.</li>
+        </ul>
+        <p class="rules-p">Once placed, stones are <em>never moved</em> — only removed when captured. This permanence creates the game's beautiful complexity: every stone you place is a commitment.</p>
+      </div>
+    </div>
+
+    <!-- PAGE: CORE RULES -->
+    <div class="rules-page" id="rpage-rules">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">💨</span> Liberties</div>
+        <p class="rules-p">Every stone (and connected group of stones of the same color) must have at least one <strong>liberty</strong> — an empty adjacent intersection (up, down, left, right — never diagonal). If a stone or group has no liberties, it is captured and removed from the board.</p>
+        <ul class="rules-ul">
+          <li>A stone in the middle of an empty board has <strong>4 liberties</strong>.</li>
+          <li>A stone on the edge has <strong>3 liberties</strong>.</li>
+          <li>A stone in a corner has <strong>2 liberties</strong>.</li>
+          <li>When two or more same-colored stones are adjacent, they form a <strong>group</strong> and share all their liberties collectively.</li>
+        </ul>
+        <div class="rules-callout">
+          <div class="rules-callout-label">Key Concept</div>
+          <p>A group with only one liberty remaining is said to be <strong>in atari</strong> — it can be captured on the opponent's next turn if not rescued. Recognizing atari is one of the first skills to develop.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⚔️</span> Capture</div>
+        <p class="rules-p">You capture opponent stones by completely surrounding them — filling all their liberties. The captured stones are immediately removed from the board and kept as prisoners. Each prisoner is worth one point at the end of the game (Japanese scoring).</p>
+        <p class="rules-p">You may place a stone that <em>initially</em> appears to have no liberties, provided that the placement itself captures opponent stones first — giving your new stone freedom.</p>
+        <div class="rules-callout warning">
+          <div class="rules-callout-label">⚠️ Suicide Rule</div>
+          <p>You may NOT place a stone in a position where it would immediately have zero liberties and capture nothing. This is called <strong>self-capture</strong> or <strong>suicide</strong>, and it is illegal. The one exception: if placing a stone completes a capture of the surrounding opponent stones first, then the move is legal.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">♾️</span> Ko — The Eternity Rule</div>
+        <p class="rules-p">Go has one special rule to prevent infinite loops: the <strong>Ko rule</strong>. After any move, the board position may not return to a state it was in on a previous turn.</p>
+        <p class="rules-p">The most common application: if capturing a single stone would recreate the board position from your opponent's previous move, you may not make that capture immediately. You must play elsewhere first (a "ko threat"), and only then recapture if the ko is still available.</p>
+        <ul class="rules-ul">
+          <li><strong>Simple Ko:</strong> A single-stone fight that alternates. You must play elsewhere before recapturing.</li>
+          <li><strong>Triple Ko:</strong> A rare situation where three ko fights occur simultaneously — in many rulesets this results in a void game.</li>
+          <li><strong>Eternal Life:</strong> Extremely rare board shapes that loop — resolved by special rules.</li>
+        </ul>
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 Ko Strategy</div>
+          <p>When you cannot recapture immediately, look for a <strong>ko threat</strong> — a move elsewhere on the board that forces your opponent to respond. If your threat is large enough, your opponent must abandon the ko to answer it, letting you retake.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">👁️</span> Life and Death — Eyes</div>
+        <p class="rules-p">A group is considered <strong>alive</strong> if it cannot be captured, and <strong>dead</strong> if it inevitably will be captured, even with best play. The key concept is <strong>eyes</strong>.</p>
+        <p class="rules-p">An <strong>eye</strong> is an empty intersection completely surrounded by your stones such that the opponent cannot legally fill it without capturing their own stone (self-capture rule). A group with <strong>two or more eyes</strong> can never be captured — it is unconditionally alive.</p>
+        <ul class="rules-ul">
+          <li><strong>One eye:</strong> Not safe — the opponent can eventually fill surrounding liberties and capture the group.</li>
+          <li><strong>Two eyes:</strong> Unconditionally alive. The opponent can never fill both eyes simultaneously.</li>
+          <li><strong>False eye:</strong> An intersection that looks like an eye but can be filled — groups relying on false eyes may be dead.</li>
+        </ul>
+        <div class="rules-callout warning">
+          <div class="rules-callout-label">⚠️ Critical Rule</div>
+          <p>Making two solid eyes for your groups is the most fundamental survival technique in Go. A group without two genuine eyes is at constant risk of capture.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🤝</span> Passing and End of Game</div>
+        <p class="rules-p">When both players agree that no more useful moves exist — all territories are settled, all dead stones have been identified — they each pass in turn. In this game, each player has exactly <strong>one pass</strong>. When both have passed, the game ends and scoring begins.</p>
+        <p class="rules-p">If there is disagreement about which stones are dead, players must play out the disputed areas. You may also <strong>resign</strong> at any time if you feel your position is unwinnable.</p>
+      </div>
+    </div>
+
+    <!-- PAGE: STRATEGY -->
+    <div class="rules-page" id="rpage-strategy">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🌅</span> The Opening — Fuseki</div>
+        <p class="rules-p">The opening phase (<em>fuseki</em> — "laying out stones") involves establishing frameworks and claiming portions of the board before the fighting begins. At the professional level, fuseki has been studied for centuries and comprises thousands of known patterns.</p>
+        <ul class="rules-ul">
+          <li><strong>4-4 Point (hoshi):</strong> The most popular modern opening. Played on the star point, it sacrifices some corner territory for strong influence toward the center.</li>
+          <li><strong>3-4 Point (komoku):</strong> Traditional and solid. Claims more corner territory while remaining flexible for various development patterns.</li>
+          <li><strong>3-3 Point (san-san):</strong> Secures the corner completely but gives up all outside influence. Often used as an invasion point later in the game.</li>
+          <li><strong>5-3 / 5-4 Points:</strong> More aggressive and situational openings.</li>
+          <li><strong>Tengen (center):</strong> The center star point — a bold, influence-oriented opening rarely used by professionals except as a bold statement.</li>
+        </ul>
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 Opening Principle</div>
+          <p>In the opening, prioritize corners first (easiest to secure), then edges, then center. A common saying: <em>"Corner, side, center."</em></p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⚡</span> The Middle Game — Chuban</div>
+        <p class="rules-p">The middle game (<em>chuban</em>) is where the board transforms from frameworks into concrete battles. Key concepts:</p>
+        <ul class="rules-ul">
+          <li><strong>Invasion:</strong> Entering an opponent's framework before it solidifies into territory. Timing is critical — too early and you have insufficient support; too late and the territory is too thick to invade.</li>
+          <li><strong>Reduction:</strong> Playing at the edge of an opponent's moyo (potential territory) to shrink it without fully invading. Safer than invasion.</li>
+          <li><strong>Sente and gote:</strong> A <em>sente</em> move forces your opponent to respond (initiative). A <em>gote</em> move does not. Maintaining sente is hugely advantageous.</li>
+          <li><strong>Aji:</strong> Latent potential. A position that looks settled but contains hidden follow-up threats is said to have good aji.</li>
+          <li><strong>Thickness:</strong> A group of stones that is clearly alive, has no weaknesses, and exerts powerful influence on surrounding areas.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🏁</span> The Endgame — Yose</div>
+        <p class="rules-p">The endgame (<em>yose</em>) is where boundaries are finalized and last points are counted. Though it seems mechanical compared to middle-game fighting, endgame is a precise skill that can swing games by 10+ points.</p>
+        <ul class="rules-ul">
+          <li>Moves in the endgame have specific <strong>point values</strong> — always play the largest remaining endgame move.</li>
+          <li><strong>Sente endgame moves</strong> (forcing a response) are worth roughly twice their face value — play them first.</li>
+          <li><strong>Ko fights</strong> often occur in the endgame when both players have accumulated ko threats.</li>
+          <li>A mistake of even 1–2 points in the endgame can flip the outcome of a close game.</li>
+        </ul>
+        <div class="rules-callout">
+          <div class="rules-callout-label">Pro Tip</div>
+          <p>Professional players can calculate the exact point value of every remaining endgame move and play them in perfect descending order. Developing this skill separates strong amateur players from masters.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⚖️</span> Balance: Territory vs Influence</div>
+        <p class="rules-p">One of Go's deepest strategic tensions is between <strong>territory</strong> (solid, enclosed points) and <strong>influence</strong> (outward-facing thickness with future potential). Both are valid paths to winning.</p>
+        <ul class="rules-ul">
+          <li><strong>Territorial style:</strong> Secures concrete points immediately. Plays on the third line. Leaves less to chance.</li>
+          <li><strong>Influence style:</strong> Builds walls and frameworks (<em>moyo</em>) that may become massive territory if the opponent invades unsuccessfully. Higher risk, higher reward.</li>
+          <li>The strongest players adapt their style to the demands of each specific position rather than committing to one approach.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PAGE: TECHNIQUES -->
+    <div class="rules-page" id="rpage-techniques">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎓</span> Fundamental Techniques</div>
+        <div class="technique-grid">
+          <div class="technique-card">
+            <div class="t-icon">🔗</div>
+            <div class="t-name">Atari</div>
+            <div class="t-jp">当たり</div>
+            <div class="t-desc">Placing a stone that reduces an opponent group to one liberty. The equivalent of "check" in chess — the opponent must respond or lose the group.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🪤</div>
+            <div class="t-name">Ladder (Shicho)</div>
+            <div class="t-jp">シチョウ</div>
+            <div class="t-desc">A chasing sequence where a stone in atari is pursued in a zigzag pattern toward the board edge. Ladders always reach the edge unless a "ladder-breaker" stone exists.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🕸️</div>
+            <div class="t-name">Net (Geta)</div>
+            <div class="t-jp">ゲタ</div>
+            <div class="t-desc">Surrounding a stone or group such that it cannot escape, even though it still has liberties. The net catches without immediately ataring.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🍃</div>
+            <div class="t-name">Snapback</div>
+            <div class="t-jp">ウッテガエシ</div>
+            <div class="t-desc">A capture followed by the opponent recapturing, only to find their new stone immediately capturable. A clever technique that nets stones efficiently.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🌀</div>
+            <div class="t-name">Ko Fight</div>
+            <div class="t-jp">劫</div>
+            <div class="t-desc">A battle over a single-stone capture that would recreate a previous position. Requires ko threats elsewhere on the board to resolve.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">👁️</div>
+            <div class="t-name">Eye Space</div>
+            <div class="t-jp">目</div>
+            <div class="t-desc">Creating internal empty intersections within your group. Two genuine eyes make a group immortal — the most crucial survival concept in Go.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🔄</div>
+            <div class="t-name">Seki</div>
+            <div class="t-jp">セキ</div>
+            <div class="t-desc">A mutual life situation where neither player can capture the other without losing their own stones. Both groups live without eyes. Neither player scores the shared liberties.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">⚔️</div>
+            <div class="t-name">Cutting</div>
+            <div class="t-jp">切り</div>
+            <div class="t-desc">Placing a stone between two enemy stones that are diagonally adjacent, separating their connections. Creates two weaker groups where one strong group existed.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🛡️</div>
+            <div class="t-name">Connection</div>
+            <div class="t-jp">つなぎ</div>
+            <div class="t-desc">Linking your stones so they cannot be cut apart. A bamboo joint (two stones with a gap) is a flexible connection that cannot be cut while protecting both stones.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🔥</div>
+            <div class="t-name">Sacrifice</div>
+            <div class="t-jp">捨て石</div>
+            <div class="t-desc">Deliberately allowing stones to be captured in order to gain a strategic advantage elsewhere — building influence, creating ko threats, or enabling a tesuji elsewhere.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">💎</div>
+            <div class="t-name">Tesuji</div>
+            <div class="t-jp">手筋</div>
+            <div class="t-desc">A skillful, clever move that works in a specific tactical situation — often counterintuitive. Tesujis are the "tricks" of Go: studied, catalogued, and applied by strong players.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🧩</div>
+            <div class="t-name">Tsumego</div>
+            <div class="t-jp">詰碁</div>
+            <div class="t-desc">Life-and-death problems — puzzles where you must find the move that kills an opponent group or saves your own. Solving tsumego daily is the single best way to improve at Go.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🗺️</span> Advanced Concepts</div>
+        <ul class="rules-ul">
+          <li><strong>Influence map / Moyo:</strong> A large framework of loosely placed stones that threatens to enclose massive territory. The opponent must invade or reduce — the question is when and where.</li>
+          <li><strong>Thickness:</strong> A solidly connected, living group with no weaknesses. Thick groups radiate influence across the board. Never invade thick positions — reduce from a distance.</li>
+          <li><strong>Shape:</strong> The spatial arrangement of your stones. Good shape is efficient (each stone doing multiple jobs). Bad shape is inefficient — "empty triangles" and "dumpling shapes" waste potential.</li>
+          <li><strong>Aji (味):</strong> Lingering flavor. A position or stone that looks settled but contains hidden follow-up threats. Good players preserve and exploit aji rather than resolving it prematurely.</li>
+          <li><strong>Tenuki:</strong> Ignoring your opponent's local threat and playing elsewhere. Powerful when the local threat is small and the global opportunity is large.</li>
+          <li><strong>Kikashi:</strong> A forcing move that extracts a concession before playing elsewhere. The opponent is compelled to respond, and the move is not wasted even if you tenuki afterward.</li>
+          <li><strong>Miai:</strong> Two equivalent points such that if your opponent takes one, you take the other. Recognizing miai allows you to remain untroubled by apparent threats.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PAGE: SCORING -->
+    <div class="rules-page" id="rpage-scoring">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">📊</span> Scoring Systems</div>
+        <p class="rules-p">There are two main scoring systems used worldwide. They almost always produce the same result in well-played games, though they handle edge cases differently.</p>
+
+        <div class="rules-h3">Japanese / Korean Scoring (Territory Scoring)</div>
+        <p class="rules-p">Score = <strong>Territory</strong> (empty intersections you control) + <strong>Prisoners</strong> (captured enemy stones).</p>
+        <ul class="rules-ul">
+          <li>Dead stones left on the board at game end are removed and counted as prisoners.</li>
+          <li>White adds <strong>komi</strong> (usually 6.5 points) to compensate for Black moving first.</li>
+          <li>Filling in your own territory does not gain or lose points.</li>
+          <li>This system requires agreement on which stones are dead before scoring.</li>
+        </ul>
+
+        <div class="rules-h3">Chinese Scoring (Area Scoring)</div>
+        <p class="rules-p">Score = <strong>Territory</strong> + <strong>Living stones on the board</strong>.</p>
+        <ul class="rules-ul">
+          <li>Prisoners are not counted — only the final board state matters.</li>
+          <li>Filling your own territory <em>reduces</em> your score (territory decreases without adding stones).</li>
+          <li>Komi is usually 7.5 points under Chinese rules.</li>
+          <li>Less dispute about dead stones — if players disagree, they must play out the position.</li>
+        </ul>
+
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 This Game Uses Japanese Scoring</div>
+          <p>Territory + Prisoners + Komi. Dead stones can be marked before final scoring using the "Mark Dead" button after both players pass.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🔢</span> Komi</div>
+        <p class="rules-p">Komi (コミ) is the point compensation given to White because Black moves first — a significant advantage. Standard komi values:</p>
+        <table class="rules-table">
+          <tr><th>Komi</th><th>Context</th><th>Notes</th></tr>
+          <tr><td>0</td><td>Handicap games</td><td>Used when Black already has handicap stones</td></tr>
+          <tr><td>5.5</td><td>Older professional ruleset</td><td>Still used in some Korean tournaments</td></tr>
+          <tr><td>6.5</td><td>Standard (Japanese rules)</td><td>Most common in international play</td></tr>
+          <tr><td>7.5</td><td>Chinese rules / AGA</td><td>Slightly higher to reflect area scoring differences</td></tr>
+        </table>
+        <p class="rules-p">The half-point prevents draws. Because 6.5 cannot be exactly equaled by integer territory, there is always a winner.</p>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎰</span> Handicap System</div>
+        <p class="rules-p">Go has a beautiful handicap system that allows players of vastly different strengths to enjoy competitive games. Black places extra stones before the game begins, and White takes the first move. Each handicap stone roughly compensates for one rank of difference.</p>
+        <table class="rules-table">
+          <tr><th>Handicap</th><th>Rank Difference</th><th>Effect</th></tr>
+          <tr><td>2 stones</td><td>~2 ranks</td><td>Mild advantage for Black</td></tr>
+          <tr><td>4 stones</td><td>~4 ranks</td><td>Significant advantage</td></tr>
+          <tr><td>9 stones</td><td>~9 ranks</td><td>Maximum standard handicap</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: ETIQUETTE -->
+    <div class="rules-page" id="rpage-etiquette">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🙏</span> Traditional Etiquette</div>
+        <p class="rules-p">Go has a rich tradition of etiquette cultivated over millennia, particularly in East Asian cultures. Observing these customs shows respect for the game, your opponent, and the tradition.</p>
+        <ul class="rules-ul">
+          <li><strong>Nigiri:</strong> Before a game, one player grabs a handful of white stones; the other guesses odd or even by placing one or two black stones. If correct, the guesser plays Black.</li>
+          <li><strong>Rei:</strong> Both players bow (or say "yoroshiku onegaishimasu" — "please be kind to me") before the game begins.</li>
+          <li><strong>Pick up stones properly:</strong> Traditional players place stones with the index and middle fingers, snapping them onto the board with a satisfying clack.</li>
+          <li><strong>Do not pick up stones to deliberate:</strong> Once your hand lifts a stone over the board, you are committed to playing. Never hover indecisively.</li>
+          <li><strong>No take-backs:</strong> Once a stone is placed, it stays. Undo is only allowed by mutual agreement in casual games.</li>
+          <li><strong>"Otsukare sama desu":</strong> After the game, both players review and discuss the game — a tradition called <em>nigiri</em> or post-game review. Saying this phrase acknowledges your opponent's effort.</li>
+          <li><strong>Concede gracefully:</strong> If your position is clearly lost, resign rather than prolonging a hopeless game. This respects your opponent's time and demonstrates character.</li>
+          <li><strong>No analysis during play:</strong> Do not suggest moves to observers during a serious game. Kibitzing (commentary) is reserved for after the game.</li>
+        </ul>
+        <div class="rules-quote">
+          "In Go, as in life, one must learn to accept both victory and defeat with equanimity."
+          <cite>— Traditional Go proverb</cite>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">💬</span> Common Go Sayings</div>
+        <ul class="rules-ul">
+          <li><strong>"Honte"</strong> (本手) — The "proper" or "correct" move. Sometimes the best move is the obvious, solid one. Don't overthink it.</li>
+          <li><strong>"Ikken tobi"</strong> (一間飛び) — A one-point jump. Considered the most efficient extension in many situations.</li>
+          <li><strong>"There are no bad moves, only bad positions."</strong> — Every stone teaches you something; learn from losses.</li>
+          <li><strong>"Lose your first 50 games as fast as possible."</strong> — The fastest way to improve is to play many games, even (especially) losing ones.</li>
+          <li><strong>"A rich man should not pick kos."</strong> — If you are winning, avoid risky ko fights. Protect your lead.</li>
+          <li><strong>"Play on the side of your thickness."</strong> — Attack toward your strong, thick groups to make the opponent's invaded stones weak.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PAGE: RANKS & HISTORY -->
+    <div class="rules-page" id="rpage-ranks">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🏆</span> Rank System</div>
+        <p class="rules-p">Go uses a dual ranking system: <strong>kyu</strong> ranks for beginners (counting down to 1k) and <strong>dan</strong> ranks for advanced players (counting up from 1d). There is a gap between 1 kyu and 1 dan that represents a significant level jump.</p>
+        <table class="rules-table">
+          <tr><th>Rank</th><th>Level</th><th>Description</th></tr>
+          <tr><td>30k – 20k</td><td>Beginner</td><td>Learning basic rules, capturing, making eyes</td></tr>
+          <tr><td>20k – 10k</td><td>Novice</td><td>Basic patterns, opening principles, simple life/death</td></tr>
+          <tr><td>10k – 1k</td><td>Intermediate</td><td>Joseki, fuseki, reading ahead, endgame awareness</td></tr>
+          <tr><td>1d – 4d</td><td>Strong Amateur</td><td>Deep reading, complex tactics, advanced strategy</td></tr>
+          <tr><td>5d – 7d</td><td>Expert Amateur</td><td>Near-professional level; club champions</td></tr>
+          <tr><td>1p – 9p</td><td>Professional</td><td>Licensed professional players; 9p is the highest rank</td></tr>
+        </table>
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 Rank Perspective</div>
+          <p>The difference between a 9-dan professional and a strong amateur (5-7 dan) is enormous — a 9p would give a 5d player 5–6 handicap stones and still win. AlphaGo was estimated at 30+ dan equivalent.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">📜</span> A Brief History</div>
+        <ul class="rules-ul">
+          <li><strong>~2500–4000 BCE:</strong> Go is believed to have originated in ancient China. Legend attributes it to Emperor Yao, who invented it to train his son's mind.</li>
+          <li><strong>~500 CE:</strong> Go spreads to Korea (where it becomes <em>baduk</em>) and later Japan (<em>go</em> or <em>igo</em>).</li>
+          <li><strong>17th century:</strong> Japan establishes the four great Go houses (Honinbo, Inoue, Yasui, Hayashi) under government patronage. Go flourishes as a state institution.</li>
+          <li><strong>1603:</strong> Honinbo Sansa becomes the first Meijin (grand master), the highest title in Japanese Go.</li>
+          <li><strong>1938:</strong> The "Atomic Bomb Game" — a famous game between Iwamoto Kaoru and Hashimoto Utaro that continued even after the atomic bomb dropped on Hiroshima nearby.</li>
+          <li><strong>1968:</strong> Modern professional tournament system established in Japan.</li>
+          <li><strong>1992:</strong> First Ing Cup (World Go Championship) — Go becomes international.</li>
+          <li><strong>2016:</strong> AlphaGo (DeepMind) defeats Lee Sedol 4–1, the first AI to beat a top professional without handicap. Lee Sedol's one win (Game 4, Move 78) is considered one of the most remarkable single moves in history.</li>
+          <li><strong>2017:</strong> AlphaGo Zero achieves superhuman Go ability by training entirely through self-play — no human games. Defeats AlphaGo 100–0.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎮</span> About This Game's Bot</div>
+        <p class="rules-p">This game features four AI difficulty levels, each using progressively more sophisticated algorithms:</p>
+        <div class="diff-bar"><div class="diff-bar-label">Wanderer (Lv.1)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:10%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Pure random legal moves. No strategy. Good for learning basic rules and captures.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Apprentice (Lv.2)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:35%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Heuristic AI: captures when possible, rescues atari groups, avoids edges early, plays toward star points.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Master (Lv.3)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:65%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Monte Carlo Tree Search with 1.2-second budget. Runs hundreds of random game simulations to evaluate moves.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Grandmaster (Lv.4)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:90%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Deep MCTS with 2-second budget, biased rollouts, opening book, candidate pre-filtering. Plays a serious, challenging game.</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1046,11 +1892,36 @@ html, body {
       <canvas id="go-board"></canvas>
     </div>
 
-    <div class="action-bar">
-      <button class="act-btn primary" onclick="passMove()">Pass</button>
+    <div class="action-bar" id="main-action-bar">
+      <button class="act-btn primary" id="pass-btn" onclick="passMove()">Pass</button>
       <button class="act-btn" onclick="undoMove()">Undo</button>
       <button class="act-btn" onclick="toggleTerritory()">Territory</button>
+      <button class="act-btn" id="dead-mode-btn" onclick="toggleDeadStoneMode()">Mark Dead</button>
       <button class="act-btn danger" onclick="resignGame()">Resign</button>
+    </div>
+
+    <!-- REVIEW BAR (hidden during live game) -->
+    <div id="review-bar" style="display:none;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
+      <button class="act-btn" onclick="reviewGoto(0)">⏮</button>
+      <button class="act-btn" onclick="reviewStep(-5)">⏪</button>
+      <button class="act-btn" onclick="reviewStep(-1)">◀</button>
+      <span id="review-label" style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--accent);min-width:90px;text-align:center">0 / 0</span>
+      <button class="act-btn" onclick="reviewStep(1)">▶</button>
+      <button class="act-btn" onclick="reviewStep(5)">⏩</button>
+      <button class="act-btn" onclick="reviewGoto(Infinity)">⏭</button>
+      <button class="act-btn" id="autoplay-btn" onclick="toggleAutoplay()">▶ Auto</button>
+      <button class="act-btn danger" onclick="exitReview()">✕ Exit</button>
+    </div>
+
+    <!-- AI HINT BOX -->
+    <div id="ai-hint-box" style="display:none;max-width:520px;text-align:center">
+      <div style="font-size:10px;letter-spacing:0.3em;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px">AI Move Analysis</div>
+      <div id="ai-hint-text" style="font-size:13px;color:var(--accent);font-family:'Share Tech Mono',monospace;line-height:1.7;padding:10px;border:1px solid var(--ui-border);background:rgba(196,154,80,0.05)"></div>
+    </div>
+
+    <!-- DEAD STONE MODE banner -->
+    <div id="dead-mode-banner" style="display:none;padding:8px 20px;border:1px solid var(--danger);color:var(--danger);font-size:11px;letter-spacing:0.25em;text-align:center">
+      MARK DEAD STONES MODE — Click stones to toggle dead/alive · <button style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;letter-spacing:0.2em" onclick="confirmDeadStones()">CONFIRM SCORE</button>
     </div>
 
     <div class="theme-row" style="justify-content:center">
@@ -1104,10 +1975,20 @@ html, body {
       <div style="display:flex;flex-direction:column;gap:8px">
         <button class="act-btn" style="text-align:left" onclick="showSetup()">⚙ New Game</button>
         <button class="act-btn" style="text-align:left" onclick="estimateScore()">◈ Score Estimate</button>
+        <button class="act-btn" style="text-align:left" onclick="requestAIHint()">💡 AI Hint</button>
+        <button class="act-btn" style="text-align:left" onclick="toggleJosekiOverlay()">⬡ Joseki Guide</button>
+        <button class="act-btn" style="text-align:left" onclick="exportSGF()">💾 Export SGF</button>
+        <button class="act-btn" style="text-align:left" onclick="startReview()">▶ Review Game</button>
         <button class="act-btn" style="text-align:left" onclick="toggleCoords()">⊞ Toggle Coords</button>
         <button class="act-btn" style="text-align:left" onclick="toggleSound()">♪ Sound: <span id="sound-state">ON</span></button>
-        <button class="act-btn" style="text-align:left" onclick="showRules()">? Rules & Info</button>
+        <button class="act-btn" style="text-align:left" onclick="showRules()">📖 How to Play</button>
       </div>
+    </div>
+
+    <!-- AI HINT PANEL -->
+    <div class="panel" id="hint-panel" style="display:none">
+      <div class="panel-title">AI Analysis</div>
+      <div id="hint-content" style="font-size:12px;line-height:1.8;color:var(--text)"></div>
     </div>
 
   </div>
@@ -1240,7 +2121,9 @@ const SETUP = {
   size: 19,
   komi: 6.5,
   time: 0,
-  theme: 'classic'
+  theme: 'classic',
+  handicap: 0,
+  openingbook: 0,
 };
 
 function initGameState(N) {
@@ -1259,6 +2142,12 @@ function initGameState(N) {
     showTerritory: false,
     showCoords: true,
     territory: null,
+    deadStones: new Set(),      // indices of stones marked as dead
+    deadStoneMode: false,
+    josekiOverlay: false,
+    hintMove: -1,               // highlighted AI hint square
+    fullMoveRecord: [],         // full {board, move, color} record for replay
+    openingMoveCount: 0,        // how many opening book moves played
   };
 }
 
@@ -1465,6 +2354,15 @@ function drawBoard() {
     ctx.stroke();
     ctx.restore();
   }
+
+  // Joseki suggestions
+  if (G.josekiOverlay) drawJosekiOverlay();
+
+  // AI hint highlight
+  if (G.hintMove >= 0) drawHintHighlight();
+
+  // Dead stone markers
+  if (G.deadStones && G.deadStones.size > 0) drawDeadStoneMarkers();
 }
 
 function drawStone(ctx, x, y, R, color, theme) {
@@ -1663,6 +2561,13 @@ function placeStone(i) {
     animateStonePlacement(i);
   }
 
+  // AI move explanation (shown when bot places a stone)
+  const isBot = SETUP.mode === 'pve' && color !== (SETUP.color === 'black' ? 1 : 2);
+  if (isBot) showAIMoveExplanation(i, color, result.captured.length);
+
+  // Record for replay/SGF
+  G.fullMoveRecord.push({ board: [...G.board], move: i, color, prisoners: [...G.prisoners] });
+
   G.turn = 3 - color;
   updateUI();
   drawBoard();
@@ -1807,6 +2712,13 @@ function endGame() {
   G.territory = territory;
   G.showTerritory = true;
   drawBoard();
+  // Highlight dead stone button
+  const deadBtn = document.getElementById('dead-mode-btn');
+  if (deadBtn) {
+    deadBtn.style.borderColor = 'var(--accent)';
+    deadBtn.style.color = 'var(--accent)';
+    deadBtn.title = 'Click to mark dead stones before final score';
+  }
   const winner = bScore > wScore ? 'Black' : bScore < wScore ? 'White' : null;
   const by = Math.abs(bScore - wScore).toFixed(1);
   showWin(winner, winner ? `by ${by} points` : 'Draw!', bScore, wScore, bt, wt);
@@ -1842,7 +2754,9 @@ function updateUI() {
   document.getElementById('info-move').textContent = G.moveCount;
   document.getElementById('info-capb').textContent = G.prisoners[0];
   document.getElementById('info-capw').textContent = G.prisoners[1];
-  document.getElementById('info-pass').textContent = G.consecutivePasses;
+  const bpassed = G.hasPassed && G.hasPassed[1] ? '✓' : '—';
+  const wpassed = G.hasPassed && G.hasPassed[2] ? '✓' : '—';
+  document.getElementById('info-pass').textContent = `B:${bpassed} W:${wpassed}`;
   document.getElementById('move-num').textContent = String(G.moveCount).padStart(3, '0');
 
   // Move log
@@ -2096,6 +3010,15 @@ function scheduleBotMove() {
     if (botShouldPass()) {
       setBotStatus('No moves — passing');
       passMove();
+      return;
+    }
+    // Try opening book first
+    const bookMove = getBotOpeningMove();
+    if (bookMove >= 0) {
+      setBotStatus('Opening book: ' + moveToName(bookMove));
+      pushUndo();
+      placeStone(bookMove);
+      if (SETUP.time) startTimer();
       return;
     }
     const move = getBotMove();
@@ -2377,6 +3300,7 @@ function selectOpt(btn, group) {
   SETUP[group] = btn.dataset.val;
   if (group === 'mode') {
     document.getElementById('diff-section').style.display = SETUP.mode === 'pve' ? 'block' : 'none';
+    document.getElementById('openingbook-section').style.display = SETUP.mode === 'pve' ? 'block' : 'none';
   }
 }
 
@@ -2436,17 +3360,33 @@ function startGame() {
     document.getElementById('name-white').textContent = 'White';
   }
 
+  // Place handicap stones
+  SETUP.handicap = parseInt(SETUP.handicap) || 0;
+  SETUP.openingbook = parseInt(SETUP.openingbook) || 0;
+  if (SETUP.handicap >= 2) {
+    placeHandicapStones(SETUP.handicap);
+    G.turn = 2; // White goes first after handicap
+  }
+
+  // Exit review mode if active
+  exitReview();
+  document.getElementById('main-action-bar').style.display = 'flex';
+  document.getElementById('review-bar').style.display = 'none';
+  document.getElementById('ai-hint-box').style.display = 'none';
+  document.getElementById('dead-mode-banner').style.display = 'none';
+
   updateUI();
   drawBoard();
 
-  // If bot goes first (player chose white)
-  if (SETUP.mode === 'pve' && SETUP.color === 'white') {
+  // If bot goes first (player chose white or handicap placed)
+  const playerColor = SETUP.color === 'black' ? 1 : 2;
+  if (SETUP.mode === 'pve' && G.turn !== playerColor) {
     setTimeout(scheduleBotMove, 800);
   }
 
   if (SETUP.time) startTimer();
 
-  notify(`Game started! ${N}×${N} board`);
+  notify(`Game started! ${N}×${N} board${SETUP.handicap >= 2 ? \` · ${SETUP.handicap} handicap\` : ''}`);
 }
 
 function restartGame() {
@@ -2509,7 +3449,12 @@ function getGridPos(e) {
 
 function boardClick(e) {
   const i = getGridPos(e);
-  if (i >= 0) handlePlayerMove(i);
+  if (i < 0) return;
+  if (deadStoneModeActive) {
+    handleDeadStoneClick(i);
+  } else if (!reviewActive) {
+    handlePlayerMove(i);
+  }
 }
 
 function boardHover(e) {
@@ -2554,7 +3499,603 @@ function toggleSound() {
 }
 
 function showRules() {
-  notify('Go: surround territory, capture stones. Pass twice = game end.');
+  document.getElementById('rules-modal').classList.add('visible');
+  // Reset to first tab each time
+  switchRulesTab('basics', document.querySelector('.rules-tab'));
+}
+
+function hideRules() {
+  document.getElementById('rules-modal').classList.remove('visible');
+}
+
+function switchRulesTab(name, btn) {
+  // Hide all pages
+  document.querySelectorAll('.rules-page').forEach(p => p.classList.remove('active'));
+  // Deactivate all tabs
+  document.querySelectorAll('.rules-tab').forEach(t => t.classList.remove('active'));
+  // Show selected page
+  const page = document.getElementById('rpage-' + name);
+  if (page) page.classList.add('active');
+  // Activate clicked tab
+  if (btn) btn.classList.add('active');
+  // Scroll modal back to top
+  const modal = document.getElementById('rules-modal');
+  if (modal) modal.scrollTop = 0;
+}
+
+// ============================================================
+//  HANDICAP STONES
+// ============================================================
+const HANDICAP_POSITIONS = {
+  19: {
+    2: [[3,15],[15,3]],
+    3: [[3,15],[15,3],[3,3]],
+    4: [[3,15],[15,3],[3,3],[15,15]],
+    5: [[3,15],[15,3],[3,3],[15,15],[9,9]],
+    6: [[3,15],[15,3],[3,3],[15,15],[3,9],[15,9]],
+    7: [[3,15],[15,3],[3,3],[15,15],[3,9],[15,9],[9,9]],
+    8: [[3,15],[15,3],[3,3],[15,15],[3,9],[15,9],[9,3],[9,15]],
+    9: [[3,15],[15,3],[3,3],[15,15],[3,9],[15,9],[9,3],[9,15],[9,9]],
+  },
+  13: {
+    2: [[3,9],[9,3]],
+    3: [[3,9],[9,3],[3,3]],
+    4: [[3,9],[9,3],[3,3],[9,9]],
+    5: [[3,9],[9,3],[3,3],[9,9],[6,6]],
+    6: [[3,9],[9,3],[3,3],[9,9],[3,6],[9,6]],
+    9: [[3,9],[9,3],[3,3],[9,9],[3,6],[9,6],[6,3],[6,9],[6,6]],
+  },
+  9: {
+    2: [[2,6],[6,2]],
+    3: [[2,6],[6,2],[2,2]],
+    4: [[2,6],[6,2],[2,2],[6,6]],
+    5: [[2,6],[6,2],[2,2],[6,6],[4,4]],
+    6: [[2,6],[6,2],[2,2],[6,6],[2,4],[6,4]],
+    9: [[2,6],[6,2],[2,2],[6,6],[2,4],[6,4],[4,2],[4,6],[4,4]],
+  }
+};
+
+function placeHandicapStones(n) {
+  const positions = HANDICAP_POSITIONS[N] || HANDICAP_POSITIONS[19];
+  const pts = positions[Math.min(n, 9)] || positions[9];
+  for (const [r, c] of pts) {
+    if (r < N && c < N) G.board[idx(r, c, N)] = 1;
+  }
+  notify(`${n} handicap stones placed for Black`);
+}
+
+// ============================================================
+//  JOSEKI OVERLAY (classic corner patterns)
+// ============================================================
+// Each joseki is defined as a sequence of [color, r, c] from corner
+const JOSEKI_PATTERNS = [
+  // Simple 3-4 point joseki
+  { name: "3-4 Approach", moves: [[1,3,15],[2,5,15],[1,5,16],[2,5,17]] },
+  { name: "3-4 Pincer", moves: [[1,3,15],[2,5,15],[1,5,13]] },
+  { name: "4-4 Diagonal", moves: [[1,3,15],[2,5,13],[1,5,15]] },
+  { name: "3-3 Invasion", moves: [[1,3,15],[2,2,16],[1,3,16],[2,2,15]] },
+];
+
+let josekiOverlayActive = false;
+
+function toggleJosekiOverlay() {
+  josekiOverlayActive = !josekiOverlayActive;
+  G.josekiOverlay = josekiOverlayActive;
+  drawBoard();
+  notify(josekiOverlayActive ? "Joseki guide ON — see corner suggestions" : "Joseki guide OFF");
+}
+
+function drawJosekiOverlay() {
+  if (!josekiOverlayActive || G.moveCount > 12) return;
+  // Show recommended 4-4 and 3-4 star-point opening moves
+  const openingPts = getOpeningRecommendations();
+  for (const { r, c, label, color } of openingPts) {
+    if (G.board[idx(r, c, N)] !== 0) continue;
+    const x = boardOffsetX + c * CELL;
+    const y = boardOffsetY + r * CELL;
+    const R = CELL * 0.38;
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(x, y, R, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#000';
+    ctx.font = `bold ${Math.max(8,CELL*0.25)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y);
+    ctx.restore();
+  }
+}
+
+function getOpeningRecommendations() {
+  const pts = [];
+  if (N === 19) {
+    const corners = [[3,3],[3,15],[15,3],[15,15]];
+    const stars   = [[3,9],[9,3],[9,15],[15,9],[9,9]];
+    let openCorners = 0;
+    for (const [r,c] of corners) if (G.board[idx(r,c,N)]===0) openCorners++;
+    for (const [r,c] of corners) {
+      if (G.board[idx(r,c,N)]===0) pts.push({ r, c, label:'★', color:'rgba(255,220,60,0.9)' });
+    }
+    if (openCorners === 0) {
+      for (const [r,c] of stars) {
+        if (G.board[idx(r,c,N)]===0) pts.push({ r, c, label:'◆', color:'rgba(80,220,255,0.9)' });
+      }
+    }
+  } else if (N === 13) {
+    const corners = [[3,3],[3,9],[9,3],[9,9]];
+    for (const [r,c] of corners) {
+      if (G.board[idx(r,c,N)]===0) pts.push({ r, c, label:'★', color:'rgba(255,220,60,0.9)' });
+    }
+  } else {
+    const corners = [[2,2],[2,6],[6,2],[6,6]];
+    for (const [r,c] of corners) {
+      if (G.board[idx(r,c,N)]===0) pts.push({ r, c, label:'★', color:'rgba(255,220,60,0.9)' });
+    }
+  }
+  return pts;
+}
+
+// ============================================================
+//  OPENING BOOK (for bot levels 3 & 4)
+// ============================================================
+const OPENING_BOOK_19 = [
+  // Black: 4-4 all corners, then approach moves
+  [[3,3],[15,15],[3,15],[15,3]],   // chinese opening variation
+  [[3,15],[15,3],[3,3],[15,15]],   // mirror variation
+  [[9,9],[3,3],[15,15],[3,15]],    // tengen start
+];
+const OPENING_BOOK_9 = [
+  [[4,4],[4,4],[2,2],[6,6]], // placeholder
+];
+
+function getBotOpeningMove() {
+  if (!SETUP.openingbook || SETUP.diff < 3) return -1;
+  const book = N === 19 ? OPENING_BOOK_19 : (N === 9 ? OPENING_BOOK_9 : null);
+  if (!book) return -1;
+  const seq = book[G.openingMoveCount % book.length] || book[0];
+  const moveIdx = Math.floor(G.openingMoveCount / book.length);
+  if (!seq || moveIdx >= seq.length) return -1;
+  const [r, c] = seq[moveIdx];
+  const i = idx(r, c, N);
+  if (G.board[i] !== 0) return -1;
+  const result = tryPlace(G.board, i, G.turn, N, G.koPoint || -1);
+  if (!result) return -1;
+  G.openingMoveCount++;
+  return i;
+}
+
+// ============================================================
+//  AI HINT
+// ============================================================
+function requestAIHint() {
+  if (G.gameOver) { notify('Game is over'); return; }
+  const color = G.turn;
+  const hintPanel = document.getElementById('hint-panel');
+  const hintContent = document.getElementById('hint-content');
+  hintPanel.style.display = 'block';
+  hintContent.innerHTML = '<span style="color:var(--text-dim)">Analysing...</span>';
+
+  setTimeout(() => {
+    let move;
+    if (SETUP.diff >= 3) {
+      move = getBotMCTS(800);
+    } else {
+      move = getBotBasic();
+    }
+
+    if (move < 0) {
+      hintContent.innerHTML = 'No strong move found — consider passing.';
+      return;
+    }
+
+    G.hintMove = move;
+    const [r, c] = pos(move, N);
+    const letters = 'ABCDEFGHJKLMNOPQRST';
+    const moveName = letters[c] + (N - r);
+
+    // Analyse WHY
+    const reasons = [];
+    const result = tryPlace(G.board, move, color, N, G.koPoint || -1);
+    if (result && result.captured.length > 0) {
+      reasons.push(`Captures ${result.captured.length} stone${result.captured.length>1?'s':''}`);
+    }
+    // Check if it relieves atari on own groups
+    for (const nb of getNeighbors(move, N)) {
+      if (G.board[nb] === color) {
+        const { liberties } = getGroup(G.board, nb, N);
+        if (liberties.size <= 2) { reasons.push('Rescues group in atari'); break; }
+      }
+    }
+    // Check if it threatens atari on opponent
+    const opp = 3 - color;
+    for (const nb of getNeighbors(move, N)) {
+      if (G.board[nb] === opp) {
+        const { liberties } = getGroup(G.board, nb, N);
+        if (liberties.size === 2) { reasons.push('Threatens opponent group'); break; }
+      }
+    }
+    const [mr, mc] = pos(move, N);
+    const minEdge = Math.min(mr, mc, N-1-mr, N-1-mc);
+    if (minEdge >= 3) reasons.push('Strong territorial position');
+    if (reasons.length === 0) reasons.push('Best available move by search');
+
+    hintContent.innerHTML = `
+      <div style="font-size:14px;color:var(--accent);margin-bottom:8px">▶ Suggested: <strong>${moveName}</strong></div>
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px">Reason${reasons.length>1?'s':''}</div>
+      ${reasons.map(r => `<div style="padding:3px 0;border-bottom:1px solid var(--ui-border)">• ${r}</div>`).join('')}
+    `;
+    drawBoard();
+    // Clear hint after 8 seconds
+    setTimeout(() => { G.hintMove = -1; drawBoard(); }, 8000);
+  }, 100);
+}
+
+function showAIMoveExplanation(move, color, captures) {
+  const hintBox = document.getElementById('ai-hint-box');
+  const hintText = document.getElementById('ai-hint-text');
+  if (!hintBox) return;
+
+  const [r, c] = pos(move, N);
+  const letters = 'ABCDEFGHJKLMNOPQRST';
+  const moveName = letters[c] + (N - r);
+  const colorName = color === 1 ? 'Black' : 'White';
+  const reasons = [];
+
+  if (captures > 0) reasons.push(`Captures ${captures} stone${captures>1?'s':''}`);
+
+  // Check atari on opponent
+  const opp = 3 - color;
+  for (const nb of getNeighbors(move, N)) {
+    if (G.board[nb] === opp) {
+      const { liberties } = getGroup(G.board, nb, N);
+      if (liberties.size === 1) { reasons.push('Puts opponent in atari'); break; }
+    }
+  }
+  // Own group rescue
+  for (const nb of getNeighbors(move, N)) {
+    if (G.board[nb] === color) {
+      const before = getGroup(G.board, nb, N).liberties.size;
+      if (before <= 2) { reasons.push('Saves own group'); break; }
+    }
+  }
+  const minEdge = Math.min(r, c, N-1-r, N-1-c);
+  if (minEdge >= 3 && captures === 0) reasons.push('Builds territory');
+  if (minEdge === 3) reasons.push('Fourth line — framework');
+  if (minEdge === 2) reasons.push('Third line — territory');
+  if (reasons.length === 0) reasons.push('Best move by search');
+
+  hintText.innerHTML = `<strong>${colorName} plays ${moveName}</strong> — ${reasons.join(' · ')}`;
+  hintBox.style.display = 'block';
+  clearTimeout(hintBox._timer);
+  hintBox._timer = setTimeout(() => { hintBox.style.display = 'none'; }, 5000);
+}
+
+// Draw hint highlight on board
+function drawHintHighlight() {
+  if (G.hintMove < 0) return;
+  const [r, c] = pos(G.hintMove, N);
+  const x = boardOffsetX + c * CELL;
+  const y = boardOffsetY + r * CELL;
+  const R = CELL * 0.47;
+  ctx.save();
+  ctx.globalAlpha = 0.6;
+  const grad = ctx.createRadialGradient(x, y, 0, x, y, R*1.4);
+  grad.addColorStop(0, 'rgba(100,200,255,0.8)');
+  grad.addColorStop(1, 'rgba(100,200,255,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x, y, R*1.4, 0, Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = 'rgba(100,200,255,0.9)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.arc(x, y, R, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// ============================================================
+//  DEAD STONE MARKING
+// ============================================================
+let deadStoneModeActive = false;
+
+function toggleDeadStoneMode() {
+  if (!G.gameOver) {
+    notify('Mark dead stones after both players pass');
+    return;
+  }
+  deadStoneModeActive = !deadStoneModeActive;
+  G.deadStoneMode = deadStoneModeActive;
+  const btn = document.getElementById('dead-mode-btn');
+  const banner = document.getElementById('dead-mode-banner');
+  btn.classList.toggle('primary', deadStoneModeActive);
+  banner.style.display = deadStoneModeActive ? 'block' : 'none';
+  drawBoard();
+}
+
+function handleDeadStoneClick(i) {
+  if (!deadStoneModeActive || G.board[i] === 0) return;
+  // Toggle group as dead
+  const { stones } = getGroup(G.board, i, N);
+  const allDead = stones.every(s => G.deadStones.has(s));
+  for (const s of stones) {
+    if (allDead) G.deadStones.delete(s);
+    else G.deadStones.add(s);
+  }
+  drawBoard();
+}
+
+function confirmDeadStones() {
+  // Remove dead stones and score
+  for (const s of G.deadStones) {
+    const c = G.board[s];
+    if (c === 1) G.prisoners[1]++;  // white captures black dead stones
+    else if (c === 2) G.prisoners[0]++;
+    G.board[s] = 0;
+  }
+  G.deadStones.clear();
+  deadStoneModeActive = false;
+  G.deadStoneMode = false;
+  document.getElementById('dead-mode-banner').style.display = 'none';
+  document.getElementById('dead-mode-btn').classList.remove('primary');
+  endGame();
+}
+
+function drawDeadStoneMarkers() {
+  if (G.deadStones.size === 0) return;
+  ctx.save();
+  for (const s of G.deadStones) {
+    const [r, c] = pos(s, N);
+    const x = boardOffsetX + c * CELL;
+    const y = boardOffsetY + r * CELL;
+    // Red X
+    ctx.strokeStyle = 'rgba(255,40,40,0.95)';
+    ctx.lineWidth = Math.max(2, CELL*0.1);
+    ctx.lineCap = 'round';
+    const d = CELL * 0.28;
+    ctx.beginPath(); ctx.moveTo(x-d, y-d); ctx.lineTo(x+d, y+d); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+d, y-d); ctx.lineTo(x-d, y+d); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ============================================================
+//  SGF EXPORT
+// ============================================================
+function exportSGF() {
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  let sgf = `(;GM[1]FF[4]CA[UTF-8]AP[GoMasterPro]SZ[${N}]KM[${SETUP.komi}]`;
+  if (SETUP.mode === 'pve') {
+    const botNames = ['','Wanderer','Apprentice','Master','Grandmaster'];
+    if (SETUP.color === 'black') {
+      sgf += `PB[Player]PW[${botNames[SETUP.diff]} AI]`;
+    } else {
+      sgf += `PB[${botNames[SETUP.diff]} AI]PW[Player]`;
+    }
+  } else {
+    sgf += 'PB[Black]PW[White]';
+  }
+  sgf += '\n';
+  // Handicap
+  if (SETUP.handicap >= 2) {
+    const hpos = (HANDICAP_POSITIONS[N] || HANDICAP_POSITIONS[19])[Math.min(SETUP.handicap,9)] || [];
+    if (hpos.length > 0) {
+      sgf += ';AB' + hpos.map(([r,c]) => `[${letters[c]}${letters[r]}]`).join('');
+    }
+  }
+  // Moves
+  for (const entry of G.moveLog) {
+    const colorChar = entry.color === 1 ? 'B' : 'W';
+    if (entry.move < 0) {
+      sgf += `;${colorChar}[]`;
+    } else {
+      const [r, c] = pos(entry.move, N);
+      sgf += `;${colorChar}[${letters[c]}${letters[r]}]`;
+    }
+  }
+  sgf += ')';
+
+  // Download
+  const blob = new Blob([sgf], { type: 'application/x-go-sgf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `go_game_${new Date().toISOString().slice(0,10)}.sgf`;
+  a.click();
+  URL.revokeObjectURL(url);
+  notify('SGF exported!');
+}
+
+// ============================================================
+//  SGF IMPORT
+// ============================================================
+function loadSGFFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      parseSGF(e.target.result);
+    } catch(err) {
+      notify('SGF parse error: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseSGF(text) {
+  // Simple SGF parser
+  const sizeMatch = text.match(/SZ\[(\d+)\]/);
+  const komiMatch = text.match(/KM\[([\d.]+)\]/);
+  const sz = sizeMatch ? parseInt(sizeMatch[1]) : 19;
+  const km = komiMatch ? parseFloat(komiMatch[1]) : 6.5;
+
+  SETUP.size = sz;
+  SETUP.komi = km;
+  SETUP.mode = 'pvp';
+  N = sz;
+  G = initGameState(sz);
+  G.undoStack = [];
+
+  // Extract moves: ;B[xy] ;W[xy]
+  const moveRe = /;([BW])\[([a-s]*)\]/g;
+  let match;
+  const letters = 'abcdefghijklmnopqrst';
+  const reviewMoves = [];
+  while ((match = moveRe.exec(text)) !== null) {
+    const color = match[1] === 'B' ? 1 : 2;
+    const coord = match[2];
+    if (coord === '') {
+      reviewMoves.push({ color, move: -1, pass: true });
+    } else {
+      const c = letters.indexOf(coord[0]);
+      const r = letters.indexOf(coord[1]);
+      if (c >= 0 && r >= 0 && c < sz && r < sz) {
+        reviewMoves.push({ color, move: idx(r, c, sz), pass: false });
+      }
+    }
+  }
+
+  // Build move log by playing through
+  G.moveLog = [];
+  let tmpBoard = Array(sz*sz).fill(0);
+  let tmpTurn = 1;
+  const moveLetters = 'ABCDEFGHJKLMNOPQRST';
+
+  for (const entry of reviewMoves) {
+    if (entry.pass) {
+      G.moveLog.push({ color: entry.color, name: 'PASS', move: -1, captured: 0 });
+      G.fullMoveRecord.push({ board: [...tmpBoard], move: -1, color: entry.color, prisoners: [0,0] });
+    } else {
+      const result = tryPlace(tmpBoard, entry.move, entry.color, sz, -1);
+      if (result) {
+        tmpBoard = result.board;
+        const [r2,c2] = pos(entry.move, sz);
+        G.moveLog.push({ color: entry.color, name: moveLetters[c2]+(sz-r2), move: entry.move, captured: result.captured.length });
+        G.fullMoveRecord.push({ board: [...tmpBoard], move: entry.move, color: entry.color, prisoners: [0,0] });
+      }
+    }
+    tmpTurn = 3 - tmpTurn;
+  }
+
+  // Show game setup and switch to review
+  document.getElementById('setup-modal').classList.remove('visible');
+  document.getElementById('app').classList.add('visible');
+  changeTheme(SETUP.theme || 'classic');
+  setupCanvas();
+  setupBoardInteraction();
+  document.getElementById('info-mode').textContent = 'SGF Review';
+  document.getElementById('info-size').textContent = `${sz}×${sz}`;
+  document.getElementById('info-komi').textContent = km;
+  G.board = Array(sz*sz).fill(0);
+  updateUI();
+  drawBoard();
+  notify(`Loaded SGF: ${reviewMoves.length} moves`);
+  setTimeout(() => startReview(), 300);
+}
+
+// ============================================================
+//  GAME REVIEW (REPLAY)
+// ============================================================
+let reviewActive = false;
+let reviewCursor = 0;
+let autoplayInterval = null;
+
+function startReview() {
+  if (G.fullMoveRecord.length === 0 && G.moveLog.length === 0) {
+    notify('No moves to review');
+    return;
+  }
+  reviewActive = true;
+  reviewCursor = 0;
+  document.getElementById('win-modal').classList.remove('visible');
+  document.getElementById('main-action-bar').style.display = 'none';
+  document.getElementById('review-bar').style.display = 'flex';
+  document.getElementById('dead-mode-banner').style.display = 'none';
+  // Show empty board
+  G.board = Array(N*N).fill(0);
+  // Place handicap if any
+  if (SETUP.handicap >= 2) placeHandicapStones(SETUP.handicap);
+  G.lastMove = -1;
+  updateReviewLabel();
+  drawBoard();
+  notify('Review mode — use arrows to step through moves');
+}
+
+function exitReview() {
+  reviewActive = false;
+  clearInterval(autoplayInterval);
+  autoplayInterval = null;
+  document.getElementById('main-action-bar').style.display = 'flex';
+  document.getElementById('review-bar').style.display = 'none';
+  document.getElementById('autoplay-btn').textContent = '▶ Auto';
+}
+
+function reviewGoto(n) {
+  if (!reviewActive) return;
+  const total = G.fullMoveRecord.length;
+  reviewCursor = Math.max(0, Math.min(n === Infinity ? total : n, total));
+  applyReviewPosition();
+}
+
+function reviewStep(delta) {
+  reviewGoto(reviewCursor + delta);
+}
+
+function applyReviewPosition() {
+  if (reviewCursor === 0) {
+    G.board = Array(N*N).fill(0);
+    if (SETUP.handicap >= 2) placeHandicapStones(SETUP.handicap);
+    G.lastMove = -1;
+  } else {
+    const rec = G.fullMoveRecord[reviewCursor - 1];
+    G.board = [...rec.board];
+    G.lastMove = rec.move;
+  }
+  updateReviewLabel();
+  drawBoard();
+  // Show move info
+  if (reviewCursor > 0) {
+    const entry = G.moveLog[reviewCursor - 1];
+    if (entry) {
+      const colorName = entry.color === 1 ? 'Black' : 'White';
+      const detail = entry.captured > 0 ? ` (captures ${entry.captured})` : '';
+      document.getElementById('turn-name').textContent = `${colorName}: ${entry.name}${detail}`;
+    }
+  }
+}
+
+function updateReviewLabel() {
+  const total = G.fullMoveRecord.length;
+  document.getElementById('review-label').textContent = `${reviewCursor} / ${total}`;
+}
+
+function toggleAutoplay() {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+    document.getElementById('autoplay-btn').textContent = '▶ Auto';
+  } else {
+    document.getElementById('autoplay-btn').textContent = '⏸ Stop';
+    autoplayInterval = setInterval(() => {
+      if (reviewCursor >= G.fullMoveRecord.length) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+        document.getElementById('autoplay-btn').textContent = '▶ Auto';
+        return;
+      }
+      reviewStep(1);
+    }, 800);
+  }
 }
 
 // ============================================================
@@ -2611,6 +4152,18 @@ window.addEventListener('resize', () => {
     setupBoardInteraction();
     drawBoard();
   }
+});
+
+// Close rules modal on Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    hideRules();
+  }
+});
+
+// Click outside the rules container to close
+document.getElementById('rules-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('rules-modal')) hideRules();
 });
 
 // Show splash animation
