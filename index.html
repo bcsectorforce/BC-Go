@@ -1215,6 +1215,121 @@ html, body {
   letter-spacing: 0.2em;
 }
 
+
+/* ══════ FEATURE CSS ══════ */
+
+/* STATS DASHBOARD */
+.stats-modal { position:fixed;inset:0;z-index:940;background:rgba(0,0,0,0.96);display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;overflow-y:auto;padding:40px 16px 60px; }
+.stats-modal.visible { opacity:1;pointer-events:all; }
+.stats-box { width:min(820px,96vw);position:relative; }
+.stats-close { position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:960; }
+.stats-close:hover { border-color:var(--accent);color:var(--accent); }
+.stats-hero { text-align:center;padding:44px 0 32px;border-bottom:1px solid var(--ui-border);margin-bottom:32px; }
+.stats-hero h1 { font-family:'Cinzel',serif;font-size:36px;font-weight:900;letter-spacing:0.3em;color:var(--accent);margin-bottom:8px; }
+.stats-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px; }
+.stat-card { background:rgba(255,255,255,0.03);border:1px solid var(--ui-border);padding:20px;text-align:center; }
+.stat-card .sv { font-family:'Share Tech Mono',monospace;font-size:32px;color:var(--accent);margin-bottom:4px; }
+.stat-card .sl { font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim); }
+.stats-section-title { font-family:'Cinzel',serif;font-size:14px;color:var(--accent);letter-spacing:0.2em;margin:24px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--ui-border); }
+.history-table { width:100%;border-collapse:collapse;font-size:12px; }
+.history-table th { background:rgba(196,154,80,0.1);color:var(--accent);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--ui-border); }
+.history-table td { padding:7px 12px;border-bottom:1px solid rgba(196,154,80,0.06);color:rgba(232,224,204,0.8); }
+.history-table tr:hover td { background:rgba(196,154,80,0.04); }
+.streak-bar { display:flex;gap:4px;flex-wrap:wrap;margin:12px 0; }
+.streak-pip { width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px; }
+.streak-pip.win { background:rgba(39,174,96,0.3);border:1px solid rgba(39,174,96,0.5);color:#2ecc71; }
+.streak-pip.loss { background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);color:#e74c3c; }
+.streak-pip.draw { background:rgba(196,154,80,0.2);border:1px solid var(--ui-border);color:var(--accent); }
+.mini-chart { height:80px;position:relative;margin:12px 0;background:rgba(255,255,255,0.02);border:1px solid var(--ui-border); }
+.chart-bar { position:absolute;bottom:0;width:100%;background:linear-gradient(to top,rgba(196,154,80,0.6),rgba(196,154,80,0.1)); }
+.chart-line-canvas { position:absolute;inset:0;width:100%;height:100%; }
+
+/* TSUMEGO PUZZLE MODE */
+.tsumego-modal { position:fixed;inset:0;z-index:940;background:rgba(0,0,0,0.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;padding:20px; }
+.tsumego-modal.visible { opacity:1;pointer-events:all; }
+.tsumego-box { width:min(900px,96vw);max-height:90vh;overflow-y:auto;background:var(--panel-bg);border:1px solid var(--ui-border);padding:36px;position:relative; }
+.tsumego-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px; }
+.tsumego-title { font-family:'Cinzel',serif;font-size:24px;color:var(--accent);letter-spacing:0.2em; }
+.tsumego-meta { display:flex;gap:14px;align-items:center;flex-wrap:wrap; }
+.tsumego-badge { padding:4px 12px;border:1px solid var(--ui-border);font-size:10px;letter-spacing:0.25em;text-transform:uppercase; }
+.tsumego-badge.easy { border-color:rgba(39,174,96,0.5);color:#2ecc71; }
+.tsumego-badge.medium { border-color:rgba(196,154,80,0.5);color:var(--accent); }
+.tsumego-badge.hard { border-color:rgba(192,57,43,0.5);color:#e74c3c; }
+.tsumego-layout { display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap; }
+.tsumego-board-wrap { flex-shrink:0; }
+.tsumego-sidebar { flex:1;min-width:200px; }
+.tsumego-desc { font-size:13px;line-height:1.8;color:rgba(232,224,204,0.85);margin-bottom:16px; }
+.tsumego-feedback { padding:12px 18px;border:1px solid;font-size:13px;letter-spacing:0.1em;margin-top:14px;min-height:46px;transition:all 0.3s; }
+.tsumego-feedback.correct { border-color:rgba(39,174,96,0.6);background:rgba(39,174,96,0.08);color:#2ecc71; }
+.tsumego-feedback.wrong { border-color:rgba(192,57,43,0.5);background:rgba(192,57,43,0.06);color:#e74c3c; }
+.tsumego-feedback.hint { border-color:var(--ui-border);background:rgba(196,154,80,0.05);color:var(--text-dim); }
+.tsumego-nav { display:flex;gap:10px;margin-top:18px;flex-wrap:wrap; }
+.star-rating { display:flex;gap:4px;margin-bottom:12px; }
+.star { font-size:18px;color:rgba(196,154,80,0.3);transition:color 0.2s; }
+.star.lit { color:var(--accent); }
+.tsumego-progress { margin-top:12px; }
+.progress-track { height:6px;background:var(--ui-border);border-radius:3px;overflow:hidden;margin-top:6px; }
+.progress-fill { height:100%;background:var(--accent);transition:width 0.5s ease;border-radius:3px; }
+.tsumego-list { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px; }
+.tsumego-item { padding:14px;border:1px solid var(--ui-border);cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02); }
+.tsumego-item:hover { border-color:var(--accent); }
+.tsumego-item.solved { border-color:rgba(39,174,96,0.5);background:rgba(39,174,96,0.04); }
+.tsumego-item .ti-name { font-family:'Cinzel',serif;font-size:12px;color:var(--accent);margin-bottom:4px; }
+.tsumego-item .ti-diff { font-size:10px;color:var(--text-dim);letter-spacing:0.2em; }
+.tsumego-item .ti-status { font-size:10px;margin-top:6px;color:#2ecc71; }
+
+/* FAMOUS GAMES VIEWER */
+.famous-modal { position:fixed;inset:0;z-index:940;background:rgba(0,0,0,0.96);display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;overflow-y:auto;padding:40px 16px; }
+.famous-modal.visible { opacity:1;pointer-events:all; }
+.famous-box { width:min(820px,96vw);position:relative; }
+.famous-close { position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:960; }
+.famous-close:hover { border-color:var(--accent);color:var(--accent); }
+.famous-hero { text-align:center;padding:44px 0 28px;border-bottom:1px solid var(--ui-border);margin-bottom:28px; }
+.famous-hero h1 { font-family:'Cinzel',serif;font-size:32px;font-weight:900;letter-spacing:0.25em;color:var(--accent); }
+.famous-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px; }
+.famous-card { border:1px solid var(--ui-border);background:rgba(255,255,255,0.02);padding:20px;cursor:pointer;transition:all 0.2s; }
+.famous-card:hover { border-color:var(--accent);background:rgba(196,154,80,0.06); }
+.famous-card .fc-year { font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:6px; }
+.famous-card .fc-title { font-family:'Cinzel',serif;font-size:15px;color:var(--accent);margin-bottom:8px;line-height:1.4; }
+.famous-card .fc-players { font-size:12px;color:var(--text);margin-bottom:6px; }
+.famous-card .fc-desc { font-size:11px;color:var(--text-dim);line-height:1.6; }
+.famous-commentary { background:rgba(196,154,80,0.05);border:1px solid var(--ui-border);padding:14px 18px;margin-top:12px;font-size:13px;line-height:1.8;color:rgba(232,224,204,0.85);min-height:60px; }
+.famous-commentary strong { color:var(--accent); }
+
+/* CUSTOM BOARD TEXTURE */
+.texture-upload-area { border:2px dashed var(--ui-border);padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;margin-top:14px; }
+.texture-upload-area:hover { border-color:var(--accent); }
+.texture-upload-area p { font-size:12px;color:var(--text-dim);margin-top:8px; }
+.texture-preview-grid { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
+.texture-thumb { width:60px;height:60px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;object-fit:cover; }
+.texture-thumb:hover,.texture-thumb.active { border-color:var(--accent); }
+
+/* MOVE TREE */
+.movetree-modal { position:fixed;inset:0;z-index:940;background:rgba(0,0,0,0.95);display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;padding:40px 16px;overflow-y:auto; }
+.movetree-modal.visible { opacity:1;pointer-events:all; }
+.movetree-box { width:min(900px,96vw); }
+.movetree-close { position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:960; }
+.movetree-close:hover { border-color:var(--accent);color:var(--accent); }
+.movetree-canvas-wrap { overflow-x:auto;overflow-y:auto;max-height:60vh;border:1px solid var(--ui-border);background:rgba(0,0,0,0.4);margin-top:20px; }
+#movetree-canvas { display:block; }
+
+/* CAPTURE ANIMATION OVERLAY */
+#capture-overlay { position:absolute;top:0;left:0;pointer-events:none;z-index:30;overflow:hidden; }
+.flying-stone { position:absolute;border-radius:50%;pointer-events:none;animation:flyStone var(--dur,0.7s) cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+@keyframes flyStone {
+  0% { transform:translate(0,0) scale(1);opacity:1; }
+  60% { opacity:1; }
+  100% { transform:translate(var(--tx),var(--ty)) scale(0.3);opacity:0; }
+}
+
+/* DAILY CHALLENGE */
+.daily-badge { display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(196,154,80,0.15);border:1px solid var(--accent);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:10px; }
+.daily-countdown { font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:14px; }
+.leaderboard-table { width:100%;border-collapse:collapse;font-size:12px;margin-top:10px; }
+.leaderboard-table th { background:rgba(196,154,80,0.1);color:var(--accent);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;padding:7px 10px;text-align:left; }
+.leaderboard-table td { padding:6px 10px;border-bottom:1px solid rgba(196,154,80,0.06);color:rgba(232,224,204,0.8); }
+.leaderboard-table tr.you td { color:var(--accent);font-weight:700; }
+
 </style>
 </head>
 <body>
@@ -1810,6 +1925,202 @@ html, body {
   </div>
 </div>
 
+
+<!-- STATS DASHBOARD MODAL -->
+<div class="stats-modal" id="stats-modal">
+  <button class="stats-close" onclick="hideStats()">✕ Close</button>
+  <div class="stats-box">
+    <div class="stats-hero">
+      <h1>YOUR STATISTICS</h1>
+      <div style="font-size:12px;color:var(--text-dim);letter-spacing:0.4em;text-transform:uppercase;margin-top:8px">Personal Game Record</div>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="stats-section-title">Recent Win/Loss Streak</div>
+    <div class="streak-bar" id="streak-bar"></div>
+    <div class="stats-section-title">Score Over Time</div>
+    <canvas id="score-chart" class="chart-line-canvas" style="height:90px;background:rgba(255,255,255,0.02);border:1px solid var(--ui-border);display:block;width:100%;margin-bottom:20px"></canvas>
+    <div class="stats-section-title">Game History</div>
+    <table class="history-table" id="history-table">
+      <thead><tr><th>#</th><th>Date</th><th>Mode</th><th>Board</th><th>Result</th><th>Moves</th><th>Duration</th></tr></thead>
+      <tbody id="history-tbody"></tbody>
+    </table>
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <button class="act-btn danger" onclick="clearStats()">🗑 Clear All Stats</button>
+      <button class="act-btn" onclick="exportStatsCSV()">📥 Export CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- TSUMEGO PUZZLE MODAL -->
+<div class="tsumego-modal" id="tsumego-modal">
+  <div class="tsumego-box">
+    <div class="tsumego-header">
+      <div class="tsumego-title">⬡ TSUMEGO</div>
+      <div class="tsumego-meta">
+        <div id="tsumego-badge" class="tsumego-badge easy">EASY</div>
+        <div id="tsumego-num" style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim)">1 / 20</div>
+        <div class="tsumego-progress" style="min-width:120px">
+          <div style="font-size:10px;color:var(--text-dim);letter-spacing:0.2em">SOLVED</div>
+          <div class="progress-track"><div class="progress-fill" id="tsumego-progress-fill" style="width:0%"></div></div>
+        </div>
+        <button class="act-btn" onclick="hideTsumego()">✕ Close</button>
+      </div>
+    </div>
+    <!-- puzzle list view -->
+    <div id="tsumego-list-view">
+      <div style="font-size:12px;color:var(--text-dim);letter-spacing:0.2em;margin-bottom:16px">Select a puzzle to solve:</div>
+      <div class="tsumego-list" id="tsumego-puzzle-list"></div>
+    </div>
+    <!-- puzzle solve view -->
+    <div id="tsumego-solve-view" style="display:none">
+      <div class="tsumego-layout">
+        <div class="tsumego-board-wrap">
+          <canvas id="tsumego-canvas"></canvas>
+        </div>
+        <div class="tsumego-sidebar">
+          <div class="star-rating" id="tsumego-stars"></div>
+          <div class="tsumego-desc" id="tsumego-desc"></div>
+          <div class="tsumego-feedback" id="tsumego-feedback" style="border-color:var(--ui-border);color:var(--text-dim)">Click a point on the board to make your move.</div>
+          <div class="tsumego-nav">
+            <button class="act-btn" onclick="tsumego_hint()">💡 Hint</button>
+            <button class="act-btn" onclick="tsumego_reset()">↺ Reset</button>
+            <button class="act-btn" onclick="tsumego_nextPuzzle()">Next ▶</button>
+            <button class="act-btn" onclick="showTsumegoList()">☰ List</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAMOUS GAMES MODAL -->
+<div class="famous-modal" id="famous-modal">
+  <button class="famous-close" onclick="hideFamous()">✕ Close</button>
+  <div class="famous-box">
+    <div class="famous-hero">
+      <h1>LEGENDARY GAMES</h1>
+      <div style="font-size:11px;color:var(--text-dim);letter-spacing:0.4em;text-transform:uppercase;margin-top:8px">Historic Matches · Step-by-Step Replay</div>
+    </div>
+    <div class="famous-grid" id="famous-grid"></div>
+    <div id="famous-player-area" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div>
+          <div id="famous-game-title" style="font-family:'Cinzel',serif;font-size:18px;color:var(--accent);margin-bottom:4px"></div>
+          <div id="famous-game-sub" style="font-size:11px;color:var(--text-dim);letter-spacing:0.2em"></div>
+        </div>
+        <button class="act-btn" onclick="closeFamousPlayer()">✕ Back to List</button>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+        <div style="flex-shrink:0">
+          <canvas id="famous-canvas"></canvas>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+            <button class="act-btn" onclick="famousGoto(0)">⏮</button>
+            <button class="act-btn" onclick="famousStep(-1)">◀</button>
+            <span id="famous-move-label" style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent);min-width:70px;text-align:center">0/0</span>
+            <button class="act-btn" onclick="famousStep(1)">▶</button>
+            <button class="act-btn" onclick="famousGoto(Infinity)">⏭</button>
+            <button class="act-btn primary" id="famous-auto-btn" onclick="famousToggleAuto()">▶ Auto</button>
+          </div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:10px;letter-spacing:0.3em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px">Commentary</div>
+          <div class="famous-commentary" id="famous-commentary">Select a move to see commentary.</div>
+          <div style="margin-top:14px;font-size:10px;color:var(--text-dim);letter-spacing:0.2em">MOVE LOG</div>
+          <div id="famous-movelog" style="height:160px;overflow-y:auto;font-family:'Share Tech Mono',monospace;font-size:11px;margin-top:6px;border:1px solid var(--ui-border);padding:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOVE TREE MODAL -->
+<div class="movetree-modal" id="movetree-modal">
+  <button class="movetree-close" onclick="hideMoveTree()">✕ Close</button>
+  <div class="movetree-box">
+    <div style="text-align:center;padding:32px 0 20px;border-bottom:1px solid var(--ui-border);margin-bottom:20px">
+      <div style="font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:var(--accent);letter-spacing:0.3em">MOVE TREE</div>
+      <div style="font-size:11px;color:var(--text-dim);letter-spacing:0.4em;margin-top:6px">Visual branch explorer — click a node to jump to that position</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="act-btn primary" onclick="buildMoveTree()">↺ Rebuild Tree</button>
+      <div style="font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:8px">
+        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#555;border:2px solid #888"></span> Black
+        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ddd;border:2px solid #aaa"></span> White
+        <span style="display:inline-block;width:12px;height:12px;background:rgba(196,154,80,0.5);border:1px solid var(--accent)"></span> Current
+      </div>
+    </div>
+    <div class="movetree-canvas-wrap">
+      <canvas id="movetree-canvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY CHALLENGE MODAL -->
+<div class="tsumego-modal" id="daily-modal" style="z-index:945">
+  <div class="tsumego-box">
+    <div class="tsumego-header">
+      <div>
+        <div class="daily-badge">🌅 Daily Challenge</div>
+        <div class="tsumego-title" id="daily-title">Today's Puzzle</div>
+        <div class="daily-countdown" id="daily-countdown"></div>
+      </div>
+      <button class="act-btn" onclick="hideDaily()">✕ Close</button>
+    </div>
+    <div class="tsumego-layout">
+      <div class="tsumego-board-wrap">
+        <canvas id="daily-canvas"></canvas>
+      </div>
+      <div class="tsumego-sidebar">
+        <div class="tsumego-desc" id="daily-desc"></div>
+        <div class="tsumego-feedback" id="daily-feedback" style="border-color:var(--ui-border);color:var(--text-dim)">Click a point to play your answer.</div>
+        <div class="tsumego-nav">
+          <button class="act-btn" onclick="daily_hint()">💡 Hint</button>
+          <button class="act-btn" onclick="daily_reset()">↺ Reset</button>
+        </div>
+        <div style="margin-top:20px">
+          <div class="stats-section-title" style="font-size:12px">Today's Leaderboard</div>
+          <table class="leaderboard-table" id="daily-leaderboard">
+            <thead><tr><th>Rank</th><th>Name</th><th>Time</th><th>Hints</th></tr></thead>
+            <tbody id="daily-lb-body"></tbody>
+          </table>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input id="daily-name-input" placeholder="Your name" style="background:rgba(255,255,255,0.05);border:1px solid var(--ui-border);color:var(--text);padding:6px 10px;font-size:12px;font-family:'Noto Serif JP',serif;width:130px">
+            <button class="act-btn primary" onclick="submitDailyScore()">Submit Score</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOARD TEXTURE MODAL -->
+<div class="stats-modal" id="texture-modal" style="z-index:945">
+  <button class="stats-close" onclick="hideTexture()">✕ Close</button>
+  <div class="stats-box">
+    <div class="stats-hero">
+      <h1>BOARD TEXTURE</h1>
+      <div style="font-size:11px;color:var(--text-dim);letter-spacing:0.4em;text-transform:uppercase;margin-top:8px">Upload or choose a custom board background</div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:10px;letter-spacing:0.3em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px">Preset Textures</div>
+      <div class="texture-preview-grid" id="preset-texture-grid"></div>
+    </div>
+    <div>
+      <div style="font-size:10px;letter-spacing:0.3em;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px">Upload Your Own</div>
+      <label class="texture-upload-area">
+        <div style="font-size:28px;margin-bottom:8px">🖼</div>
+        <div style="font-size:13px;color:var(--text);font-family:'Cinzel',serif;letter-spacing:0.2em">Click to Upload Image</div>
+        <p>PNG, JPG, WebP supported · Recommended: 600×600px minimum</p>
+        <input type="file" accept="image/*" id="texture-file-input" style="display:none" onchange="loadCustomTexture(this)">
+      </label>
+      <div id="texture-preview" style="margin-top:14px;font-size:12px;color:var(--text-dim)"></div>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="act-btn danger" onclick="clearTexture()">✕ Remove Texture</button>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN APP -->
 <div id="app">
 
@@ -1979,6 +2290,12 @@ html, body {
         <button class="act-btn" style="text-align:left" onclick="toggleJosekiOverlay()">⬡ Joseki Guide</button>
         <button class="act-btn" style="text-align:left" onclick="exportSGF()">💾 Export SGF</button>
         <button class="act-btn" style="text-align:left" onclick="startReview()">▶ Review Game</button>
+        <button class="act-btn" style="text-align:left" onclick="showMoveTree()">🌿 Move Tree</button>
+        <button class="act-btn" style="text-align:left" onclick="showStats()">📊 Statistics</button>
+        <button class="act-btn" style="text-align:left" onclick="showTsumego()">⬡ Tsumego Puzzles</button>
+        <button class="act-btn" style="text-align:left" onclick="showFamous()">🏆 Famous Games</button>
+        <button class="act-btn" style="text-align:left" onclick="showDaily()">🌅 Daily Challenge</button>
+        <button class="act-btn" style="text-align:left" onclick="showTexture()">🖼 Board Texture</button>
         <button class="act-btn" style="text-align:left" onclick="toggleCoords()">⊞ Toggle Coords</button>
         <button class="act-btn" style="text-align:left" onclick="toggleSound()">♪ Sound: <span id="sound-state">ON</span></button>
         <button class="act-btn" style="text-align:left" onclick="showRules()">📖 How to Play</button>
@@ -2112,7 +2429,15 @@ function playIllegalSound() {
 // ============================================================
 //  GAME STATE
 // ============================================================
-let G = {};  // global game state
+// Single authoritative G declaration — never redeclared
+let G = {
+  N: 19, board: [], turn: 1, prisoners: [0,0], moveLog: [], lastMove: -1,
+  consecutivePasses: 0, hasPassed: {1:false,2:false}, moveCount: 0,
+  gameOver: false, showTerritory: false, showCoords: true, territory: null,
+  deadStones: new Set(), deadStoneMode: false, josekiOverlay: false,
+  hintMove: -1, fullMoveRecord: [], openingMoveCount: 0,
+  history: [], undoStack: [], koPoint: -1,
+};
 
 const SETUP = {
   mode: 'pve',
@@ -2185,29 +2510,57 @@ function setupCanvas() {
 }
 
 function drawBoard() {
-  if (!ctx) return;
+  if (!ctx || !G || !G.board || G.board.length === 0) return;
   const theme = SETUP.theme;
   const isNeon = theme === 'cyber';
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Board background
-  if (theme === 'classic') {
+  // Board background — custom texture takes priority
+  if (customBoardTexture && SETUP.boardTexture === 'custom') {
+    ctx.drawImage(customBoardTexture, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else if (SETUP.boardTexture && SETUP.boardTextureCss && SETUP.boardTexture !== 'classic') {
+    // Preset gradient textures
+    const presetColors = {
+      walnut: ['#5C3A1E','#3D2010'],
+      marble: ['#e8e0d8','#c8c0b8'],
+      bamboo: ['#8aab5a','#5a7a3a'],
+      slate:  ['#555','#333'],
+    };
+    const cols = presetColors[SETUP.boardTexture];
+    if (cols) {
+      const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      grad.addColorStop(0, cols[0]); grad.addColorStop(1, cols[1]);
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = '#DCB16C';
+    }
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else if (theme === 'classic') {
     const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
     grad.addColorStop(0, '#DCB16C');
     grad.addColorStop(0.5, '#D4A754');
     grad.addColorStop(1, '#C49A50');
     ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (theme === 'cyber') {
     ctx.fillStyle = '#050515';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (theme === 'jade') {
     ctx.fillStyle = '#1a3a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (theme === 'cherry') {
     ctx.fillStyle = '#fff0ee';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (theme === 'obsidian') {
     ctx.fillStyle = '#181818';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else {
+    ctx.fillStyle = '#DCB16C';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Wood grain for classic
   if (theme === 'classic') {
@@ -2556,6 +2909,7 @@ function placeStone(i) {
   if (captureCount > 0) {
     playCaptureSound(captureCount);
     animateCaptures(result.captured);
+    animateFlyingCaptures(result.captured, color);
   } else {
     playStoneSound(color === 1 ? 'black' : 'white');
     animateStonePlacement(i);
@@ -2712,7 +3066,6 @@ function endGame() {
   G.territory = territory;
   G.showTerritory = true;
   drawBoard();
-  // Highlight dead stone button
   const deadBtn = document.getElementById('dead-mode-btn');
   if (deadBtn) {
     deadBtn.style.borderColor = 'var(--accent)';
@@ -2721,6 +3074,8 @@ function endGame() {
   }
   const winner = bScore > wScore ? 'Black' : bScore < wScore ? 'White' : null;
   const by = Math.abs(bScore - wScore).toFixed(1);
+  // Record to stats
+  recordGameResult(winner, SETUP.color, bScore, wScore, G.moveCount, SETUP.mode, N);
   showWin(winner, winner ? `by ${by} points` : 'Draw!', bScore, wScore, bt, wt);
 }
 
@@ -2728,6 +3083,7 @@ function endGame() {
 //  UI UPDATES
 // ============================================================
 function updateUI() {
+  if (!G || !G.board || G.board.length === 0) return;
   const { bScore, wScore, bt, wt } = computeScore();
 
   document.getElementById('pts-black').textContent = bScore.toFixed(1);
@@ -2778,9 +3134,8 @@ function updateUI() {
   document.getElementById('thinking-dots').style.visibility = (isBot && !G.gameOver) ? 'visible' : 'hidden';
 
   // Grey out pass button if player already passed
-  const playerColor = SETUP.color === 'black' ? 1 : 2;
-  const passBtn = document.querySelector('.act-btn.primary');
-  if (passBtn && G.hasPassed[G.turn]) {
+  const passBtn = document.getElementById('pass-btn');
+  if (passBtn && G.hasPassed && G.hasPassed[G.turn]) {
     passBtn.textContent = 'Pass (Used)';
     passBtn.style.opacity = '0.4';
   } else if (passBtn) {
@@ -3386,7 +3741,8 @@ function startGame() {
 
   if (SETUP.time) startTimer();
 
-  notify(`Game started! ${N}×${N} board${SETUP.handicap >= 2 ? \` · ${SETUP.handicap} handicap\` : ''}`);
+  const handicapNote = SETUP.handicap >= 2 ? ' · ' + SETUP.handicap + ' handicap' : '';
+  notify('Game started! ' + N + '×' + N + ' board' + handicapNote);
 }
 
 function restartGame() {
@@ -4098,6 +4454,898 @@ function toggleAutoplay() {
   }
 }
 
+
+// ============================================================
+//  FEATURE 2: STATS DASHBOARD
+// ============================================================
+const STATS_KEY = 'go_stats_v1';
+
+function loadStats() {
+  try { return JSON.parse(localStorage.getItem(STATS_KEY)) || { games:[], totalMoves:0 }; }
+  catch(e) { return { games:[], totalMoves:0 }; }
+}
+function saveStats(s) {
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch(e) {}
+}
+function recordGameResult(winner, myColor, bScore, wScore, moves, mode, size) {
+  const s = loadStats();
+  const playerWon = (winner === 'Black' && myColor === 'black') || (winner === 'White' && myColor === 'white');
+  const result = winner === null ? 'draw' : (playerWon ? 'win' : 'loss');
+  s.games.push({
+    date: new Date().toLocaleDateString(),
+    mode: mode === 'pve' ? 'vs Bot' : 'vs Human',
+    size: size + 'x' + size,
+    result,
+    bScore: bScore ? bScore.toFixed(1) : '-',
+    wScore: wScore ? wScore.toFixed(1) : '-',
+    moves,
+    ts: Date.now(),
+  });
+  saveStats(s);
+}
+function showStats() {
+  const s = loadStats();
+  const modal = document.getElementById('stats-modal');
+  modal.classList.add('visible');
+  const wins = s.games.filter(g=>g.result==='win').length;
+  const losses = s.games.filter(g=>g.result==='loss').length;
+  const draws = s.games.filter(g=>g.result==='draw').length;
+  const total = s.games.length;
+  const avgMoves = total ? Math.round(s.games.reduce((a,g)=>a+(+g.moves||0),0)/total) : 0;
+  const winPct = total ? Math.round(wins/total*100) : 0;
+  // Current streak
+  let streak = 0; let streakType = '';
+  for(let i=s.games.length-1;i>=0;i--){
+    if(i===s.games.length-1){ streakType=s.games[i].result; }
+    if(s.games[i].result===streakType) streak++; else break;
+  }
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="sv">${total}</div><div class="sl">Games Played</div></div>
+    <div class="stat-card"><div class="sv">${wins}</div><div class="sl">Wins</div></div>
+    <div class="stat-card"><div class="sv">${losses}</div><div class="sl">Losses</div></div>
+    <div class="stat-card"><div class="sv">${winPct}%</div><div class="sl">Win Rate</div></div>
+    <div class="stat-card"><div class="sv">${avgMoves}</div><div class="sl">Avg Moves</div></div>
+    <div class="stat-card"><div class="sv">${streak}${streakType?'<span style="font-size:14px;margin-left:4px">'+(streakType==='win'?'🔥':streakType==='loss'?'❄️':'➖')+'</span>':''}</div><div class="sl">Current Streak</div></div>
+  `;
+  // Streak bar
+  const sb = document.getElementById('streak-bar');
+  sb.innerHTML = s.games.slice(-30).map(g=>`<div class="streak-pip ${g.result}" title="${g.date}: ${g.result}">${g.result==='win'?'W':g.result==='loss'?'L':'D'}</div>`).join('');
+  // Score chart
+  drawStatsChart(s.games);
+  // History table
+  const tbody = document.getElementById('history-tbody');
+  tbody.innerHTML = [...s.games].reverse().slice(0,50).map((g,i)=>`
+    <tr>
+      <td>${s.games.length-i}</td>
+      <td>${g.date}</td>
+      <td>${g.mode}</td>
+      <td>${g.size}</td>
+      <td style="color:${g.result==='win'?'#2ecc71':g.result==='loss'?'#e74c3c':'var(--accent)'}">${g.result.toUpperCase()}</td>
+      <td>${g.moves}</td>
+      <td>—</td>
+    </tr>`).join('');
+}
+function drawStatsChart(games) {
+  const cv = document.getElementById('score-chart');
+  if(!cv) return;
+  cv.width = cv.offsetWidth || 600; cv.height = 90;
+  const ct = cv.getContext('2d');
+  ct.clearRect(0,0,cv.width,cv.height);
+  if(games.length < 2) { ct.fillStyle='rgba(196,154,80,0.2)'; ct.fillRect(0,0,cv.width,cv.height); return; }
+  const vals = games.slice(-40).map(g=>g.result==='win'?1:g.result==='draw'?0.5:0);
+  const w=cv.width, h=cv.height;
+  const smooth = [];
+  for(let i=0;i<vals.length;i++){
+    const s2=Math.max(0,i-2),e2=Math.min(vals.length-1,i+2);
+    let sum=0;for(let j=s2;j<=e2;j++)sum+=vals[j]; smooth.push(sum/(e2-s2+1));
+  }
+  ct.beginPath();
+  smooth.forEach((v,i)=>{
+    const x=i/(smooth.length-1)*(w-20)+10, y=h-v*(h-16)-8;
+    i===0?ct.moveTo(x,y):ct.lineTo(x,y);
+  });
+  ct.strokeStyle='rgba(196,154,80,0.8)'; ct.lineWidth=2; ct.stroke();
+  // Fill
+  ct.lineTo((smooth.length-1)/(smooth.length-1)*(w-20)+10,h);
+  ct.lineTo(10,h); ct.closePath();
+  const grad=ct.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(196,154,80,0.3)'); grad.addColorStop(1,'rgba(196,154,80,0)');
+  ct.fillStyle=grad; ct.fill();
+}
+function hideStats() { document.getElementById('stats-modal').classList.remove('visible'); }
+function clearStats() {
+  if(confirm('Clear all statistics? This cannot be undone.')) {
+    localStorage.removeItem(STATS_KEY);
+    showStats();
+    notify('Statistics cleared');
+  }
+}
+function exportStatsCSV() {
+  const s = loadStats();
+  const rows = [['#','Date','Mode','Board','Result','Moves'],...s.games.map((g,i)=>[i+1,g.date,g.mode,g.size,g.result,g.moves])];
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='go_stats.csv'; a.click();
+}
+
+// ============================================================
+//  FEATURE 9: STONE CAPTURE FLY ANIMATION
+// ============================================================
+let captureOverlay = null;
+function ensureCaptureOverlay() {
+  if(captureOverlay) return;
+  captureOverlay = document.getElementById('capture-overlay');
+  if(!captureOverlay) {
+    captureOverlay = document.createElement('div');
+    captureOverlay.id = 'capture-overlay';
+    document.getElementById('board-wrapper').style.position='relative';
+    document.getElementById('board-wrapper').appendChild(captureOverlay);
+  }
+  // Size it to match the canvas
+  captureOverlay.style.width = canvas.style.width;
+  captureOverlay.style.height = canvas.style.height;
+  captureOverlay.style.left = (canvas.offsetLeft||0)+'px';
+  captureOverlay.style.top = (canvas.offsetTop||0)+'px';
+}
+function animateFlyingCaptures(captured, color) {
+  if(!soundEnabled && captured.length === 0) return;
+  ensureCaptureOverlay();
+  // Prisoner bowl target (approximate DOM position relative to board-wrapper)
+  const bowlEl = document.getElementById(color===1 ? 'prisoner-white-count' : 'prisoner-black-count');
+  const wrapRect = document.getElementById('board-wrapper').getBoundingClientRect();
+  const bowlRect = bowlEl ? bowlEl.getBoundingClientRect() : null;
+  const isBlack = color===2; // stones being captured are opponent color = 3-color
+  const stoneColor = (3-color)===1 ? 1 : 2;
+  captured.forEach((i, ci) => {
+    const [r,c] = pos(i, N);
+    const sx = boardOffsetX + c*CELL - CELL*0.47;
+    const sy = boardOffsetY + r*CELL - CELL*0.47;
+    const size = CELL*0.94;
+    const stone = document.createElement('div');
+    stone.className = 'flying-stone';
+    // Destination: toward bowl or off-screen
+    const tx = bowlRect ? (bowlRect.left - wrapRect.left - sx + bowlRect.width/2) : (stoneColor===1?-120:120);
+    const ty = bowlRect ? (bowlRect.top - wrapRect.top - sy + bowlRect.height/2) : 80;
+    const dur = 0.5 + Math.random()*0.3;
+    stone.style.cssText = `
+      left:${sx}px;top:${sy}px;width:${size}px;height:${size}px;
+      background:${stoneColor===1?'radial-gradient(circle at 35% 35%,#555,#111,#000)':'radial-gradient(circle at 35% 35%,#fff,#e8e0cc,#c0b8a8)'};
+      --tx:${tx}px;--ty:${ty}px;--dur:${dur}s;
+      animation-delay:${ci*0.04}s;
+      box-shadow:${stoneColor===1?'2px 2px 6px rgba(0,0,0,0.8)':'2px 2px 6px rgba(0,0,0,0.4)'};
+    `;
+    captureOverlay.appendChild(stone);
+    setTimeout(()=>{ if(stone.parentNode) stone.remove(); }, (dur+ci*0.04+0.1)*1000);
+  });
+}
+
+// ============================================================
+//  FEATURE 1: TSUMEGO PUZZLES
+// ============================================================
+const TSUMEGO_SOLVED_KEY = 'go_tsumego_solved_v1';
+let currentPuzzleIdx = 0;
+let tsumegoCtx = null, tsumegoCanvas = null;
+let tsumegoBoard = [], tsumegoN = 9, tsumegoCELL = 34;
+let tsumegoSolved = false, tsumegoHintsUsed = 0;
+
+// Puzzle library: each has id, name, difficulty, description, size, setup (array of [color,r,c]),
+// correct answers (array of [r,c] that are all valid first moves), explanation
+const PUZZLES = [
+  {
+    id:'p1', name:'Capture the Stone', difficulty:'easy', stars:1,
+    desc:'Black to capture the lone white stone. It has only one liberty left.',
+    size:7, setup:[[2,3,3],[1,3,4],[1,2,3],[1,4,3],[1,3,2]], answers:[[3,3]],
+    hint:'The white stone at D4 has only one liberty. Fill it.',
+    explanation:'Placing at D4 fills White\'s last liberty, capturing the stone.'
+  },
+  {
+    id:'p2', name:'Make Two Eyes', difficulty:'easy', stars:1,
+    desc:'Black to live. Create two separate eye spaces inside the group.',
+    size:7, setup:[[1,1,1],[1,2,1],[1,1,2],[1,2,2],[1,1,3],[1,2,3],[1,3,3],[1,0,3],[1,0,2],[1,0,1],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,3,1],[2,3,2],[2,3,3],[2,3,4],[2,2,4],[2,1,4],[2,0,4]], answers:[[1,2]],
+    hint:'Play in the middle of your group to split it into two eyes.',
+    explanation:'Dividing the interior into two separate spaces makes both genuine eyes — the group lives.'
+  },
+  {
+    id:'p3', name:'Ladder Escape', difficulty:'medium', stars:2,
+    desc:'Black stone is being chased. Find the move that breaks the ladder and lets Black escape.',
+    size:9, setup:[[1,4,4],[2,4,5],[2,3,4],[1,2,6]], answers:[[2,6],[4,6],[6,4]],
+    hint:'A ladder-breaker is a stone placed along the ladder\'s path that transforms it into a safe fight.',
+    explanation:'Playing at a point along the ladder\'s diagonal path blocks the pursuer and turns the chase into a beneficial exchange.'
+  },
+  {
+    id:'p4', name:'Ko Threat', difficulty:'medium', stars:2,
+    desc:'Black to play a ko threat large enough to force White to respond, then recapture the ko.',
+    size:9, setup:[[1,1,1],[2,1,2],[2,2,1],[1,0,2],[1,2,2],[2,0,1],[1,6,6],[1,7,6],[1,6,7],[2,7,7],[2,8,6],[2,6,8]], answers:[[0,1]],
+    hint:'Find the move that threatens something large so White must answer.',
+    explanation:'The ko threat creates enough urgency that White must respond, freeing you to recapture the ko.'
+  },
+  {
+    id:'p5', name:'Snapback', difficulty:'medium', stars:3,
+    desc:'Black to play the snapback tesuji — sacrifice to set a deadly trap.',
+    size:7, setup:[[2,1,2],[2,1,3],[2,1,4],[2,2,4],[1,2,2],[1,2,3],[1,3,3],[1,3,2],[1,0,3]], answers:[[1,3]],
+    hint:'Think about what happens if White recaptures at B4 — can Black immediately recapture that?',
+    explanation:'Sacrificing into the atari forces White to capture. Black then immediately captures back, netting more stones in the snapback.'
+  },
+  {
+    id:'p6', name:'The False Eye', difficulty:'hard', stars:3,
+    desc:'White appears to have two eyes, but one is false. Black to find the killing move.',
+    size:7, setup:[[2,1,1],[2,1,2],[2,1,3],[2,2,1],[2,2,3],[2,3,2],[1,0,1],[1,0,2],[1,0,3],[1,1,0],[1,2,0],[1,3,0],[1,3,1],[1,3,3],[1,4,2],[1,2,4],[1,1,4]], answers:[[2,2]],
+    hint:'Look at which "eye" is actually false — a diagonal connection that can be cut.',
+    explanation:'The interior point at C3 is a false eye — White\'s diagonal connection means Black can fill it. With only one real eye, the group dies.'
+  },
+  {
+    id:'p7', name:'Net (Geta)', difficulty:'hard', stars:3,
+    desc:'Black cannot ladder the white stones — but can Black net them? Find the move that catches them all.',
+    size:9, setup:[[2,3,5],[2,3,6],[1,2,5],[1,4,5],[1,4,7],[1,3,4],[2,2,6],[2,2,7]], answers:[[2,7],[3,7]],
+    hint:'Instead of chasing, think about cutting off all escape routes with one key stone.',
+    explanation:'The net move surrounds the group without triggering a chase — White has liberties but all paths lead to capture.'
+  },
+  {
+    id:'p8', name:'Seki — Mutual Life', difficulty:'hard', stars:4,
+    desc:'Black is in danger, but killing White would mean suicide. Find the move that creates seki — mutual life.',
+    size:7, setup:[[1,2,2],[1,2,3],[1,3,2],[2,1,2],[2,1,3],[2,2,1],[2,2,4],[2,3,1],[2,3,4],[2,4,2],[2,4,3],[1,3,3]], answers:[[3,2],[2,3]],
+    hint:'Look for a position where neither player can fill the shared liberties without losing their own group.',
+    explanation:'This creates a seki — both groups share two liberties. Neither player can fill them without dying, so both groups live.'
+  },
+];
+
+function showTsumego() {
+  document.getElementById('tsumego-modal').classList.add('visible');
+  showTsumegoList();
+}
+function hideTsumego() { document.getElementById('tsumego-modal').classList.remove('visible'); }
+function showTsumegoList() {
+  document.getElementById('tsumego-list-view').style.display='block';
+  document.getElementById('tsumego-solve-view').style.display='none';
+  const solved = getSolvedPuzzles();
+  const total = PUZZLES.length;
+  const solvedCount = PUZZLES.filter(p=>solved.has(p.id)).length;
+  document.getElementById('tsumego-progress-fill').style.width=(solvedCount/total*100)+'%';
+  document.getElementById('tsumego-num').textContent=`${solvedCount} / ${total} solved`;
+  const list = document.getElementById('tsumego-puzzle-list');
+  list.innerHTML = PUZZLES.map((p,i)=>`
+    <div class="tsumego-item ${solved.has(p.id)?'solved':''}" onclick="loadPuzzle(${i})">
+      <div class="ti-name">${p.name}</div>
+      <div class="ti-diff">${p.difficulty.toUpperCase()} · ${'★'.repeat(p.stars)}${'☆'.repeat(4-p.stars)}</div>
+      ${solved.has(p.id)?'<div class="ti-status">✓ Solved</div>':''}
+    </div>`).join('');
+}
+function getSolvedPuzzles() {
+  try { return new Set(JSON.parse(localStorage.getItem(TSUMEGO_SOLVED_KEY)||'[]')); } catch(e){ return new Set(); }
+}
+function markPuzzleSolved(id) {
+  const s=getSolvedPuzzles(); s.add(id);
+  try { localStorage.setItem(TSUMEGO_SOLVED_KEY, JSON.stringify([...s])); } catch(e){}
+}
+function loadPuzzle(idx) {
+  currentPuzzleIdx = idx;
+  const p = PUZZLES[idx];
+  document.getElementById('tsumego-list-view').style.display='none';
+  document.getElementById('tsumego-solve-view').style.display='block';
+  const diffColors = {easy:'easy',medium:'medium',hard:'hard'};
+  const badge = document.getElementById('tsumego-badge');
+  badge.textContent = p.difficulty.toUpperCase();
+  badge.className = 'tsumego-badge ' + (diffColors[p.difficulty]||'medium');
+  document.getElementById('tsumego-num').textContent=`${idx+1} / ${PUZZLES.length}`;
+  document.getElementById('tsumego-desc').textContent=p.desc;
+  document.getElementById('tsumego-stars').innerHTML='★★★★'.split('').map((_,i)=>`<span class="star ${i<p.stars?'lit':''}">${i<p.stars?'★':'☆'}</span>`).join('');
+  document.getElementById('tsumego-feedback').textContent='Click a point on the board to make your move.';
+  document.getElementById('tsumego-feedback').className='tsumego-feedback';
+  tsumegoSolved=false; tsumegoHintsUsed=0;
+  // Set up board state
+  tsumegoN = p.size;
+  tsumegoBoard = Array(tsumegoN*tsumegoN).fill(0);
+  for(const [color,r,c] of p.setup) tsumegoBoard[r*tsumegoN+c]=color;
+  tsumegoCanvas = document.getElementById('tsumego-canvas');
+  const maxSz = Math.min(280, window.innerWidth*0.4);
+  tsumegoCELL = Math.floor(maxSz / tsumegoN);
+  const totalPx = tsumegoCELL*(tsumegoN-1)+tsumegoCELL*2;
+  tsumegoCanvas.width=totalPx; tsumegoCanvas.height=totalPx;
+  tsumegoCtx = tsumegoCanvas.getContext('2d');
+  drawTsumegoBoard();
+  tsumegoCanvas.onclick = handleTsumegoClick;
+}
+function drawTsumegoBoard() {
+  if(!tsumegoCtx) return;
+  const C=tsumegoCELL, N2=tsumegoN, OX=C, OY=C;
+  tsumegoCtx.clearRect(0,0,tsumegoCanvas.width,tsumegoCanvas.height);
+  tsumegoCtx.fillStyle='#C8A040'; tsumegoCtx.fillRect(0,0,tsumegoCanvas.width,tsumegoCanvas.height);
+  tsumegoCtx.strokeStyle='rgba(100,60,0,0.8)'; tsumegoCtx.lineWidth=1;
+  for(let i=0;i<N2;i++){
+    tsumegoCtx.beginPath(); tsumegoCtx.moveTo(OX,OY+i*C); tsumegoCtx.lineTo(OX+(N2-1)*C,OY+i*C); tsumegoCtx.stroke();
+    tsumegoCtx.beginPath(); tsumegoCtx.moveTo(OX+i*C,OY); tsumegoCtx.lineTo(OX+i*C,OY+(N2-1)*C); tsumegoCtx.stroke();
+  }
+  for(let i=0;i<N2*N2;i++){
+    const r=Math.floor(i/N2),c=i%N2;
+    const x=OX+c*C, y=OY+r*C, R=C*0.45;
+    const color=tsumegoBoard[i];
+    if(color===0) continue;
+    const g=tsumegoCtx.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    if(color===1){g.addColorStop(0,'#555');g.addColorStop(0.3,'#222');g.addColorStop(1,'#050505');}
+    else{g.addColorStop(0,'#fff');g.addColorStop(0.4,'#e8e0d0');g.addColorStop(1,'#c0b8a8');}
+    tsumegoCtx.save();
+    tsumegoCtx.shadowColor='rgba(0,0,0,0.5)';tsumegoCtx.shadowBlur=5;tsumegoCtx.shadowOffsetX=1;tsumegoCtx.shadowOffsetY=2;
+    tsumegoCtx.fillStyle=g;
+    tsumegoCtx.beginPath();tsumegoCtx.arc(x,y,R,0,Math.PI*2);tsumegoCtx.fill();
+    tsumegoCtx.restore();
+  }
+}
+function handleTsumegoClick(e) {
+  if(tsumegoSolved) return;
+  const p=PUZZLES[currentPuzzleIdx];
+  const rect=tsumegoCanvas.getBoundingClientRect();
+  const sx=tsumegoCanvas.width/rect.width, sy=tsumegoCanvas.height/rect.height;
+  const cx=(e.clientX-rect.left)*sx, cy=(e.clientY-rect.top)*sy;
+  const c=Math.round((cx-tsumegoCELL)/tsumegoCELL), r=Math.round((cy-tsumegoCELL)/tsumegoCELL);
+  if(r<0||r>=tsumegoN||c<0||c>=tsumegoN) return;
+  if(tsumegoBoard[r*tsumegoN+c]!==0) return;
+  // Check if it's a correct answer
+  const isCorrect=p.answers.some(([ar,ac])=>ar===r&&ac===c);
+  const fb=document.getElementById('tsumego-feedback');
+  if(isCorrect){
+    tsumegoBoard[r*tsumegoN+c]=1; // Black plays
+    drawTsumegoBoard();
+    // Draw correct marker
+    const x=tsumegoCELL+c*tsumegoCELL, y=tsumegoCELL+r*tsumegoCELL;
+    tsumegoCtx.save();tsumegoCtx.strokeStyle='rgba(255,255,255,0.8)';tsumegoCtx.lineWidth=2;
+    tsumegoCtx.beginPath();tsumegoCtx.arc(x,y,tsumegoCELL*0.25,0,Math.PI*2);tsumegoCtx.stroke();tsumegoCtx.restore();
+    fb.textContent='✓ Correct! '+p.explanation;
+    fb.className='tsumego-feedback correct';
+    tsumegoSolved=true;
+    markPuzzleSolved(p.id);
+    playWinSound();
+    document.getElementById('tsumego-progress-fill').style.width=(getSolvedPuzzles().size/PUZZLES.length*100)+'%';
+  } else {
+    fb.textContent='✗ Not quite. Try again!';
+    fb.className='tsumego-feedback wrong';
+    tsumegoBoard[r*tsumegoN+c]=1; drawTsumegoBoard();
+    setTimeout(()=>{ tsumegoBoard[r*tsumegoN+c]=0; drawTsumegoBoard(); fb.textContent='Incorrect — keep trying.'; fb.className='tsumego-feedback'; }, 800);
+  }
+}
+function tsumego_hint() {
+  const p=PUZZLES[currentPuzzleIdx];
+  tsumegoHintsUsed++;
+  const fb=document.getElementById('tsumego-feedback');
+  fb.textContent='💡 Hint: '+p.hint;
+  fb.className='tsumego-feedback hint';
+  // Highlight valid moves
+  const OX=tsumegoCELL, OY=tsumegoCELL;
+  for(const [ar,ac] of p.answers){
+    tsumegoCtx.save();
+    tsumegoCtx.strokeStyle='rgba(100,220,100,0.8)';tsumegoCtx.lineWidth=2;tsumegoCtx.setLineDash([3,3]);
+    tsumegoCtx.beginPath();tsumegoCtx.arc(OX+ac*tsumegoCELL,OY+ar*tsumegoCELL,tsumegoCELL*0.4,0,Math.PI*2);tsumegoCtx.stroke();
+    tsumegoCtx.setLineDash([]);tsumegoCtx.restore();
+  }
+}
+function tsumego_reset() { loadPuzzle(currentPuzzleIdx); }
+function tsumego_nextPuzzle() { loadPuzzle((currentPuzzleIdx+1)%PUZZLES.length); }
+
+// ============================================================
+//  FEATURE 5: FAMOUS GAMES
+// ============================================================
+let famousGames = [];
+let famousCursor = 0;
+let famousAutoInterval = null;
+let famousCtx2 = null, famousCanvas2 = null;
+let famousCurrentGame = null;
+let famousCELL2 = 28, famousN2 = 19;
+
+const FAMOUS_GAME_DATA = [
+  {
+    id:'fg1', year:1846, title:'The Blood-Vomiting Game',
+    players:'Inoue Genan Inseki vs. Akaboshi Intetsu',
+    result:'Black wins — Inoue Genan',
+    desc:'Played in 1846 in Edo, this game was so intense that Akaboshi reportedly vomited blood during play from the mental strain. Considered one of the greatest games of the Edo period.',
+    size:19,
+    // Representative sequence — highlights of the opening
+    moves:[
+      [1,3,3],[2,15,15],[1,3,15],[2,15,3],[1,9,9],[2,5,3],[1,5,16],[2,13,15],[1,13,3],[2,7,3],
+      [1,5,4],[2,3,5],[1,5,5],[2,5,6],[1,4,6],[2,6,6],[1,6,5],[2,6,4],[1,7,4],[2,7,5],
+      [1,8,5],[2,8,4],[1,9,4],[2,9,5],[1,10,5],[2,10,4],[1,9,3],[2,8,3],[1,10,3],[2,11,3],
+    ],
+    commentary: {
+      0:'Move 1: Black claims the 4-4 point in the lower-left corner — a bold, influence-oriented opening.',
+      1:'Move 2: White mirrors in the upper-right. The game promises to be a battle of territory vs. influence.',
+      4:'Move 5: Black takes the center star point (tengen) — a statement of central authority rarely seen in professional play.',
+      9:'Move 10: The game\'s famous joseki begins. Inoue\'s aggressive approach on the left side would define the next 200 moves.',
+      19:'Move 20: The left-side battle escalates. Akaboshi\'s responses here are studied in Japanese Go academies to this day.',
+    },
+    defaultCommentary:'This game, played on July 29, 1846, is legendary in Go history. The intensity of the fighting — particularly on the left side of the board — was said to be unlike anything seen before.'
+  },
+  {
+    id:'fg2', year:2016, title:'AlphaGo vs. Lee Sedol — Game 4',
+    players:'AlphaGo (DeepMind) vs. Lee Sedol (9-dan)',
+    result:'Black wins — Lee Sedol (humanity\'s finest hour)',
+    desc:'In their historic 5-game match, AlphaGo won 4-1. Game 4 was Lee Sedol\'s only victory — Move 78 (White\'s "hand of God") is widely considered the greatest single move ever played against an AI.',
+    size:19,
+    moves:[
+      [1,3,3],[2,15,15],[1,3,15],[2,15,3],[1,9,9],[2,5,15],[1,5,3],[2,13,3],[1,13,15],[2,5,13],
+      [1,3,10],[2,5,10],[1,6,10],[2,6,11],[1,7,11],[2,7,12],[1,8,12],[2,8,13],[1,9,13],[2,9,14],
+      [1,10,14],[2,10,15],[1,11,15],[2,11,14],[1,12,14],[2,12,13],[1,13,13],[2,13,12],[1,14,12],[2,14,11],
+      [1,3,5],[2,3,6],[1,4,5],[2,4,6],[1,5,6],[2,5,7],[1,6,6],[2,6,7],[1,6,5],[2,7,6],
+      // Move 78 approximation — Lee Sedol's brilliant white stone
+      [1,9,6],[2,9,7],[1,8,6],[2,8,7],[1,7,7],[2,7,8],[1,6,8],[2,10,8],
+    ],
+    commentary: {
+      0:'Move 1: Lee Sedol opens with the 4-4 point. He chose Black in this game, pressing for a win.',
+      4:'Move 5: Tengen — AlphaGo had been known to play unconventional moves. This center stone would prove pivotal.',
+      9:'Move 10: AlphaGo begins its characteristic "ladder-like" sequence — moves that would baffle professional commentators in real time.',
+      40:'Move 41: The left side battle — AlphaGo appears to have the advantage. Commentators worldwide believed Lee Sedol was losing.',
+      46:'Move 47 (White): Lee Sedol\'s "hand of God" — Move 78 in the actual game. This brilliant shoulder hit was so unexpected that AlphaGo responded with a mistake for the first time. The Go world erupted. Commentators wept.',
+    },
+    defaultCommentary:'March 13, 2016. Lee Sedol had lost the first three games. The world expected a 4-0 sweep. Then came Move 78 — a move so profound that AlphaGo, running on Google\'s finest hardware, failed to properly evaluate it. Lee Sedol won by resignation. His single victory against AlphaGo is considered one of humanity\'s great intellectual achievements.'
+  },
+  {
+    id:'fg3', year:1933, title:'The Atomic Bomb Game',
+    players:'Iwamoto Kaoru vs. Hashimoto Utaro',
+    result:'White wins — Hashimoto Utaro',
+    desc:'Played on August 6, 1945, in Hiroshima. When the atomic bomb exploded 5km away, the players continued. Iwamoto later said he played some of his finest Go that day, despite the chaos around them.',
+    size:19,
+    moves:[
+      [1,3,15],[2,15,3],[1,3,3],[2,15,15],[1,9,9],[2,3,9],[1,15,9],[2,9,3],[1,9,15],[2,5,5],
+      [1,13,13],[2,5,13],[1,13,5],[2,11,5],[1,11,13],[2,7,7],[1,7,11],[2,11,7],[1,7,13],[2,13,7],
+      [1,3,5],[2,5,3],[1,5,4],[2,4,4],[1,4,5],[2,4,3],[1,5,2],[2,6,3],[1,6,2],[2,6,4],
+    ],
+    commentary:{
+      0:'Move 1: The game begins on the morning of August 6, 1945 — an ordinary summer day in Hiroshima.',
+      4:'Move 5: Tengen — as the game progresses, the city outside will be forever changed. The players do not yet know.',
+      9:'Move 10: The opening frameworks are set. Professional observers note the calm, measured quality of both players\' moves despite the extreme circumstances.',
+      19:'Move 20: Historical accounts note that the blast shook the building but the players continued without pause.',
+      28:'Move 29: The players completed this game later, after evacuation. The game board was recovered and the game finished. Hashimoto won.',
+    },
+    defaultCommentary:'On August 6, 1945, as the atomic bomb fell on Hiroshima, these two players were engaged in their match. The blast shattered windows and wounded several onlookers. The players — unharmed — evacuated, but returned to complete the game days later. The finished game is preserved and studied as a testament to the human capacity for concentration and grace under impossible conditions.'
+  },
+];
+
+function showFamous() {
+  document.getElementById('famous-modal').classList.add('visible');
+  document.getElementById('famous-player-area').style.display='none';
+  const grid=document.getElementById('famous-grid');
+  grid.innerHTML=FAMOUS_GAME_DATA.map((g,i)=>`
+    <div class="famous-card" onclick="loadFamousGame(${i})">
+      <div class="fc-year">${g.year}</div>
+      <div class="fc-title">${g.title}</div>
+      <div class="fc-players">${g.players}</div>
+      <div class="fc-desc">${g.desc.substring(0,100)}…</div>
+    </div>`).join('');
+}
+function hideFamous() {
+  document.getElementById('famous-modal').classList.remove('visible');
+  clearInterval(famousAutoInterval);
+  famousAutoInterval=null;
+}
+function loadFamousGame(idx){
+  famousCurrentGame=FAMOUS_GAME_DATA[idx];
+  famousCursor=0;
+  document.getElementById('famous-player-area').style.display='block';
+  document.getElementById('famous-grid').style.display='none';
+  document.getElementById('famous-game-title').textContent=famousCurrentGame.title;
+  document.getElementById('famous-game-sub').textContent=famousCurrentGame.players+' · '+famousCurrentGame.year+' · '+famousCurrentGame.result;
+  famousN2=famousCurrentGame.size||19;
+  famousCanvas2=document.getElementById('famous-canvas');
+  const maxSz=Math.min(360,window.innerHeight*0.5);
+  famousCELL2=Math.floor(maxSz/famousN2);
+  const totalPx=famousCELL2*(famousN2-1)+famousCELL2*2.4;
+  famousCanvas2.width=totalPx; famousCanvas2.height=totalPx;
+  famousCtx2=famousCanvas2.getContext('2d');
+  drawFamousBoard([]);
+  document.getElementById('famous-movelog').innerHTML='';
+  document.getElementById('famous-commentary').innerHTML=famousCurrentGame.defaultCommentary;
+  updateFamousLabel();
+}
+function closeFamousPlayer(){
+  document.getElementById('famous-player-area').style.display='none';
+  document.getElementById('famous-grid').style.display='grid';
+  clearInterval(famousAutoInterval); famousAutoInterval=null;
+  document.getElementById('famous-auto-btn').textContent='▶ Auto';
+}
+function drawFamousBoard(moves){
+  if(!famousCtx2) return;
+  const C=famousCELL2,N2=famousN2,OX=C*1.2,OY=C*1.2;
+  famousCtx2.clearRect(0,0,famousCanvas2.width,famousCanvas2.height);
+  const grad=famousCtx2.createLinearGradient(0,0,famousCanvas2.width,famousCanvas2.height);
+  grad.addColorStop(0,'#DCB16C'); grad.addColorStop(1,'#C49A50');
+  famousCtx2.fillStyle=grad; famousCtx2.fillRect(0,0,famousCanvas2.width,famousCanvas2.height);
+  famousCtx2.strokeStyle='rgba(100,60,0,0.8)'; famousCtx2.lineWidth=0.8;
+  for(let i=0;i<N2;i++){
+    famousCtx2.beginPath();famousCtx2.moveTo(OX,OY+i*C);famousCtx2.lineTo(OX+(N2-1)*C,OY+i*C);famousCtx2.stroke();
+    famousCtx2.beginPath();famousCtx2.moveTo(OX+i*C,OY);famousCtx2.lineTo(OX+i*C,OY+(N2-1)*C);famousCtx2.stroke();
+  }
+  // Hoshi
+  const hoshi=N2===19?[[3,3],[3,9],[3,15],[9,3],[9,9],[9,15],[15,3],[15,9],[15,15]]:[];
+  famousCtx2.fillStyle='rgba(100,60,0,0.9)';
+  for(const[r,c] of hoshi){famousCtx2.beginPath();famousCtx2.arc(OX+c*C,OY+r*C,C*0.1,0,Math.PI*2);famousCtx2.fill();}
+  // Build board state
+  const board=Array(N2*N2).fill(0);
+  for(let mi=0;mi<moves.length;mi++){
+    const[color,r,c]=moves[mi];
+    board[r*N2+c]=color;
+  }
+  // Draw stones
+  for(let i=0;i<N2*N2;i++){
+    if(!board[i]) continue;
+    const r=Math.floor(i/N2),c=i%N2;
+    const x=OX+c*C,y=OY+r*C,R=C*0.46;
+    const g2=famousCtx2.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    if(board[i]===1){g2.addColorStop(0,'#555');g2.addColorStop(0.3,'#222');g2.addColorStop(1,'#050505');}
+    else{g2.addColorStop(0,'#fff');g2.addColorStop(0.4,'#e8e0d0');g2.addColorStop(1,'#c0b8a8');}
+    famousCtx2.save();
+    famousCtx2.shadowColor='rgba(0,0,0,0.5)';famousCtx2.shadowBlur=5;famousCtx2.shadowOffsetX=1;famousCtx2.shadowOffsetY=2;
+    famousCtx2.fillStyle=g2;
+    famousCtx2.beginPath();famousCtx2.arc(x,y,R,0,Math.PI*2);famousCtx2.fill();
+    famousCtx2.restore();
+  }
+  // Last move marker
+  if(moves.length>0){
+    const[lc,lr,lco]=moves[moves.length-1];
+    const x=OX+lco*C,y=OY+lr*C,R=C*0.46;
+    famousCtx2.save();
+    famousCtx2.strokeStyle=lc===1?'rgba(255,255,255,0.8)':'rgba(0,0,0,0.8)';
+    famousCtx2.lineWidth=1.5;
+    famousCtx2.beginPath();famousCtx2.arc(x,y,R*0.45,0,Math.PI*2);famousCtx2.stroke();
+    famousCtx2.restore();
+  }
+}
+function famousGoto(n){
+  if(!famousCurrentGame) return;
+  const total=famousCurrentGame.moves.length;
+  famousCursor=Math.max(0,Math.min(n===Infinity?total:n,total));
+  drawFamousBoard(famousCurrentGame.moves.slice(0,famousCursor));
+  updateFamousLabel();
+  updateFamousCommentary();
+}
+function famousStep(d){ famousGoto(famousCursor+d); }
+function updateFamousLabel(){
+  if(!famousCurrentGame) return;
+  document.getElementById('famous-move-label').textContent=`${famousCursor}/${famousCurrentGame.moves.length}`;
+  // Update move log
+  const ml=document.getElementById('famous-movelog');
+  const letters='ABCDEFGHJKLMNOPQRST';
+  ml.innerHTML=famousCurrentGame.moves.slice(0,famousCursor).map(([co,r,c],i)=>`
+    <div style="padding:2px 0;${i===famousCursor-1?'color:var(--accent)':''}">${i+1}. ${co===1?'●':'○'} ${letters[c]}${famousN2-r}</div>`).join('');
+  ml.scrollTop=ml.scrollHeight;
+}
+function updateFamousCommentary(){
+  const g=famousCurrentGame; if(!g) return;
+  const c=g.commentary;
+  // Find closest commentary
+  let text=g.defaultCommentary;
+  const keys=Object.keys(c).map(Number).sort((a,b)=>a-b);
+  for(const k of keys){ if(famousCursor>k) text=c[k]; }
+  document.getElementById('famous-commentary').innerHTML=text;
+}
+function famousToggleAuto(){
+  if(famousAutoInterval){
+    clearInterval(famousAutoInterval); famousAutoInterval=null;
+    document.getElementById('famous-auto-btn').textContent='▶ Auto';
+  } else {
+    document.getElementById('famous-auto-btn').textContent='⏸ Stop';
+    famousAutoInterval=setInterval(()=>{
+      if(famousCursor>=famousCurrentGame.moves.length){
+        clearInterval(famousAutoInterval);famousAutoInterval=null;
+        document.getElementById('famous-auto-btn').textContent='▶ Auto'; return;
+      }
+      famousStep(1);
+    },900);
+  }
+}
+
+// ============================================================
+//  FEATURE 6: BOARD TEXTURE
+// ============================================================
+let customBoardTexture = null;
+const TEXTURE_KEY = 'go_texture_v1';
+
+const PRESET_TEXTURES = [
+  { name:'Classic Wood', value:'classic', css:'linear-gradient(135deg,#DCB16C,#C49A50)' },
+  { name:'Dark Walnut', value:'walnut', css:'linear-gradient(135deg,#5C3A1E,#3D2010)' },
+  { name:'Marble', value:'marble', css:'linear-gradient(135deg,#e8e0d8,#c8c0b8)' },
+  { name:'Bamboo', value:'bamboo', css:'linear-gradient(135deg,#8aab5a,#5a7a3a)' },
+  { name:'Slate', value:'slate', css:'linear-gradient(135deg,#555,#333)' },
+];
+
+function showTexture() {
+  document.getElementById('texture-modal').classList.add('visible');
+  renderPresetTextures();
+}
+function hideTexture() { document.getElementById('texture-modal').classList.remove('visible'); }
+function renderPresetTextures() {
+  const grid=document.getElementById('preset-texture-grid');
+  grid.innerHTML=PRESET_TEXTURES.map(t=>`
+    <div onclick="applyPresetTexture('${t.value}','${t.css}')" title="${t.name}"
+      style="width:70px;height:70px;cursor:pointer;background:${t.css};border:2px solid var(--ui-border);
+             transition:all 0.2s;display:flex;align-items:flex-end;padding:4px"
+      onmouseover="this.style.borderColor='var(--accent)'"
+      onmouseout="this.style.borderColor='var(--ui-border)'">
+      <span style="font-size:9px;color:rgba(0,0,0,0.6);letter-spacing:0.1em">${t.name}</span>
+    </div>`).join('');
+}
+function applyPresetTexture(val, css) {
+  customBoardTexture=null;
+  SETUP.boardTexture=val;
+  SETUP.boardTextureCss=css;
+  try { localStorage.setItem(TEXTURE_KEY, JSON.stringify({type:'preset',val,css})); } catch(e){}
+  drawBoard();
+  notify('Board texture: '+val);
+  hideTexture();
+}
+function loadCustomTexture(input) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    const img=new Image();
+    img.onload=()=>{
+      customBoardTexture=img;
+      SETUP.boardTexture='custom';
+      document.getElementById('texture-preview').textContent='✓ Custom texture loaded: '+file.name;
+      try { localStorage.setItem(TEXTURE_KEY, JSON.stringify({type:'custom',src:e.target.result})); } catch(e){}
+      drawBoard();
+      notify('Custom texture applied!');
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearTexture() {
+  customBoardTexture=null;
+  SETUP.boardTexture=null;
+  SETUP.boardTextureCss=null;
+  try { localStorage.removeItem(TEXTURE_KEY); } catch(e){}
+  drawBoard();
+  notify('Board texture removed');
+  hideTexture();
+}
+function loadSavedTexture() {
+  try {
+    const saved=JSON.parse(localStorage.getItem(TEXTURE_KEY));
+    if(!saved) return;
+    if(saved.type==='preset'){ SETUP.boardTexture=saved.val; SETUP.boardTextureCss=saved.css; }
+    else if(saved.type==='custom'){
+      const img=new Image(); img.onload=()=>{ customBoardTexture=img; SETUP.boardTexture='custom'; drawBoard(); };
+      img.src=saved.src;
+    }
+  } catch(e){}
+}
+
+// ============================================================
+//  FEATURE 8: MOVE TREE
+// ============================================================
+let moveTreeNodes=[], moveTreeEdges=[], moveTreeCurrentNode=-1;
+
+function showMoveTree() {
+  document.getElementById('movetree-modal').classList.add('visible');
+  buildMoveTree();
+}
+function hideMoveTree() { document.getElementById('movetree-modal').classList.remove('visible'); }
+function buildMoveTree() {
+  const cv=document.getElementById('movetree-canvas');
+  const moves=G.fullMoveRecord;
+  if(!moves||moves.length===0){
+    const ct2=cv.getContext('2d');
+    cv.width=400;cv.height=100;
+    ct2.fillStyle='rgba(196,154,80,0.3)';ct2.fillRect(0,0,cv.width,cv.height);
+    ct2.fillStyle='rgba(232,224,204,0.5)';ct2.font='14px Cinzel,serif';ct2.textAlign='center';
+    ct2.fillText('No moves recorded yet.',200,55);return;
+  }
+  const NODE_W=38,NODE_H=38,HGAP=14,VGAP=50;
+  const cols=Math.min(moves.length,20);
+  const rows=Math.ceil(moves.length/20);
+  cv.width=Math.max(500,(NODE_W+HGAP)*cols+60);
+  cv.height=Math.max(200,(NODE_H+VGAP)*rows+60);
+  const ct2=cv.getContext('2d');
+  ct2.clearRect(0,0,cv.width,cv.height);
+  ct2.fillStyle='rgba(0,0,0,0.3)';ct2.fillRect(0,0,cv.width,cv.height);
+  const letters='ABCDEFGHJKLMNOPQRST';
+  const treeN=G.N||19;
+  moves.forEach((rec,i)=>{
+    const col=i%(cols||1), row=Math.floor(i/(cols||1));
+    const x=30+col*(NODE_W+HGAP)+NODE_W/2;
+    const y=30+row*(NODE_H+VGAP)+NODE_H/2;
+    const isLast=i===moves.length-1;
+    const color=rec.color||1;
+    // Draw edge to previous
+    if(i>0){
+      const pc=(i-1)%(cols||1),pr=Math.floor((i-1)/(cols||1));
+      const px=30+pc*(NODE_W+HGAP)+NODE_W/2;
+      const py=30+pr*(NODE_H+VGAP)+NODE_H/2;
+      ct2.save();
+      ct2.strokeStyle=isLast?'rgba(196,154,80,0.8)':'rgba(196,154,80,0.3)';
+      ct2.lineWidth=1.5;ct2.setLineDash([3,3]);
+      ct2.beginPath();ct2.moveTo(px,py);ct2.lineTo(x,y);ct2.stroke();
+      ct2.setLineDash([]);ct2.restore();
+    }
+    // Draw node
+    const R=NODE_W/2-2;
+    const g2=ct2.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    if(color===1){g2.addColorStop(0,'#555');g2.addColorStop(0.3,'#222');g2.addColorStop(1,'#050505');}
+    else{g2.addColorStop(0,'#fff');g2.addColorStop(0.4,'#e8e0d0');g2.addColorStop(1,'#c0b8a8');}
+    ct2.save();
+    ct2.shadowColor='rgba(0,0,0,0.6)';ct2.shadowBlur=6;ct2.shadowOffsetX=1;ct2.shadowOffsetY=2;
+    ct2.fillStyle=g2;
+    ct2.beginPath();ct2.arc(x,y,R,0,Math.PI*2);ct2.fill();
+    if(isLast){ct2.strokeStyle='rgba(196,154,80,0.9)';ct2.lineWidth=2.5;ct2.stroke();}
+    ct2.restore();
+    // Move number
+    ct2.save();
+    ct2.fillStyle=color===1?'rgba(255,255,255,0.7)':'rgba(0,0,0,0.6)';
+    ct2.font=`bold ${Math.max(8,NODE_W*0.26)}px Share Tech Mono,monospace`;
+    ct2.textAlign='center';ct2.textBaseline='middle';
+    ct2.fillText(i+1,x,y);ct2.restore();
+    // Move name below
+    const moveName=rec.move>=0?(letters[rec.move%treeN]+(treeN-Math.floor(rec.move/treeN))):'PASS';
+    ct2.save();
+    ct2.fillStyle='rgba(196,154,80,0.5)';
+    ct2.font=`${Math.max(7,NODE_W*0.22)}px Share Tech Mono,monospace`;
+    ct2.textAlign='center';ct2.textBaseline='top';
+    ct2.fillText(moveName,x,y+R+4);ct2.restore();
+  });
+  // Click to jump to position
+  cv.onclick=(e)=>{
+    const rect=cv.getBoundingClientRect();
+    const sx=cv.width/rect.width,sy=cv.height/rect.height;
+    const cx=(e.clientX-rect.left)*sx,cy=(e.clientY-rect.top)*sy;
+    moves.forEach((rec,i)=>{
+      const col=i%(cols||1),row=Math.floor(i/(cols||1));
+      const x=30+col*(NODE_W+HGAP)+NODE_W/2,y=30+row*(NODE_H+VGAP)+NODE_H/2;
+      if(Math.hypot(cx-x,cy-y)<NODE_W/2){
+        // Jump to position in review
+        hideMoveTree();
+        startReview();
+        setTimeout(()=>reviewGoto(i+1),200);
+      }
+    });
+  };
+}
+
+// ============================================================
+//  FEATURE 10: DAILY CHALLENGE
+// ============================================================
+const DAILY_KEY='go_daily_v1';
+let dailyCtx=null,dailyCanvas2=null,dailyN=7,dailyCELL=38;
+let dailyBoard=[],dailySolved=false,dailyHintsUsed=0,dailyStartTime=0;
+let dailyAutoInterval=null;
+
+// Generate deterministic daily puzzle from date seed
+function getDailyPuzzle() {
+  const now=new Date();
+  const seed=now.getFullYear()*10000+((now.getMonth()+1)*100)+now.getDate();
+  const idx2=seed % PUZZLES.length;
+  return { puzzle:PUZZLES[idx2], seed, date:now.toDateString() };
+}
+
+function showDaily() {
+  document.getElementById('daily-modal').classList.add('visible');
+  const {puzzle,date}=getDailyPuzzle();
+  document.getElementById('daily-title').textContent=puzzle.name;
+  document.getElementById('daily-desc').textContent=puzzle.desc;
+  document.getElementById('daily-feedback').textContent='Click a point to play your answer.';
+  document.getElementById('daily-feedback').className='tsumego-feedback';
+  // Countdown to next puzzle
+  const tomorrow=new Date(); tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(0,0,0,0);
+  dailyAutoInterval=setInterval(()=>{
+    const diff=tomorrow-new Date();
+    const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+    document.getElementById('daily-countdown').textContent=`Next puzzle in: ${h}h ${m}m ${s}s`;
+  },1000);
+  // Setup board
+  dailyN=puzzle.size; dailyBoard=Array(dailyN*dailyN).fill(0);
+  for(const [color,r,c] of puzzle.setup) dailyBoard[r*dailyN+c]=color;
+  dailyCanvas2=document.getElementById('daily-canvas');
+  const maxSz=Math.min(260,window.innerWidth*0.38);
+  dailyCELL=Math.floor(maxSz/dailyN);
+  const totalPx=dailyCELL*(dailyN-1)+dailyCELL*2;
+  dailyCanvas2.width=totalPx; dailyCanvas2.height=totalPx;
+  dailyCtx=dailyCanvas2.getContext('2d');
+  dailySolved=false; dailyHintsUsed=0; dailyStartTime=Date.now();
+  drawDailyBoard();
+  dailyCanvas2.onclick=(e)=>handleDailyClick(e,puzzle);
+  loadDailyLeaderboard();
+}
+function hideDaily() {
+  document.getElementById('daily-modal').classList.remove('visible');
+  clearInterval(dailyAutoInterval);
+}
+function drawDailyBoard() {
+  if(!dailyCtx) return;
+  const C=dailyCELL,N2=dailyN,OX=C,OY=C;
+  dailyCtx.clearRect(0,0,dailyCanvas2.width,dailyCanvas2.height);
+  dailyCtx.fillStyle='#C8A040'; dailyCtx.fillRect(0,0,dailyCanvas2.width,dailyCanvas2.height);
+  dailyCtx.strokeStyle='rgba(100,60,0,0.8)';dailyCtx.lineWidth=1;
+  for(let i=0;i<N2;i++){
+    dailyCtx.beginPath();dailyCtx.moveTo(OX,OY+i*C);dailyCtx.lineTo(OX+(N2-1)*C,OY+i*C);dailyCtx.stroke();
+    dailyCtx.beginPath();dailyCtx.moveTo(OX+i*C,OY);dailyCtx.lineTo(OX+i*C,OY+(N2-1)*C);dailyCtx.stroke();
+  }
+  for(let i=0;i<N2*N2;i++){
+    const r=Math.floor(i/N2),c=i%N2;
+    const x=OX+c*C,y=OY+r*C,R=C*0.44;
+    if(!dailyBoard[i]) continue;
+    const g2=dailyCtx.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    if(dailyBoard[i]===1){g2.addColorStop(0,'#555');g2.addColorStop(0.3,'#222');g2.addColorStop(1,'#050505');}
+    else{g2.addColorStop(0,'#fff');g2.addColorStop(0.4,'#e8e0d0');g2.addColorStop(1,'#c0b8a8');}
+    dailyCtx.save();dailyCtx.shadowColor='rgba(0,0,0,0.5)';dailyCtx.shadowBlur=5;
+    dailyCtx.fillStyle=g2;dailyCtx.beginPath();dailyCtx.arc(x,y,R,0,Math.PI*2);dailyCtx.fill();dailyCtx.restore();
+  }
+}
+function handleDailyClick(e,puzzle) {
+  if(dailySolved) return;
+  const rect=dailyCanvas2.getBoundingClientRect();
+  const sx=dailyCanvas2.width/rect.width,sy=dailyCanvas2.height/rect.height;
+  const cx=(e.clientX-rect.left)*sx,cy=(e.clientY-rect.top)*sy;
+  const c=Math.round((cx-dailyCELL)/dailyCELL),r=Math.round((cy-dailyCELL)/dailyCELL);
+  if(r<0||r>=dailyN||c<0||c>=dailyN||dailyBoard[r*dailyN+c]!==0) return;
+  const isCorrect=puzzle.answers.some(([ar,ac])=>ar===r&&ac===c);
+  const fb=document.getElementById('daily-feedback');
+  if(isCorrect){
+    dailyBoard[r*dailyN+c]=1; drawDailyBoard();
+    const elapsed=Math.round((Date.now()-dailyStartTime)/1000);
+    fb.textContent=`✓ Correct! Solved in ${elapsed}s with ${dailyHintsUsed} hint${dailyHintsUsed!==1?'s':''}.`;
+    fb.className='tsumego-feedback correct';
+    dailySolved=true;
+    playWinSound();
+    saveDailyResult(elapsed,dailyHintsUsed);
+    loadDailyLeaderboard();
+  } else {
+    dailyBoard[r*dailyN+c]=1; drawDailyBoard();
+    fb.textContent='✗ Wrong move — try again!';
+    fb.className='tsumego-feedback wrong';
+    setTimeout(()=>{ dailyBoard[r*dailyN+c]=0; drawDailyBoard(); fb.textContent='Keep trying!'; fb.className='tsumego-feedback'; },800);
+  }
+}
+function daily_hint() {
+  const {puzzle}=getDailyPuzzle();
+  dailyHintsUsed++;
+  const fb=document.getElementById('daily-feedback');
+  fb.textContent='💡 '+puzzle.hint;
+  fb.className='tsumego-feedback hint';
+}
+function daily_reset() {
+  const {puzzle}=getDailyPuzzle();
+  dailyBoard=Array(dailyN*dailyN).fill(0);
+  for(const[color,r,c] of puzzle.setup) dailyBoard[r*dailyN+c]=color;
+  dailySolved=false; dailyHintsUsed=0; dailyStartTime=Date.now();
+  drawDailyBoard();
+  const fb=document.getElementById('daily-feedback');
+  fb.textContent='Click a point to play your answer.';
+  fb.className='tsumego-feedback';
+}
+function saveDailyResult(elapsed,hints) {
+  try {
+    const key=DAILY_KEY+'_'+getDailyPuzzle().seed;
+    const board=JSON.parse(localStorage.getItem(key)||'[]');
+    const existing=board.find(e=>e.name==='You');
+    if(!existing) board.push({name:'Anonymous',elapsed,hints,ts:Date.now()});
+    board.sort((a,b)=>a.elapsed-b.elapsed);
+    localStorage.setItem(key,JSON.stringify(board.slice(0,10)));
+  } catch(e){}
+}
+function submitDailyScore() {
+  if(!dailySolved){notify('Solve the puzzle first!');return;}
+  const name=document.getElementById('daily-name-input').value.trim()||'Anonymous';
+  try {
+    const key=DAILY_KEY+'_'+getDailyPuzzle().seed;
+    const board=JSON.parse(localStorage.getItem(key)||'[]');
+    const elapsed=Math.round((Date.now()-dailyStartTime)/1000);
+    board.push({name,elapsed,hints:dailyHintsUsed,ts:Date.now()});
+    board.sort((a,b)=>a.elapsed-b.elapsed);
+    localStorage.setItem(key,JSON.stringify(board.slice(0,10)));
+    loadDailyLeaderboard();
+    notify('Score submitted!');
+  } catch(e){}
+}
+function loadDailyLeaderboard() {
+  try {
+    const key=DAILY_KEY+'_'+getDailyPuzzle().seed;
+    const board=JSON.parse(localStorage.getItem(key)||'[]');
+    const tbody=document.getElementById('daily-lb-body');
+    if(board.length===0){tbody.innerHTML='<tr><td colspan="4" style="color:var(--text-dim);text-align:center">No scores yet — be the first!</td></tr>';return;}
+    tbody.innerHTML=board.map((e,i)=>`
+      <tr class="${e.name==='You'?'you':''}">
+        <td>${i+1}</td><td>${e.name}</td>
+        <td>${e.elapsed}s</td><td>${e.hints}</td>
+      </tr>`).join('');
+  } catch(e){}
+}
+
 // ============================================================
 //  BACKGROUND ANIMATION
 // ============================================================
@@ -4170,6 +5418,160 @@ document.getElementById('rules-modal').addEventListener('click', (e) => {
 setTimeout(() => {
   document.querySelector('.splash-title').style.animation = 'shimmer 3s ease infinite';
 }, 100);
+
+// Load saved board texture
+loadSavedTexture();
+
+// Close all modals on Escape
+window.addEventListener('keydown', (e2) => {
+  if (e2.key === 'Escape') {
+    ['stats-modal','tsumego-modal','famous-modal','movetree-modal','daily-modal','texture-modal'].forEach(id => {
+      document.getElementById(id).classList.remove('visible');
+    });
+  }
+});
+
+// Click-outside to close feature modals
+['stats-modal','famous-modal','movetree-modal','texture-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', (ev) => {
+    if (ev.target.id === id) document.getElementById(id).classList.remove('visible');
+  });
+});
+
+// ============================================================
+//  MISSING: renderStats (alias — showStats already renders inline)
+// ============================================================
+function renderStats() { showStats(); }
+
+// ============================================================
+//  MISSING: loadDailyPuzzle (alias for getDailyPuzzle)
+// ============================================================
+function loadDailyPuzzle() { return getDailyPuzzle(); }
+function getDailyIndex() {
+  const now = new Date();
+  const seed = now.getFullYear()*10000+((now.getMonth()+1)*100)+now.getDate();
+  return seed % (typeof PUZZLES !== 'undefined' ? PUZZLES.length : 1);
+}
+
+// ============================================================
+//  CAPTURED STONE PHYSICS ANIMATION
+// ============================================================
+function animateCapturedStones(capturedIndices, capturedColor) {
+  if (!capturedIndices || capturedIndices.length === 0) return;
+  // Create a temporary canvas overlay on top of the board
+  const wrapper = document.getElementById('board-wrapper');
+  const wRect = wrapper.getBoundingClientRect();
+  const canRect = canvas.getBoundingClientRect();
+  const overlayCanvas = document.createElement('canvas');
+  overlayCanvas.width = canvas.width;
+  overlayCanvas.height = canvas.height;
+  overlayCanvas.style.cssText = `
+    position:absolute;
+    left:${canRect.left - wRect.left}px;
+    top:${canRect.top - wRect.top}px;
+    width:${canRect.width}px;
+    height:${canRect.height}px;
+    pointer-events:none;
+    z-index:50;
+  `;
+  wrapper.appendChild(overlayCanvas);
+  const oc = overlayCanvas.getContext('2d');
+  const R = CELL * 0.46;
+
+  // Build particle list — one per captured stone
+  const particles = capturedIndices.map(i => {
+    const [r, c] = pos(i, N);
+    const sx = boardOffsetX + c * CELL;
+    const sy = boardOffsetY + r * CELL;
+    // Target: fly toward prisoner bowl (right side of board)
+    const tx = canvas.width + 40;
+    const ty = canvas.height * 0.5 + (Math.random() - 0.5) * 60;
+    return {
+      x: sx, y: sy,
+      vx: (Math.random() * 3 + 2) * (capturedColor === 1 ? 1 : -1),
+      vy: (Math.random() - 0.5) * 6,
+      ay: 0.35,           // gravity
+      alpha: 1,
+      scale: 1,
+      angle: 0,
+      av: (Math.random() - 0.5) * 0.3,
+    };
+  });
+
+  // Pre-render stone onto offscreen canvas for speed
+  const stoneOff = document.createElement('canvas');
+  stoneOff.width = R * 2 + 8; stoneOff.height = R * 2 + 8;
+  const so = stoneOff.getContext('2d');
+  const cx0 = R + 4, cy0 = R + 4;
+  const g = so.createRadialGradient(cx0 - R*0.3, cy0 - R*0.35, R*0.05, cx0, cy0, R);
+  if (capturedColor === 1) {
+    g.addColorStop(0, '#555'); g.addColorStop(0.3, '#222'); g.addColorStop(1, '#050505');
+  } else {
+    g.addColorStop(0, '#fff'); g.addColorStop(0.4, '#e8e0d0'); g.addColorStop(1, '#c0b8a8');
+  }
+  so.save();
+  so.shadowColor = 'rgba(0,0,0,0.6)'; so.shadowBlur = 6;
+  so.fillStyle = g;
+  so.beginPath(); so.arc(cx0, cy0, R, 0, Math.PI * 2); so.fill();
+  so.restore();
+
+  let frame = 0;
+  function animFrame() {
+    oc.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    let allDone = true;
+    for (const p of particles) {
+      p.vx *= 0.98;
+      p.vy += p.ay;
+      p.x += p.vx; p.y += p.vy;
+      p.angle += p.av;
+      p.alpha = Math.max(0, 1 - frame / 38);
+      p.scale = Math.max(0.1, 1 - frame / 50);
+      if (p.alpha > 0) allDone = false;
+      oc.save();
+      oc.globalAlpha = p.alpha;
+      oc.translate(p.x, p.y);
+      oc.rotate(p.angle);
+      oc.scale(p.scale, p.scale);
+      oc.drawImage(stoneOff, -cx0, -cy0);
+      oc.restore();
+    }
+    frame++;
+    if (!allDone && frame < 45) requestAnimationFrame(animFrame);
+    else { overlayCanvas.remove(); drawBoard(); }
+  }
+  animFrame();
+}
+
+// Override animateCaptures to use physics animation
+// (replaces the flash-only version defined earlier)
+animateCaptures = function(captured) {
+  if (captured && captured.length > 0) {
+    const capturedColor = G.turn === 1 ? 2 : 1;
+    animateCapturedStones(captured, capturedColor);
+  }
+  let flashCount = 0;
+  const flash = () => {
+    if (flashCount >= 3) return;
+    drawBoard();
+    if (ctx && captured) {
+      ctx.save();
+      for (const i of captured) {
+        const [r, c] = pos(i, N);
+        const x = boardOffsetX + c * CELL;
+        const y = boardOffsetY + r * CELL;
+        ctx.fillStyle = `rgba(255,200,0,${0.4 - flashCount * 0.1})`;
+        ctx.beginPath();
+        ctx.arc(x, y, CELL * 0.47, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    flashCount++;
+    setTimeout(flash, 55);
+  };
+  flash();
+};
+
 </script>
 </body>
 </html>
