@@ -1463,12 +1463,26 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
   color: var(--accent);
 }
 
+/* BYO-YOMI TIMER */
+.timer-fill.byoyomi { background: linear-gradient(90deg, #e67e22, #e74c3c); }
+
+/* KO FIGHT PULSE */
+@keyframes ko-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
+
+/* AMBIENCE CANVAS */
+#ambience-canvas {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  z-index:0; pointer-events:none; opacity:0.55;
+}
+
+
 </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
 <canvas id="confetti-canvas"></canvas>
+<canvas id="ambience-canvas" style="display:none"></canvas>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -1642,9 +1656,12 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="act-btn" style="flex:1" onclick="exportSGF()">💾 Save SGF</button>
       <button class="act-btn" style="flex:1" onclick="startReview()">▶ Review</button>
     </div>
-    <div style="margin-top:8px">
-      <button class="act-btn" style="width:100%" onclick="showSetup()">⚙ New Setup</button>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="act-btn" style="flex:1" onclick="showSetup()">⚙ New Setup</button>
+      <button class="act-btn primary" style="flex:1" onclick="requestPostGameAnalysis()">🔍 AI Analysis</button>
     </div>
+    <!-- AI Analysis result panel -->
+    <div id="ai-analysis-panel" style="display:none;margin-top:14px;text-align:left;font-size:12px;line-height:1.8"></div>
   </div>
 </div>
 
@@ -2318,6 +2335,9 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
           <div class="timer-fill" id="timer-fill" style="width:100%"></div>
         </div>
         <div class="timer-value" id="timer-value" style="display:none"></div>
+        <div id="byoyomi-pips" style="display:none;justify-content:center;gap:6px;margin-top:6px;align-items:center">
+          <span style="font-size:9px;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-right:4px">BYO</span>
+        </div>
       </div>
     </div>
 
@@ -2359,6 +2379,31 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="act-btn" onclick="toggleTerritory()">Territory</button>
       <button class="act-btn" id="dead-mode-btn" onclick="toggleDeadStoneMode()">Mark Dead</button>
       <button class="act-btn danger" onclick="resignGame()">Resign</button>
+    </div>
+
+    <!-- SCORE GRAPH (Feature 4) -->
+    <div id="score-graph-panel" style="display:none;width:100%;max-width:600px;padding:14px;background:var(--panel-bg);border:1px solid var(--ui-border);margin-top:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim)">📈 Live Score Graph</div>
+        <div style="display:flex;gap:14px;font-size:10px;color:var(--text-dim)">
+          <span><span style="display:inline-block;width:10px;height:2px;background:#5B8AF0;vertical-align:middle;margin-right:4px"></span>Black</span>
+          <span><span style="display:inline-block;width:10px;height:2px;background:rgba(240,230,200,0.8);vertical-align:middle;margin-right:4px"></span>White</span>
+        </div>
+      </div>
+      <canvas id="score-graph-canvas" height="100" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(196,154,80,0.15);display:block"></canvas>
+    </div>
+
+    <!-- KO VISUALIZER PANEL (Feature 6) -->
+    <div id="ko-panel" style="display:none;padding:10px 14px;background:rgba(255,100,0,0.08);border:1px solid rgba(255,140,0,0.3);font-size:12px;line-height:1.7;max-width:600px;width:100%">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff8c00;box-shadow:0 0 8px #ff8c00;animation:ko-pulse 1s ease infinite"></div>
+        <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;color:#ff8c00">KO FIGHT ACTIVE</span>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap">
+        <div>Point: <strong id="ko-coord" style="color:#ff8c00">—</strong></div>
+        <div>Est. Value: <strong id="ko-value" style="color:#ff8c00">—</strong></div>
+        <div>Ko Threats: <strong id="ko-threat-count" style="color:#ff8c00">0</strong></div>
+      </div>
     </div>
 
     <!-- Annotation toolbar -->
@@ -2469,6 +2514,10 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <button class="act-btn" style="text-align:left" onclick="showOpeningLibrary()">📚 Opening Library</button>
         <button class="act-btn" id="btn-trail" style="text-align:left" onclick="toggleStoneTrail()">✨ Stone Trail: <span id="trail-state">OFF</span></button>
         <button class="act-btn" id="btn-annotate" style="text-align:left" onclick="toggleAnnotate()">✏️ Annotate: <span id="annotate-state">OFF</span></button>
+        <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
+        <button class="act-btn" style="text-align:left" onclick="takeSnapshot()">📷 Snapshot</button>
+        <button class="act-btn" id="btn-score-graph" style="text-align:left" onclick="toggleScoreGraph()">📈 Score Graph</button>
+        <button class="act-btn" id="btn-ambience" style="text-align:left" onclick="toggleAmbience()">🌤 Ambience: <span id="ambience-state">OFF</span></button>
       </div>
     </div>
 
@@ -2484,6 +2533,29 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 
 <!-- FEATURE 3: OPENING LIBRARY MODAL -->
 <div id="opening-library-modal">
+
+<!-- SNAPSHOT GALLERY MODAL -->
+<div id="snapshot-modal" style="position:fixed;inset:0;z-index:940;background:rgba(0,0,0,0.96);display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;padding:40px 16px;overflow-y:auto">
+  <div style="width:min(780px,96vw)">
+    <div style="text-align:center;padding:32px 0 20px;border-bottom:1px solid var(--ui-border);margin-bottom:24px;position:relative">
+      <div style="font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:var(--accent);letter-spacing:0.3em">📷 SNAPSHOT GALLERY</div>
+      <div style="font-size:11px;color:var(--text-dim);letter-spacing:0.4em;margin-top:6px">Up to 12 board positions saved</div>
+      <button onclick="hideSnapshotGallery()" style="position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:960" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)';this.style.color='var(--text-dim)'">✕ Close</button>
+    </div>
+    <div id="snapshot-preview-bar" style="display:none;background:rgba(196,154,80,0.08);border:1px solid var(--ui-border);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <canvas id="snapshot-preview-canvas" width="120" height="120" style="border:1px solid var(--ui-border)"></canvas>
+      <div style="flex:1">
+        <div id="snapshot-preview-label" style="font-family:'Cinzel',serif;color:var(--accent);font-size:14px;margin-bottom:8px">Preview</div>
+        <button onclick="restoreSnapshot()" class="act-btn primary" style="margin-right:8px">↺ Restore this position</button>
+        <button onclick="clearSnapshotPreview()" class="act-btn">✕ Cancel</button>
+      </div>
+    </div>
+    <div id="snapshot-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="act-btn danger" onclick="clearAllSnapshots()">🗑 Clear All Snapshots</button>
+    </div>
+  </div>
+</div>
   <div class="opening-box">
     <h2>📚 Opening Library</h2>
     <div class="opening-save-row">
@@ -3526,39 +3598,101 @@ function notify(msg) {
 }
 
 // ============================================================
-//  TIMER
+//  FEATURE 1: BYO-YOMI TIME CONTROL
 // ============================================================
 let timerInterval = null;
 let timerRemaining = 0;
+// Byo-yomi state
+let byoYomiActive = false;
+let byoYomiPeriods = 3;          // periods remaining
+const BYO_YOMI_PERIOD_SECS = 30; // each period duration
 
 function startTimer() {
   if (!SETUP.time) return;
   clearInterval(timerInterval);
   timerRemaining = SETUP.time;
+  byoYomiActive = false;
+  byoYomiPeriods = 3;
   updateTimerUI();
   document.getElementById('timer-bar').style.display = 'block';
   document.getElementById('timer-value').style.display = 'block';
+  updateByoYomiPips();
   timerInterval = setInterval(() => {
     timerRemaining--;
-    updateTimerUI();
     if (timerRemaining <= 0) {
-      clearInterval(timerInterval);
-      notify('Time\'s up! Pass forced.');
-      passMove();
+      if (!byoYomiActive) {
+        // Enter byo-yomi
+        byoYomiActive = true;
+        timerRemaining = BYO_YOMI_PERIOD_SECS;
+        notify('⏱ Byo-yomi! ' + byoYomiPeriods + ' periods of 30s remaining');
+      } else {
+        // Period expired
+        byoYomiPeriods--;
+        updateByoYomiPips();
+        if (byoYomiPeriods <= 0) {
+          clearInterval(timerInterval);
+          notify('⏱ Byo-yomi exhausted — time loss!');
+          byoYomiActive = false;
+          byoYomiPeriods = 0;
+          const loser = G.turn === 1 ? 'Black' : 'White';
+          const winner = G.turn === 1 ? 'White' : 'Black';
+          G.gameOver = true;
+          showWin(winner, loser + ' lost on time', null, null, null, null);
+          return;
+        }
+        timerRemaining = BYO_YOMI_PERIOD_SECS;
+        notify('⏱ Period used! ' + byoYomiPeriods + ' byo-yomi period' + (byoYomiPeriods !== 1 ? 's' : '') + ' left');
+      }
     }
+    updateTimerUI();
   }, 1000);
+}
+
+// Call this whenever a move is made to reset byo-yomi period
+function resetByoYomiOnMove() {
+  if (!SETUP.time) return;
+  if (byoYomiActive) {
+    // Reset current period timer but don't restore consumed periods
+    timerRemaining = BYO_YOMI_PERIOD_SECS;
+    updateTimerUI();
+  }
+}
+
+function updateByoYomiPips() {
+  const container = document.getElementById('byoyomi-pips');
+  if (!container) return;
+  const isVisible = SETUP.time > 0;
+  container.style.display = isVisible ? 'flex' : 'none';
+  container.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const pip = document.createElement('div');
+    pip.style.cssText = `
+      width:10px;height:10px;border-radius:50%;
+      background:${i < byoYomiPeriods ? 'var(--accent)' : 'rgba(255,255,255,0.1)'};
+      box-shadow:${i < byoYomiPeriods ? '0 0 6px var(--accent)' : 'none'};
+      transition:all 0.3s;
+    `;
+    container.appendChild(pip);
+  }
 }
 
 function updateTimerUI() {
   if (!SETUP.time) return;
-  const pct = timerRemaining / SETUP.time * 100;
+  const maxTime = byoYomiActive ? BYO_YOMI_PERIOD_SECS : SETUP.time;
+  const pct = timerRemaining / maxTime * 100;
   const fill = document.getElementById('timer-fill');
   const val = document.getElementById('timer-value');
   fill.style.width = pct + '%';
   const urgent = timerRemaining <= 10;
-  fill.className = 'timer-fill' + (urgent ? ' urgent' : '');
+  fill.className = 'timer-fill' + (urgent ? ' urgent' : '') + (byoYomiActive ? ' byoyomi' : '');
   val.className = 'timer-value' + (urgent ? ' urgent' : '');
-  val.textContent = timerRemaining + 's';
+  if (byoYomiActive) {
+    val.textContent = '⏱ ' + timerRemaining + 's (BYO)';
+    val.style.color = urgent ? '#e74c3c' : '#e67e22';
+  } else {
+    val.textContent = timerRemaining + 's';
+    val.style.color = '';
+  }
 }
 
 // ============================================================
@@ -3892,6 +4026,15 @@ function startGame() {
   G.undoStack = [];
   G.history = [];
 
+  // Reset per-game state for new features
+  snapshots = [];
+  scoreHistory = [];
+  koThreatCount = 0;
+  if (koAnimFrame) { cancelAnimationFrame(koAnimFrame); koAnimFrame = null; }
+  document.getElementById('ko-panel').style.display = 'none';
+  const aip = document.getElementById('ai-analysis-panel');
+  if (aip) aip.style.display = 'none';
+
   // Apply theme
   changeTheme(SETUP.theme);
 
@@ -3954,6 +4097,7 @@ function startGame() {
   }
 
   if (SETUP.time) startTimer();
+  updateByoYomiPips();
 
   const handicapNote = SETUP.handicap >= 2 ? ' · ' + SETUP.handicap + ' handicap' : '';
   notify('Game started! ' + N + '×' + N + ' board' + handicapNote);
@@ -3989,10 +4133,11 @@ function handlePlayerMove(i) {
   }
   pushUndo();
   if (placeStone(i)) {
-    if (SETUP.time) startTimer();
-    if (!G.gameOver && SETUP.mode === 'pve') {
-      scheduleBotMove();
-    }
+    resetByoYomiOnMove();
+  if (SETUP.time) startTimer();
+  if (!G.gameOver && SETUP.mode === 'pve') {
+    scheduleBotMove();
+  }
   }
 }
 
@@ -6116,6 +6261,611 @@ function drawAnnotations() {
 // Patch exportSGF to include annotations
 const _origExportSGF_ann = typeof exportSGF === 'function' ? exportSGF : null;
 
+
+// ============================================================
+//  NEW FEATURE 2: POSITION SNAPSHOT GALLERY
+// ============================================================
+let snapshots = []; // array of {board, turn, moveCount, prisoners, territory, dataUrl, label}
+let snapshotPreviewIdx = -1;
+let snapshotSavedBoard = null; // for restore
+
+function takeSnapshot() {
+  if (!canvas) { notify('Start a game first'); return; }
+  if (snapshots.length >= 12) { notify('Gallery full (12 max) — delete some first'); return; }
+
+  // Render current board to a small thumbnail
+  const tmpCanvas = document.createElement('canvas');
+  tmpCanvas.width = 120; tmpCanvas.height = 120;
+  const tmpCtx = tmpCanvas.getContext('2d');
+  // Scale board canvas to thumb
+  tmpCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, 120, 120);
+  const dataUrl = tmpCanvas.toDataURL('image/png');
+
+  const letters = 'ABCDEFGHJKLMNOPQRST';
+  const lastMove = G.lastMove >= 0 ? letters[G.lastMove % N] + (N - Math.floor(G.lastMove / N)) : '—';
+
+  snapshots.push({
+    board: [...G.board],
+    turn: G.turn,
+    moveCount: G.moveCount,
+    prisoners: [...G.prisoners],
+    koPoint: G.koPoint,
+    moveLog: [...G.moveLog],
+    fullMoveRecord: G.fullMoveRecord ? [...G.fullMoveRecord] : [],
+    undoStack: G.undoStack ? [...G.undoStack] : [],
+    dataUrl,
+    label: `Move ${G.moveCount} · ${lastMove}`,
+    ts: Date.now(),
+  });
+
+  notify('📷 Snapshot saved! (' + snapshots.length + '/12)');
+  // Refresh gallery if open
+  if (!document.getElementById('snapshot-modal').classList.contains('visible')) {
+    showSnapshotGallery();
+  } else {
+    renderSnapshotGrid();
+  }
+}
+
+function showSnapshotGallery() {
+  document.getElementById('snapshot-modal').style.opacity = '1';
+  document.getElementById('snapshot-modal').style.pointerEvents = 'all';
+  renderSnapshotGrid();
+}
+
+function hideSnapshotGallery() {
+  document.getElementById('snapshot-modal').style.opacity = '0';
+  document.getElementById('snapshot-modal').style.pointerEvents = 'none';
+  clearSnapshotPreview();
+}
+
+function renderSnapshotGrid() {
+  const grid = document.getElementById('snapshot-grid');
+  if (snapshots.length === 0) {
+    grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:32px 0;grid-column:1/-1">No snapshots yet. Click 📷 Snapshot during a game to save positions.</div>';
+    return;
+  }
+  grid.innerHTML = snapshots.map((s, i) => `
+    <div style="border:1px solid var(--ui-border);background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.2s;overflow:hidden" onclick="previewSnapshot(${i})" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)'">
+      <img src="${s.dataUrl}" style="width:100%;display:block;image-rendering:crisp-edges">
+      <div style="padding:8px 10px">
+        <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--accent);margin-bottom:2px">${s.label}</div>
+        <div style="font-size:10px;color:var(--text-dim)">B: ${s.prisoners[0]} · W: ${s.prisoners[1]}</div>
+      </div>
+      <button onclick="event.stopPropagation();deleteSnapshot(${i})" style="width:100%;padding:5px;background:rgba(192,57,43,0.15);border:none;border-top:1px solid var(--ui-border);color:rgba(231,76,60,0.7);font-size:10px;cursor:pointer;letter-spacing:0.2em" onmouseover="this.style.background='rgba(192,57,43,0.3)'" onmouseout="this.style.background='rgba(192,57,43,0.15)'">🗑 DELETE</button>
+    </div>
+  `).join('');
+}
+
+function previewSnapshot(idx) {
+  snapshotPreviewIdx = idx;
+  const s = snapshots[idx];
+  const previewBar = document.getElementById('snapshot-preview-bar');
+  previewBar.style.display = 'flex';
+  document.getElementById('snapshot-preview-label').textContent = s.label + ' · B prisoners: ' + s.prisoners[0] + ' · W prisoners: ' + s.prisoners[1];
+  const pvCanvas = document.getElementById('snapshot-preview-canvas');
+  const pvCtx = pvCanvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => pvCtx.drawImage(img, 0, 0, 120, 120);
+  img.src = s.dataUrl;
+}
+
+function clearSnapshotPreview() {
+  snapshotPreviewIdx = -1;
+  const previewBar = document.getElementById('snapshot-preview-bar');
+  if (previewBar) previewBar.style.display = 'none';
+}
+
+function restoreSnapshot() {
+  if (snapshotPreviewIdx < 0) return;
+  const s = snapshots[snapshotPreviewIdx];
+  // Save current state for undo
+  if (!G.undoStack) G.undoStack = [];
+  G.undoStack.push({
+    board: [...G.board], turn: G.turn, prisoners: [...G.prisoners],
+    lastMove: G.lastMove, koPoint: G.koPoint, moveCount: G.moveCount,
+    consecutivePasses: G.consecutivePasses, hasPassed: { ...G.hasPassed }
+  });
+  G.board = [...s.board];
+  G.turn = s.turn;
+  G.moveCount = s.moveCount;
+  G.prisoners = [...s.prisoners];
+  G.koPoint = s.koPoint || -1;
+  G.gameOver = false;
+  G.showTerritory = false;
+  G.lastMove = -1;
+  updateUI();
+  drawBoard();
+  hideSnapshotGallery();
+  notify('↺ Restored to: ' + s.label);
+}
+
+function deleteSnapshot(idx) {
+  snapshots.splice(idx, 1);
+  if (snapshotPreviewIdx === idx) clearSnapshotPreview();
+  renderSnapshotGrid();
+}
+
+function clearAllSnapshots() {
+  if (confirm('Delete all snapshots?')) {
+    snapshots = [];
+    clearSnapshotPreview();
+    renderSnapshotGrid();
+    notify('All snapshots cleared');
+  }
+}
+
+// ============================================================
+//  NEW FEATURE 3: AI POST-GAME DEEP ANALYSIS
+// ============================================================
+async function requestPostGameAnalysis() {
+  const panel = document.getElementById('ai-analysis-panel');
+  panel.style.display = 'block';
+  panel.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim)"><div style="font-size:24px;margin-bottom:8px">🔍</div>Analysing your game with AI…</div>';
+
+  const moveLog = G.moveLog || [];
+  const totalMoves = G.moveCount;
+  const bScore = document.getElementById('win-black').textContent;
+  const wScore = document.getElementById('win-white').textContent;
+  const winner = document.getElementById('win-title').textContent;
+
+  // Build a compact move list for the prompt
+  const moveSummary = moveLog.slice(0, 80).map((m, i) => {
+    const colorName = m.color === 1 ? 'B' : 'W';
+    const cap = m.captured > 0 ? ` (cap${m.captured})` : '';
+    return `${i+1}.${colorName}${m.name}${cap}`;
+  }).join(' ');
+
+  const prompt = `You are an expert Go (baduk/weiqi) analyst. Analyse this ${N}×${N} game and produce a structured review.
+
+Game result: ${winner}
+Black score: ${bScore}, White score: ${wScore}
+Total moves: ${totalMoves}
+Move log (first 80 moves): ${moveSummary}
+
+Respond ONLY in the following JSON format (no markdown, no preamble):
+{
+  "grade": "B+",
+  "style": "Aggressive",
+  "narrative": "2-3 sentence game story here.",
+  "bestMoves": [
+    {"move": "Q16", "why": "explanation"},
+    {"move": "K10", "why": "explanation"},
+    {"move": "D4", "why": "explanation"}
+  ],
+  "mistakes": [
+    {"move": "R5", "why": "what went wrong"},
+    {"move": "E3", "why": "what went wrong"},
+    {"move": "N9", "why": "what went wrong"}
+  ],
+  "turningPoint": "Move 34 at K5 shifted the balance decisively.",
+  "tip": "One concise coaching tip for improvement."
+}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const rawText = (data.content && data.content[0] && data.content[0].text) || '';
+    const clean = rawText.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    renderAnalysisPanel(panel, result);
+  } catch (err) {
+    panel.innerHTML = `<div style="color:var(--text-dim);font-size:12px;padding:8px">Analysis unavailable — ensure you're connected. (${err.message})</div>`;
+  }
+}
+
+function renderAnalysisPanel(panel, r) {
+  const gradeColor = {
+    'A+':'#2ecc71','A':'#27ae60','A-':'#2ecc71',
+    'B+':'#3498db','B':'#2980b9','B-':'#5dade2',
+    'C+':'#e67e22','C':'#d35400','C-':'#e59866',
+    'D':'#e74c3c','F':'#c0392b'
+  }[r.grade] || 'var(--accent)';
+
+  panel.innerHTML = `
+    <div style="border:1px solid var(--ui-border);background:rgba(0,0,0,0.4);overflow:hidden">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--ui-border);background:rgba(196,154,80,0.05)">
+        <div style="font-family:'Cinzel',serif;font-size:40px;font-weight:900;color:${gradeColor};line-height:1">${r.grade}</div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--accent);letter-spacing:0.2em">${r.style || ''} PLAYER</div>
+          <div style="font-size:12px;color:var(--text);margin-top:4px;line-height:1.6">${r.narrative || ''}</div>
+        </div>
+      </div>
+      <!-- Best / Mistakes -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--ui-border)">
+        <div style="padding:14px 16px;border-right:1px solid var(--ui-border)">
+          <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#2ecc71;margin-bottom:10px">⬆ Best Moves</div>
+          ${(r.bestMoves||[]).map(m=>`<div style="margin-bottom:8px"><span style="font-family:'Share Tech Mono',monospace;color:#2ecc71;font-size:13px">${m.move}</span><div style="font-size:11px;color:var(--text-dim);margin-top:2px">${m.why}</div></div>`).join('')}
+        </div>
+        <div style="padding:14px 16px">
+          <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#e74c3c;margin-bottom:10px">⬇ Key Mistakes</div>
+          ${(r.mistakes||[]).map(m=>`<div style="margin-bottom:8px"><span style="font-family:'Share Tech Mono',monospace;color:#e74c3c;font-size:13px">${m.move}</span><div style="font-size:11px;color:var(--text-dim);margin-top:2px">${m.why}</div></div>`).join('')}
+        </div>
+      </div>
+      <!-- Turning point + tip -->
+      <div style="padding:12px 16px;border-bottom:1px solid var(--ui-border)">
+        <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">⚡ Turning Point</div>
+        <div style="font-size:12px;color:var(--text)">${r.turningPoint || ''}</div>
+      </div>
+      <div style="padding:12px 16px;background:rgba(196,154,80,0.06)">
+        <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">💡 Coaching Tip</div>
+        <div style="font-size:12px;color:var(--text)">${r.tip || ''}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+//  NEW FEATURE 4: LIVE SCORE GRAPH
+// ============================================================
+let scoreGraphEnabled = false;
+let scoreHistory = []; // [{move, bScore, wScore}]
+
+function toggleScoreGraph() {
+  scoreGraphEnabled = !scoreGraphEnabled;
+  const panel = document.getElementById('score-graph-panel');
+  panel.style.display = scoreGraphEnabled ? 'block' : 'none';
+  document.getElementById('btn-score-graph').classList.toggle('toggle-on', scoreGraphEnabled);
+  if (scoreGraphEnabled) {
+    // Rebuild history from current move log
+    rebuildScoreHistory();
+    drawScoreGraph();
+    notify('📈 Score graph ON');
+  }
+}
+
+function recordScorePoint() {
+  if (!scoreGraphEnabled) return;
+  const { bScore, wScore } = computeScore();
+  scoreHistory.push({ move: G.moveCount, bScore, wScore });
+  drawScoreGraph();
+}
+
+function rebuildScoreHistory() {
+  scoreHistory = [];
+  if (!G.fullMoveRecord || G.fullMoveRecord.length === 0) return;
+  // Quick estimate at key points from move record
+  const step = Math.max(1, Math.floor(G.fullMoveRecord.length / 40));
+  for (let i = 0; i < G.fullMoveRecord.length; i += step) {
+    const rec = G.fullMoveRecord[i];
+    const board = rec.board;
+    // Simplified scoring
+    let bt = 0, wt = 0, bs = 0, ws = 0;
+    for (const v of board) { if (v === 1) bs++; else if (v === 2) ws++; }
+    scoreHistory.push({ move: i + 1, bScore: bs, wScore: ws + SETUP.komi });
+  }
+}
+
+function drawScoreGraph() {
+  const cv = document.getElementById('score-graph-canvas');
+  if (!cv) return;
+  cv.width = cv.offsetWidth || 560;
+  const w = cv.width, h = 100;
+  const ct = cv.getContext('2d');
+  ct.clearRect(0, 0, w, h);
+
+  if (scoreHistory.length < 2) {
+    ct.fillStyle = 'rgba(255,255,255,0.05)';
+    ct.fillRect(0, 0, w, h);
+    ct.fillStyle = 'rgba(196,154,80,0.4)';
+    ct.font = '11px monospace';
+    ct.textAlign = 'center';
+    ct.fillText('Play moves to see score graph', w / 2, h / 2);
+    return;
+  }
+
+  const pts = scoreHistory;
+  const allScores = pts.flatMap(p => [p.bScore, p.wScore]);
+  const minS = Math.min(...allScores);
+  const maxS = Math.max(...allScores);
+  const range = Math.max(maxS - minS, 5);
+  const pad = 8;
+
+  const xOf = (i) => pad + (i / (pts.length - 1)) * (w - pad * 2);
+  const yOf = (s) => h - pad - ((s - minS) / range) * (h - pad * 2);
+
+  // Fill between lines
+  ct.beginPath();
+  ct.moveTo(xOf(0), yOf(pts[0].bScore));
+  for (let i = 1; i < pts.length; i++) ct.lineTo(xOf(i), yOf(pts[i].bScore));
+  for (let i = pts.length - 1; i >= 0; i--) ct.lineTo(xOf(i), yOf(pts[i].wScore));
+  ct.closePath();
+  ct.fillStyle = 'rgba(100,140,240,0.12)';
+  ct.fill();
+
+  // Black score line (blue)
+  ct.beginPath();
+  ct.moveTo(xOf(0), yOf(pts[0].bScore));
+  for (let i = 1; i < pts.length; i++) ct.lineTo(xOf(i), yOf(pts[i].bScore));
+  ct.strokeStyle = 'rgba(91,138,240,0.9)';
+  ct.lineWidth = 2;
+  ct.stroke();
+
+  // White score line
+  ct.beginPath();
+  ct.moveTo(xOf(0), yOf(pts[0].wScore));
+  for (let i = 1; i < pts.length; i++) ct.lineTo(xOf(i), yOf(pts[i].wScore));
+  ct.strokeStyle = 'rgba(240,230,200,0.7)';
+  ct.lineWidth = 2;
+  ct.stroke();
+
+  // Latest glowing dot — black
+  const lastIdx = pts.length - 1;
+  const bx = xOf(lastIdx), by = yOf(pts[lastIdx].bScore);
+  const wx = xOf(lastIdx), wy = yOf(pts[lastIdx].wScore);
+  [{ x: bx, y: by, c: 'rgba(91,138,240,1)' }, { x: wx, y: wy, c: 'rgba(240,230,200,1)' }].forEach(({ x, y, c }) => {
+    ct.save();
+    ct.shadowColor = c; ct.shadowBlur = 8;
+    ct.fillStyle = c;
+    ct.beginPath(); ct.arc(x, y, 4, 0, Math.PI * 2); ct.fill();
+    ct.restore();
+  });
+}
+
+// Hook into placeStone to record score
+const _origPlaceStone = placeStone;
+placeStone = function(i) {
+  const prevKo = G.koPoint;
+  const result = _origPlaceStone(i);
+  if (result) {
+    setTimeout(recordScorePoint, 50);
+    // Count ko threats (moves while ko is active)
+    if (prevKo >= 0 && G.koPoint >= 0) koThreatCount++;
+    setTimeout(detectAndVisualizeKo, 80);
+  }
+  return result;
+};
+
+// ============================================================
+//  NEW FEATURE 5: WEATHER & TIME-OF-DAY AMBIENCE
+// ============================================================
+let ambienceEnabled = false;
+let ambienceAnimId = null;
+let ambienceParticles = [];
+
+function toggleAmbience() {
+  ambienceEnabled = !ambienceEnabled;
+  document.getElementById('ambience-state').textContent = ambienceEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-ambience').classList.toggle('toggle-on', ambienceEnabled);
+  const cv = document.getElementById('ambience-canvas');
+  if (ambienceEnabled) {
+    cv.style.display = 'block';
+    initAmbience();
+    notify('🌤 Ambience ON — environment matches your local time');
+  } else {
+    cv.style.display = 'none';
+    if (ambienceAnimId) { cancelAnimationFrame(ambienceAnimId); ambienceAnimId = null; }
+    ambienceParticles = [];
+  }
+}
+
+function getTimeOfDay() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 8) return 'dawn';
+  if (h >= 8 && h < 17) return 'noon';
+  if (h >= 17 && h < 20) return 'sunset';
+  return 'night';
+}
+
+function initAmbience() {
+  const cv = document.getElementById('ambience-canvas');
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight;
+  ambienceParticles = [];
+
+  const tod = getTimeOfDay();
+  const theme = SETUP.theme || 'classic';
+  const count = 60;
+
+  for (let i = 0; i < count; i++) {
+    const p = createAmbienceParticle(tod, theme, cv.width, cv.height);
+    // Start at random position
+    p.y = Math.random() * cv.height;
+    ambienceParticles.push(p);
+  }
+
+  animateAmbience();
+}
+
+function createAmbienceParticle(tod, theme, W, H) {
+  const r = () => Math.random();
+
+  // Special theme overrides
+  if (theme === 'cherry') {
+    return { x: r()*W, y: -20, vx: (r()-0.5)*1.2, vy: r()*1.5+0.5,
+      size: r()*6+3, alpha: r()*0.6+0.3,
+      color: `rgba(${220+Math.round(r()*35)},${100+Math.round(r()*60)},${120+Math.round(r()*30)},`,
+      type: 'petal', angle: r()*Math.PI*2, av: (r()-0.5)*0.05 };
+  }
+  if (theme === 'cyber') {
+    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.5, vy: (r()-0.5)*0.5,
+      size: r()*2+1, alpha: r()*0.8+0.2,
+      color: `rgba(${r()>0.5?0:255},${r()>0.5?255:0},${r()>0.5?255:255},`,
+      type: 'spark', life: r() };
+  }
+  if (theme === 'jade') {
+    return { x: r()*W, y: -20, vx: (r()-0.5)*0.8, vy: r()*1.2+0.3,
+      size: r()*8+4, alpha: r()*0.4+0.2,
+      color: `rgba(${60+Math.round(r()*40)},${130+Math.round(r()*60)},${60+Math.round(r()*30)},`,
+      type: 'leaf', angle: r()*Math.PI*2, av: (r()-0.5)*0.03 };
+  }
+  if (theme === 'obsidian') {
+    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.3, vy: -(r()*0.5+0.1),
+      size: r()*3+1, alpha: r()*0.5+0.1,
+      color: `rgba(${200+Math.round(r()*55)},${80+Math.round(r()*40)},${20+Math.round(r()*20)},`,
+      type: 'ember', life: r() };
+  }
+
+  // Time-of-day defaults
+  const timeColors = {
+    dawn:   `rgba(${240+Math.round(r()*15)},${180+Math.round(r()*40)},${100+Math.round(r()*40)},`,
+    noon:   `rgba(${240+Math.round(r()*15)},${230+Math.round(r()*25)},${180+Math.round(r()*40)},`,
+    sunset: `rgba(${240+Math.round(r()*15)},${100+Math.round(r()*60)},${40+Math.round(r()*40)},`,
+    night:  `rgba(${200+Math.round(r()*55)},${200+Math.round(r()*55)},${255},`,
+  };
+  const timeTypes = { dawn:'mote', noon:'shimmer', sunset:'glow', night:'star' };
+
+  return {
+    x: r()*W, y: r()*H,
+    vx: (r()-0.5)*0.4, vy: (r()-0.5)*0.4,
+    size: tod==='night' ? r()*2+0.5 : r()*4+1,
+    alpha: r()*0.5+0.2,
+    color: timeColors[tod],
+    type: timeTypes[tod],
+    angle: r()*Math.PI*2, av: (r()-0.5)*0.02,
+    life: r(), twinkle: r()*Math.PI*2,
+  };
+}
+
+function animateAmbience() {
+  const cv = document.getElementById('ambience-canvas');
+  if (!cv || !ambienceEnabled) { ambienceAnimId = null; return; }
+  const ct = cv.getContext('2d');
+  ct.clearRect(0, 0, cv.width, cv.height);
+
+  const tod = getTimeOfDay();
+  const theme = SETUP.theme || 'classic';
+  const W = cv.width, H = cv.height;
+
+  for (const p of ambienceParticles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.angle !== undefined) p.angle += (p.av || 0);
+    if (p.twinkle !== undefined) p.twinkle += 0.04;
+    p.life = (p.life || 0) + 0.005;
+
+    // Wrap
+    if (p.x < -20) p.x = W + 20;
+    if (p.x > W + 20) p.x = -20;
+    if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
+    if (p.y < -20) p.y = H + 20;
+
+    const alpha = p.type === 'star' ? p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle)) : p.alpha;
+
+    ct.save();
+    ct.globalAlpha = alpha;
+
+    if (p.type === 'petal') {
+      // Cherry blossom petal
+      ct.translate(p.x, p.y);
+      ct.rotate(p.angle);
+      ct.fillStyle = p.color + alpha + ')';
+      ct.beginPath();
+      ct.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+      ct.fill();
+    } else if (p.type === 'leaf') {
+      ct.translate(p.x, p.y);
+      ct.rotate(p.angle);
+      ct.fillStyle = p.color + alpha + ')';
+      ct.beginPath();
+      ct.ellipse(0, 0, p.size * 0.5, p.size, 0, 0, Math.PI * 2);
+      ct.fill();
+    } else if (p.type === 'spark' || p.type === 'ember') {
+      ct.fillStyle = p.color + alpha + ')';
+      ct.shadowColor = p.color + '0.9)';
+      ct.shadowBlur = 6;
+      ct.beginPath();
+      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ct.fill();
+    } else if (p.type === 'star') {
+      ct.fillStyle = p.color + alpha + ')';
+      ct.shadowColor = p.color + '0.8)';
+      ct.shadowBlur = p.size * 3;
+      ct.beginPath();
+      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ct.fill();
+    } else {
+      // mote / shimmer / glow
+      const grad = ct.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+      grad.addColorStop(0, p.color + alpha + ')');
+      grad.addColorStop(1, p.color + '0)');
+      ct.fillStyle = grad;
+      ct.beginPath();
+      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ct.fill();
+    }
+    ct.restore();
+  }
+
+  ambienceAnimId = requestAnimationFrame(animateAmbience);
+}
+
+// ============================================================
+//  NEW FEATURE 6: KO FIGHT VISUALIZER
+// ============================================================
+let koAnimFrame = null;
+let koAnimPhase = 0;
+let koThreatCount = 0;
+
+function detectAndVisualizeKo() {
+  const koPoint = G.koPoint;
+  const koPanel = document.getElementById('ko-panel');
+
+  if (koPoint >= 0) {
+    koPanel.style.display = 'block';
+    const [r, c] = pos(koPoint, N);
+    const letters = 'ABCDEFGHJKLMNOPQRST';
+    document.getElementById('ko-coord').textContent = letters[c] + (N - r);
+    // Estimate ko value from position (rough heuristic: ko near center = higher value)
+    const centerDist = Math.abs(r - N/2) + Math.abs(c - N/2);
+    const estVal = Math.max(1, Math.round(8 - centerDist * 0.3));
+    document.getElementById('ko-value').textContent = '~' + estVal + ' pts';
+    document.getElementById('ko-threat-count').textContent = koThreatCount;
+    // Start pulsing ring animation
+    if (!koAnimFrame) animateKoRing();
+  } else {
+    if (koPanel.style.display !== 'none') {
+      koThreatCount = 0;
+    }
+    koPanel.style.display = 'none';
+    if (koAnimFrame) { cancelAnimationFrame(koAnimFrame); koAnimFrame = null; }
+  }
+}
+
+function animateKoRing() {
+  if (G.koPoint < 0 || !canvas || !ctx) { koAnimFrame = null; return; }
+  koAnimPhase += 0.06;
+
+  const [r, c] = pos(G.koPoint, N);
+  const x = boardOffsetX + c * CELL;
+  const y = boardOffsetY + r * CELL;
+  const breathe = 0.7 + 0.3 * Math.sin(koAnimPhase);
+  const R = CELL * (0.55 + 0.1 * Math.sin(koAnimPhase));
+
+  // Draw on top of board
+  drawBoard(); // redraw board first
+  ctx.save();
+  ctx.globalAlpha = breathe;
+  ctx.strokeStyle = `rgba(255,140,0,${0.9 * breathe})`;
+  ctx.lineWidth = 3;
+  ctx.shadowColor = 'rgba(255,140,0,0.8)';
+  ctx.shadowBlur = 12 * breathe;
+  ctx.beginPath();
+  ctx.arc(x, y, R, 0, Math.PI * 2);
+  ctx.stroke();
+  // Inner glow
+  const grad = ctx.createRadialGradient(x, y, 0, x, y, R);
+  grad.addColorStop(0, `rgba(255,180,0,${0.15 * breathe})`);
+  grad.addColorStop(1, 'rgba(255,140,0,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x, y, R, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  koAnimFrame = requestAnimationFrame(animateKoRing);
+}
+
+// Ko detection is handled inside the single placeStone wrapper above
 
 (function bgAnimation() {
   const cv = document.getElementById('bg-canvas');
