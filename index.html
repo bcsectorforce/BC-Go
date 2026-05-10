@@ -1330,6 +1330,139 @@ html, body {
 .leaderboard-table td { padding:6px 10px;border-bottom:1px solid rgba(196,154,80,0.06);color:rgba(232,224,204,0.8); }
 .leaderboard-table tr.you td { color:var(--accent);font-weight:700; }
 
+/* ===== FEATURE 1: AI COMMENTARY ===== */
+#commentary-panel {
+  position: fixed;
+  bottom: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 94vw);
+  background: rgba(10,10,18,0.97);
+  border: 1px solid var(--ui-border);
+  border-bottom: none;
+  padding: 16px 20px 14px;
+  z-index: 600;
+  transition: bottom 0.4s cubic-bezier(0.22,1,0.36,1);
+  border-top: 2px solid var(--accent);
+  backdrop-filter: blur(8px);
+}
+#commentary-panel.visible { bottom: 0; }
+.commentary-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.commentary-badge {
+  font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--text-dim); display: flex; align-items: center; gap: 6px;
+}
+.commentary-pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #e74c3c; animation: commentary-blink 1s ease infinite;
+}
+@keyframes commentary-blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.commentary-text {
+  font-size: 13px; line-height: 1.75; color: var(--text);
+  font-family: 'Noto Serif JP', serif;
+  min-height: 52px;
+}
+.commentary-text.black-move { border-left: 3px solid #888; padding-left: 10px; }
+.commentary-text.white-move { border-left: 3px solid #ddd; padding-left: 10px; }
+.commentary-close {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 2px 6px;
+}
+.commentary-close:hover { color: var(--text); }
+
+/* ===== FEATURE 2: HEAT MAP ===== */
+#heatmap-legend {
+  display: none;
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.75); border: 1px solid var(--ui-border);
+  padding: 6px 10px; font-size: 10px; letter-spacing: 0.2em;
+  z-index: 20; pointer-events: none;
+}
+#heatmap-legend.visible { display: flex; flex-direction: column; gap: 4px; }
+.hm-row { display: flex; align-items: center; gap: 6px; }
+.hm-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+/* ===== FEATURE 3: OPENING LIBRARY MODAL ===== */
+#opening-library-modal {
+  position: fixed; inset: 0; z-index: 940;
+  background: rgba(0,0,0,0.96);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s;
+}
+#opening-library-modal.visible { opacity: 1; pointer-events: all; }
+.opening-box {
+  background: var(--panel-bg); border: 1px solid var(--ui-border);
+  padding: 36px; width: min(560px, 94vw); max-height: 88vh; overflow-y: auto;
+  position: relative;
+}
+.opening-box h2 {
+  font-family: 'Cinzel', serif; font-size: 22px; color: var(--accent);
+  letter-spacing: 0.2em; margin-bottom: 24px;
+}
+.opening-save-row {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.opening-save-row input {
+  flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.05);
+  border: 1px solid var(--ui-border); color: var(--text);
+  font-family: 'Noto Serif JP', serif; font-size: 13px;
+}
+.opening-save-row input:focus { outline: none; border-color: var(--accent); }
+.opening-list { display: flex; flex-direction: column; gap: 10px; }
+.opening-item {
+  padding: 14px 16px; border: 1px solid var(--ui-border);
+  background: rgba(255,255,255,0.02);
+  display: flex; align-items: center; gap: 14px;
+}
+.opening-item-info { flex: 1; }
+.opening-item-name {
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--accent);
+  margin-bottom: 4px;
+}
+.opening-item-meta { font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; }
+.opening-empty { font-size: 12px; color: var(--text-dim); text-align: center; padding: 24px 0; }
+
+/* ===== FEATURE 4: STONE TRAIL OVERLAY ===== */
+#trail-canvas {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; z-index: 40;
+}
+
+/* ===== FEATURE 5: TERRITORY FLOOD ANIMATION ===== */
+/* Uses canvas overlay, no extra CSS needed beyond existing */
+
+/* ===== FEATURE 6: ANNOTATION OVERLAY ===== */
+.annotation-toolbar {
+  display: none; align-items: center; gap: 8px;
+  padding: 8px 12px; background: rgba(0,0,0,0.7);
+  border: 1px solid var(--ui-border); flex-wrap: wrap;
+  justify-content: center;
+}
+.annotation-toolbar.visible { display: flex; }
+.ann-btn {
+  padding: 6px 12px; background: transparent;
+  border: 1px solid var(--ui-border); color: var(--text);
+  font-size: 12px; cursor: pointer; transition: all 0.2s;
+}
+.ann-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+.ann-btn:hover { border-color: var(--accent); color: var(--accent); }
+select.ann-type-select {
+  padding: 6px 10px; background: rgba(0,0,0,0.8);
+  border: 1px solid var(--ui-border); color: var(--text);
+  font-family: 'Noto Serif JP', serif; font-size: 12px; cursor: pointer;
+}
+select.ann-type-select:focus { outline: none; border-color: var(--accent); }
+
+/* act-btn active state */
+.act-btn.toggle-on {
+  background: rgba(196,154,80,0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 </style>
 </head>
 <body>
@@ -1349,6 +1482,18 @@ html, body {
 
 <!-- NOTIFICATION -->
 <div id="notify"></div>
+
+<!-- FEATURE 1: AI COMMENTARY PANEL -->
+<div id="commentary-panel">
+  <div class="commentary-header">
+    <div class="commentary-badge">
+      <div class="commentary-pulse"></div>
+      🎙 LIVE BROADCAST
+    </div>
+    <button class="commentary-close" onclick="hideCommentary()">✕</button>
+  </div>
+  <div class="commentary-text" id="commentary-text">Commentary will appear here after each move.</div>
+</div>
 
 <!-- SETUP MODAL -->
 <div id="setup-modal">
@@ -2201,6 +2346,11 @@ html, body {
 
     <div class="board-wrapper" id="board-wrapper">
       <canvas id="go-board"></canvas>
+      <canvas id="trail-canvas"></canvas>
+      <div id="heatmap-legend">
+        <div class="hm-row"><div class="hm-swatch" style="background:rgba(60,100,255,0.7)"></div> Black influence</div>
+        <div class="hm-row"><div class="hm-swatch" style="background:rgba(220,60,60,0.7)"></div> White influence</div>
+      </div>
     </div>
 
     <div class="action-bar" id="main-action-bar">
@@ -2209,6 +2359,19 @@ html, body {
       <button class="act-btn" onclick="toggleTerritory()">Territory</button>
       <button class="act-btn" id="dead-mode-btn" onclick="toggleDeadStoneMode()">Mark Dead</button>
       <button class="act-btn danger" onclick="resignGame()">Resign</button>
+    </div>
+
+    <!-- Annotation toolbar -->
+    <div class="annotation-toolbar" id="annotation-toolbar">
+      <span style="font-size:10px;color:var(--text-dim);letter-spacing:0.2em">ANNOTATION:</span>
+      <select class="ann-type-select" id="ann-type-select">
+        <option value="letter">Letter (A,B,C…)</option>
+        <option value="triangle">△ Triangle</option>
+        <option value="square">□ Square</option>
+        <option value="circle">○ Circle</option>
+        <option value="cross">✕ Cross</option>
+      </select>
+      <button class="ann-btn" onclick="clearAllAnnotations()">🗑 Clear All</button>
     </div>
 
     <!-- REVIEW BAR (hidden during live game) -->
@@ -2299,6 +2462,13 @@ html, body {
         <button class="act-btn" style="text-align:left" onclick="toggleCoords()">⊞ Toggle Coords</button>
         <button class="act-btn" style="text-align:left" onclick="toggleSound()">♪ Sound: <span id="sound-state">ON</span></button>
         <button class="act-btn" style="text-align:left" onclick="showRules()">📖 How to Play</button>
+        <!-- NEW FEATURES -->
+        <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
+        <button class="act-btn" id="btn-commentary" style="text-align:left" onclick="toggleCommentary()">🎙 Commentary: <span id="commentary-state">OFF</span></button>
+        <button class="act-btn" id="btn-heatmap" style="text-align:left" onclick="toggleHeatMap()">🌡 Heat Map: <span id="heatmap-state">OFF</span></button>
+        <button class="act-btn" style="text-align:left" onclick="showOpeningLibrary()">📚 Opening Library</button>
+        <button class="act-btn" id="btn-trail" style="text-align:left" onclick="toggleStoneTrail()">✨ Stone Trail: <span id="trail-state">OFF</span></button>
+        <button class="act-btn" id="btn-annotate" style="text-align:left" onclick="toggleAnnotate()">✏️ Annotate: <span id="annotate-state">OFF</span></button>
       </div>
     </div>
 
@@ -2310,6 +2480,25 @@ html, body {
 
   </div>
 
+</div>
+
+<!-- FEATURE 3: OPENING LIBRARY MODAL -->
+<div id="opening-library-modal">
+  <div class="opening-box">
+    <h2>📚 Opening Library</h2>
+    <div class="opening-save-row">
+      <input type="text" id="opening-name-input" placeholder="Name this opening (e.g. My Sanrensei)" maxlength="40">
+      <button class="act-btn primary" onclick="saveCurrentOpening()">💾 Save</button>
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);letter-spacing:0.2em;margin-bottom:14px">
+      SAVED OPENINGS — click ▶ Load to replay moves onto the board
+    </div>
+    <div class="opening-list" id="opening-list"></div>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="act-btn danger" onclick="clearAllOpenings()">🗑 Clear All</button>
+      <button class="act-btn" style="margin-left:auto" onclick="hideOpeningLibrary()">✕ Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -2716,6 +2905,12 @@ function drawBoard() {
 
   // Dead stone markers
   if (G.deadStones && G.deadStones.size > 0) drawDeadStoneMarkers();
+
+  // FEATURE 2: Heat Map
+  if (heatMapEnabled) drawHeatMap();
+
+  // FEATURE 6: Annotations
+  drawAnnotations();
 }
 
 function drawStone(ctx, x, y, R, color, theme) {
@@ -2925,6 +3120,17 @@ function placeStone(i) {
   G.turn = 3 - color;
   updateUI();
   drawBoard();
+
+  // FEATURE 1: AI Commentary
+  const _moveName2 = moveName;
+  const _color2 = color;
+  const _captureCount2 = captureCount;
+  const _moveCount2 = G.moveCount;
+  setTimeout(() => triggerCommentary(_moveName2, _color2, _captureCount2, _moveCount2), 200);
+
+  // FEATURE 4: Stone Trail
+  spawnTrailParticles(i, color);
+
   return true;
 }
 
@@ -3076,7 +3282,12 @@ function endGame() {
   const by = Math.abs(bScore - wScore).toFixed(1);
   // Record to stats
   recordGameResult(winner, SETUP.color, bScore, wScore, G.moveCount, SETUP.mode, N);
-  showWin(winner, winner ? `by ${by} points` : 'Draw!', bScore, wScore, bt, wt);
+
+  // FEATURE 5: Territory Flood Animation — delay win modal by animation duration
+  animateTerritoryFlood(territory, N);
+  setTimeout(() => {
+    showWin(winner, winner ? `by ${by} points` : 'Draw!', bScore, wScore, bt, wt);
+  }, 1200);
 }
 
 // ============================================================
@@ -3733,6 +3944,9 @@ function startGame() {
   updateUI();
   drawBoard();
 
+  // Initialize trail canvas for Feature 4
+  setupTrailCanvas();
+
   // If bot goes first (player chose white or handicap placed)
   const playerColor = SETUP.color === 'black' ? 1 : 2;
   if (SETUP.mode === 'pve' && G.turn !== playerColor) {
@@ -3806,7 +4020,9 @@ function getGridPos(e) {
 function boardClick(e) {
   const i = getGridPos(e);
   if (i < 0) return;
-  if (deadStoneModeActive) {
+  if (annotateMode) {
+    placeAnnotation(i);
+  } else if (deadStoneModeActive) {
     handleDeadStoneClick(i);
   } else if (!reviewActive) {
     handlePlayerMove(i);
@@ -5347,8 +5563,560 @@ function loadDailyLeaderboard() {
 }
 
 // ============================================================
-//  BACKGROUND ANIMATION
+//  FEATURE 1: AI LIVE COMMENTARY
 // ============================================================
+let commentaryEnabled = false;
+let commentaryVisible = false;
+
+const FALLBACK_COMMENTARY = [
+  [
+    "A sharp placement in the {loc} sector — Black claims key territory in the {phase}. The strategic intent is clear: build thickness while eyeing the opponent's weak groups.",
+    "Black plays to {loc}, a solid positional choice. With {moveNum} moves played, this {phase} sequence is beginning to crystallize into something formidable.",
+    "The stone lands at {loc} — no surprises here from Black, who continues to press the {phase} advantage methodically. {captured}",
+  ],
+  [
+    "White responds at {loc}, a measured reply that keeps the balance. The {phase} is far from over, and White's thickness here will matter in the endgame.",
+    "White's move to {loc} shows careful reading — maintaining solid shape while probing Black's weak points. Move {moveNum}, and the tension is palpable.",
+    "A calculated strike at {loc} by White. {captured} The {phase} position continues to demand precision from both sides.",
+  ]
+];
+
+function toggleCommentary() {
+  commentaryEnabled = !commentaryEnabled;
+  document.getElementById('commentary-state').textContent = commentaryEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-commentary').classList.toggle('toggle-on', commentaryEnabled);
+  if (!commentaryEnabled) hideCommentary();
+  else notify('🎙 Commentary enabled — play a move to hear it!');
+}
+
+function hideCommentary() {
+  const panel = document.getElementById('commentary-panel');
+  panel.classList.remove('visible');
+  commentaryVisible = false;
+}
+
+function showCommentaryText(text, colorSide) {
+  const panel = document.getElementById('commentary-panel');
+  const el = document.getElementById('commentary-text');
+  el.textContent = text;
+  el.className = 'commentary-text ' + (colorSide === 1 ? 'black-move' : 'white-move');
+  panel.classList.add('visible');
+  commentaryVisible = true;
+  // Auto-hide after 10 seconds
+  clearTimeout(window._commentaryTimeout);
+  window._commentaryTimeout = setTimeout(() => {
+    panel.classList.remove('visible');
+    commentaryVisible = false;
+  }, 10000);
+}
+
+async function triggerCommentary(moveName, color, captureCount, moveNum) {
+  if (!commentaryEnabled) return;
+  const colorName = color === 1 ? 'Black' : 'White';
+  const opponent = color === 1 ? 'White' : 'Black';
+  const phase = moveNum < 40 ? 'opening' : moveNum < 120 ? 'middle game' : 'endgame';
+  const captureStr = captureCount > 0 ? `${captureCount} ${captureCount === 1 ? 'stone' : 'stones'} captured — a significant exchange!` : '';
+
+  // Show loading state
+  showCommentaryText('⏳ Calling commentator...', color);
+
+  try {
+    const prompt = `You are an expert Go (Weiqi/Baduk) broadcast commentator. Write exactly 2-3 sentences of authentic, engaging live commentary for this move. Be specific and use proper Go terminology.
+
+Game state:
+- Move number: ${moveNum}
+- ${colorName} just played at ${moveName}
+- Game phase: ${phase}
+- ${captureStr || 'No captures this move.'}
+- Board size: ${N}x${N}
+
+Requirements: Reference the exact move coordinate (${moveName}), the game phase (${phase}), the move number (${moveNum}), and whether stones were captured. Sound like a real broadcast commentator. 2-3 sentences only. No preamble.`;
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    if (data.content && data.content[0] && data.content[0].text) {
+      showCommentaryText(data.content[0].text.trim(), color);
+    } else throw new Error('no content');
+  } catch (err) {
+    // Fallback commentary
+    const templates = FALLBACK_COMMENTARY[color - 1];
+    let text = templates[moveNum % templates.length];
+    text = text
+      .replace('{loc}', moveName)
+      .replace('{phase}', phase)
+      .replace('{moveNum}', moveNum)
+      .replace('{captured}', captureStr);
+    showCommentaryText(text, color);
+  }
+}
+
+// ============================================================
+//  FEATURE 2: INFLUENCE HEAT MAP
+// ============================================================
+let heatMapEnabled = false;
+
+function toggleHeatMap() {
+  heatMapEnabled = !heatMapEnabled;
+  document.getElementById('heatmap-state').textContent = heatMapEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-heatmap').classList.toggle('toggle-on', heatMapEnabled);
+  document.getElementById('heatmap-legend').classList.toggle('visible', heatMapEnabled);
+  drawBoard();
+}
+
+function computeInfluenceMap(board, N) {
+  const influence = new Float32Array(N * N); // positive = black, negative = white
+  const MAX_DIST = 6;
+  const DECAY = 0.85;
+
+  for (let i = 0; i < N * N; i++) {
+    if (board[i] === 0) continue;
+    const stoneColor = board[i] === 1 ? 1 : -1;
+    // BFS from this stone
+    const visited = new Set([i]);
+    let frontier = [i];
+    let strength = 1.0;
+    for (let d = 0; d < MAX_DIST; d++) {
+      strength *= DECAY;
+      const next = [];
+      for (const cur of frontier) {
+        for (const nb of getNeighbors(cur, N)) {
+          if (!visited.has(nb)) {
+            visited.add(nb);
+            next.push(nb);
+            influence[nb] += stoneColor * strength;
+          }
+        }
+      }
+      frontier = next;
+      if (frontier.length === 0) break;
+    }
+  }
+  return influence;
+}
+
+function drawHeatMap() {
+  if (!heatMapEnabled || !ctx) return;
+  const influence = computeInfluenceMap(G.board, N);
+  // Find max influence for normalization
+  let maxAbs = 0.01;
+  for (let i = 0; i < N * N; i++) {
+    const abs = Math.abs(influence[i]);
+    if (abs > maxAbs) maxAbs = abs;
+  }
+
+  ctx.save();
+  for (let i = 0; i < N * N; i++) {
+    if (G.board[i] !== 0) continue; // skip occupied intersections
+    const [r, c] = pos(i, N);
+    const x = boardOffsetX + c * CELL;
+    const y = boardOffsetY + r * CELL;
+    const norm = Math.min(1, Math.abs(influence[i]) / maxAbs);
+    if (norm < 0.05) continue;
+    const half = CELL * 0.45;
+    ctx.globalAlpha = norm * 0.6;
+    if (influence[i] > 0) {
+      ctx.fillStyle = `rgb(40,80,255)`;
+    } else {
+      ctx.fillStyle = `rgb(220,60,40)`;
+    }
+    ctx.beginPath();
+    ctx.arc(x, y, half * norm, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+// ============================================================
+//  FEATURE 3: OPENING LIBRARY
+// ============================================================
+function showOpeningLibrary() {
+  document.getElementById('opening-library-modal').classList.add('visible');
+  renderOpeningList();
+}
+
+function hideOpeningLibrary() {
+  document.getElementById('opening-library-modal').classList.remove('visible');
+}
+
+function saveCurrentOpening() {
+  const nameInput = document.getElementById('opening-name-input');
+  const name = nameInput.value.trim();
+  if (!name) { notify('Enter a name for this opening'); return; }
+  if (G.moveLog.length === 0) { notify('No moves to save!'); return; }
+  const openings = JSON.parse(localStorage.getItem('go_openings') || '[]');
+  const moves = G.fullMoveRecord.map(r => r.move);
+  openings.unshift({
+    name,
+    boardSize: N,
+    moveCount: moves.length,
+    moves,
+    date: new Date().toLocaleDateString(),
+    ts: Date.now()
+  });
+  localStorage.setItem('go_openings', JSON.stringify(openings.slice(0, 50)));
+  nameInput.value = '';
+  renderOpeningList();
+  notify(`Opening "${name}" saved!`);
+}
+
+function renderOpeningList() {
+  const list = document.getElementById('opening-list');
+  const openings = JSON.parse(localStorage.getItem('go_openings') || '[]');
+  if (openings.length === 0) {
+    list.innerHTML = '<div class="opening-empty">No openings saved yet. Play some moves and click Save!</div>';
+    return;
+  }
+  list.innerHTML = openings.map((op, i) => `
+    <div class="opening-item">
+      <div class="opening-item-info">
+        <div class="opening-item-name">${op.name}</div>
+        <div class="opening-item-meta">${op.boardSize}×${op.boardSize} · ${op.moveCount} moves · ${op.date}</div>
+      </div>
+      <button class="act-btn primary" onclick="loadOpening(${i})">▶ Load</button>
+      <button class="act-btn danger" onclick="deleteOpening(${i})" style="padding:10px 12px">🗑</button>
+    </div>
+  `).join('');
+}
+
+function loadOpening(index) {
+  const openings = JSON.parse(localStorage.getItem('go_openings') || '[]');
+  const op = openings[index];
+  if (!op) return;
+  if (op.boardSize !== N) {
+    notify(`Board size mismatch! Opening is ${op.boardSize}×${op.boardSize}`);
+    return;
+  }
+  hideOpeningLibrary();
+  // Reset board state
+  G.board = Array(N * N).fill(0);
+  G.turn = 1;
+  G.prisoners = [0, 0];
+  G.moveLog = [];
+  G.lastMove = -1;
+  G.koPoint = -1;
+  G.moveCount = 0;
+  G.consecutivePasses = 0;
+  G.hasPassed = { 1: false, 2: false };
+  G.fullMoveRecord = [];
+  G.history = [];
+  G.undoStack = [];
+  G.gameOver = false;
+  drawBoard();
+  updateUI();
+  notify(`Replaying "${op.name}"…`);
+  let idx_i = 0;
+  const interval = setInterval(() => {
+    if (idx_i >= op.moves.length) { clearInterval(interval); notify('Opening loaded!'); return; }
+    const mv = op.moves[idx_i];
+    if (mv >= 0 && mv < N * N) placeStone(mv);
+    idx_i++;
+  }, 350);
+}
+
+function deleteOpening(index) {
+  const openings = JSON.parse(localStorage.getItem('go_openings') || '[]');
+  openings.splice(index, 1);
+  localStorage.setItem('go_openings', JSON.stringify(openings));
+  renderOpeningList();
+}
+
+function clearAllOpenings() {
+  if (!confirm('Clear all saved openings?')) return;
+  localStorage.removeItem('go_openings');
+  renderOpeningList();
+}
+
+// Close on click outside
+document.getElementById('opening-library-modal').addEventListener('click', e => {
+  if (e.target.id === 'opening-library-modal') hideOpeningLibrary();
+});
+
+// ============================================================
+//  FEATURE 4: STONE PLACEMENT TRAIL
+// ============================================================
+let stoneTrailEnabled = false;
+let trailParticles = [];
+let trailAnimId = null;
+let trailCtx = null;
+
+function toggleStoneTrail() {
+  stoneTrailEnabled = !stoneTrailEnabled;
+  document.getElementById('trail-state').textContent = stoneTrailEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-trail').classList.toggle('toggle-on', stoneTrailEnabled);
+  if (stoneTrailEnabled) notify('✨ Stone trail ON');
+  else {
+    trailParticles = [];
+    if (trailCtx) trailCtx.clearRect(0, 0, trailCtx.canvas.width, trailCtx.canvas.height);
+  }
+}
+
+function setupTrailCanvas() {
+  const trailCanvas = document.getElementById('trail-canvas');
+  if (!canvas) return;
+  trailCanvas.width = canvas.width;
+  trailCanvas.height = canvas.height;
+  trailCanvas.style.width = canvas.style.width;
+  trailCanvas.style.height = canvas.style.height;
+  trailCanvas.style.position = 'absolute';
+  trailCanvas.style.left = canvas.offsetLeft + 'px';
+  trailCanvas.style.top = canvas.offsetTop + 'px';
+  trailCtx = trailCanvas.getContext('2d');
+}
+
+function spawnTrailParticles(i, color) {
+  if (!stoneTrailEnabled) return;
+  setupTrailCanvas();
+  const [r, c] = pos(i, N);
+  const x = boardOffsetX + c * CELL;
+  const y = boardOffsetY + r * CELL;
+  const isBlack = color === 1;
+  const count = 12;
+  for (let p = 0; p < count; p++) {
+    const angle = (p / count) * Math.PI * 2 + Math.random() * 0.3;
+    const speed = (Math.random() * 2.5 + 1) * (CELL / 36);
+    trailParticles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1.0,
+      size: Math.random() * 4 + 2,
+      color: isBlack ? `rgba(80,80,80,` : `rgba(240,230,200,`,
+    });
+  }
+  // Bloom effect on trail canvas
+  if (trailCtx) {
+    trailCtx.save();
+    const grad = trailCtx.createRadialGradient(x, y, 0, x, y, CELL * 0.8);
+    grad.addColorStop(0, isBlack ? 'rgba(100,100,100,0.6)' : 'rgba(255,255,220,0.6)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    trailCtx.fillStyle = grad;
+    trailCtx.beginPath();
+    trailCtx.arc(x, y, CELL * 0.8, 0, Math.PI * 2);
+    trailCtx.fill();
+    trailCtx.restore();
+  }
+  if (!trailAnimId) animateTrail();
+}
+
+function animateTrail() {
+  if (!trailCtx) { trailAnimId = null; return; }
+  trailCtx.clearRect(0, 0, trailCtx.canvas.width, trailCtx.canvas.height);
+
+  let alive = false;
+  for (const p of trailParticles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= 0.88;
+    p.vy *= 0.88;
+    p.life -= 0.025;
+    if (p.life <= 0) continue;
+    alive = true;
+    trailCtx.save();
+    trailCtx.globalAlpha = p.life;
+    trailCtx.fillStyle = p.color + p.life + ')';
+    trailCtx.shadowColor = p.color + '0.8)';
+    trailCtx.shadowBlur = 6;
+    trailCtx.beginPath();
+    trailCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+    trailCtx.fill();
+    trailCtx.restore();
+  }
+  // Filter dead particles
+  trailParticles = trailParticles.filter(p => p.life > 0);
+
+  if (alive) {
+    trailAnimId = requestAnimationFrame(animateTrail);
+  } else {
+    trailAnimId = null;
+    trailCtx.clearRect(0, 0, trailCtx.canvas.width, trailCtx.canvas.height);
+  }
+}
+
+// ============================================================
+//  FEATURE 5: TERRITORY FLOOD-FILL ANIMATION
+// ============================================================
+function animateTerritoryFlood(territory, N) {
+  if (!canvas) return;
+  // Create overlay canvas
+  const wrapper = document.getElementById('board-wrapper');
+  const wRect = wrapper.getBoundingClientRect();
+  const canRect = canvas.getBoundingClientRect();
+  const ov = document.createElement('canvas');
+  ov.width = canvas.width;
+  ov.height = canvas.height;
+  ov.style.cssText = `position:absolute;left:${canRect.left-wRect.left}px;top:${canRect.top-wRect.top}px;width:${canRect.width}px;height:${canRect.height}px;pointer-events:none;z-index:35;`;
+  wrapper.appendChild(ov);
+  const oc = ov.getContext('2d');
+
+  // BFS from all stone positions outward, wave by wave
+  const revealed = new Set();
+  const waves = [[]];
+
+  // Seed: positions adjacent to living stones
+  for (let i = 0; i < N * N; i++) {
+    if (G.board[i] !== 0 && !G.deadStones.has(i)) {
+      for (const nb of getNeighbors(i, N)) {
+        if (G.board[nb] === 0 && territory[nb] !== 0 && !revealed.has(nb)) {
+          revealed.add(nb);
+          waves[0].push(nb);
+        }
+      }
+    }
+  }
+
+  // Expand waves
+  for (let w = 0; w < N * N; w++) {
+    if (!waves[w] || waves[w].length === 0) break;
+    const next = [];
+    for (const i of waves[w]) {
+      for (const nb of getNeighbors(i, N)) {
+        if (G.board[nb] === 0 && territory[nb] !== 0 && !revealed.has(nb)) {
+          revealed.add(nb);
+          next.push(nb);
+        }
+      }
+    }
+    if (next.length > 0) waves.push(next);
+    else break;
+  }
+
+  let waveIdx = 0;
+  const drawn = new Set();
+
+  const step = () => {
+    if (waveIdx >= waves.length) { return; }
+    const wave = waves[waveIdx] || [];
+    for (const i of wave) {
+      if (drawn.has(i)) continue;
+      drawn.add(i);
+      const t = territory[i];
+      if (t === 0) continue;
+      const [r, c] = pos(i, N);
+      const x = boardOffsetX + c * CELL;
+      const y = boardOffsetY + r * CELL;
+      const half = CELL * 0.42;
+      oc.save();
+      oc.globalAlpha = 0.5;
+      oc.fillStyle = t === 1 ? 'rgba(40,80,255,0.85)' : 'rgba(220,60,40,0.85)';
+      oc.fillRect(x - half, y - half, half * 2, half * 2);
+      // Border
+      oc.globalAlpha = 0.8;
+      oc.strokeStyle = t === 1 ? 'rgba(80,120,255,0.6)' : 'rgba(255,100,80,0.6)';
+      oc.lineWidth = 1;
+      oc.strokeRect(x - half, y - half, half * 2, half * 2);
+      oc.restore();
+    }
+    waveIdx++;
+    if (waveIdx < waves.length) setTimeout(step, 28);
+  };
+  step();
+}
+
+// ============================================================
+//  FEATURE 6: BOARD ANNOTATIONS
+// ============================================================
+let annotateMode = false;
+let annotations = {}; // key: cell index, value: {type, label}
+let annotationLetterIdx = 0;
+
+function toggleAnnotate() {
+  annotateMode = !annotateMode;
+  document.getElementById('annotate-state').textContent = annotateMode ? 'ON' : 'OFF';
+  document.getElementById('btn-annotate').classList.toggle('toggle-on', annotateMode);
+  document.getElementById('annotation-toolbar').classList.toggle('visible', annotateMode);
+  drawBoard();
+  if (annotateMode) notify('✏️ Annotation mode ON — click intersections to place markers');
+}
+
+function placeAnnotation(i) {
+  if (annotations[i]) {
+    delete annotations[i];
+    drawBoard();
+    return;
+  }
+  const type = document.getElementById('ann-type-select').value;
+  let label = '';
+  if (type === 'letter') {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    label = letters[annotationLetterIdx % 26];
+    annotationLetterIdx++;
+  }
+  annotations[i] = { type, label };
+  drawBoard();
+}
+
+function clearAllAnnotations() {
+  annotations = {};
+  annotationLetterIdx = 0;
+  drawBoard();
+}
+
+function drawAnnotations() {
+  if (!ctx) return;
+  for (const [iStr, ann] of Object.entries(annotations)) {
+    const i = parseInt(iStr);
+    const [r, c] = pos(i, N);
+    const x = boardOffsetX + c * CELL;
+    const y = boardOffsetY + r * CELL;
+    const R = CELL * 0.38;
+    const onStone = G.board[i] !== 0;
+    const fgColor = onStone ? (G.board[i] === 1 ? '#fff' : '#000') : 'rgba(255,160,40,1)';
+    const bgColor = onStone ? 'transparent' : 'rgba(0,0,0,0.5)';
+
+    ctx.save();
+    ctx.strokeStyle = fgColor;
+    ctx.fillStyle = fgColor;
+    ctx.lineWidth = 2;
+
+    switch (ann.type) {
+      case 'letter':
+        if (!onStone) {
+          ctx.fillStyle = 'rgba(0,0,0,0.55)';
+          ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = fgColor;
+        ctx.font = `bold ${Math.max(9,CELL*0.3)}px 'Share Tech Mono', monospace`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(ann.label, x, y);
+        break;
+      case 'triangle':
+        ctx.beginPath();
+        ctx.moveTo(x, y - R);
+        ctx.lineTo(x + R * 0.87, y + R * 0.5);
+        ctx.lineTo(x - R * 0.87, y + R * 0.5);
+        ctx.closePath(); ctx.stroke();
+        break;
+      case 'square':
+        const sq = R * 0.8;
+        ctx.strokeRect(x - sq, y - sq, sq * 2, sq * 2);
+        break;
+      case 'circle':
+        ctx.beginPath(); ctx.arc(x, y, R * 0.7, 0, Math.PI * 2); ctx.stroke();
+        break;
+      case 'cross':
+        ctx.beginPath();
+        ctx.moveTo(x - R * 0.7, y - R * 0.7); ctx.lineTo(x + R * 0.7, y + R * 0.7);
+        ctx.moveTo(x + R * 0.7, y - R * 0.7); ctx.lineTo(x - R * 0.7, y + R * 0.7);
+        ctx.stroke();
+        break;
+    }
+    ctx.restore();
+  }
+}
+
+// Patch exportSGF to include annotations
+const _origExportSGF_ann = typeof exportSGF === 'function' ? exportSGF : null;
+
+
 (function bgAnimation() {
   const cv = document.getElementById('bg-canvas');
   const ct = cv.getContext('2d');
@@ -5425,7 +6193,7 @@ loadSavedTexture();
 // Close all modals on Escape
 window.addEventListener('keydown', (e2) => {
   if (e2.key === 'Escape') {
-    ['stats-modal','tsumego-modal','famous-modal','movetree-modal','daily-modal','texture-modal'].forEach(id => {
+    ['stats-modal','tsumego-modal','famous-modal','movetree-modal','daily-modal','texture-modal','opening-library-modal'].forEach(id => {
       document.getElementById(id).classList.remove('visible');
     });
   }
