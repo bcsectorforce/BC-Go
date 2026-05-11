@@ -1472,7 +1472,8 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 /* AMBIENCE CANVAS */
 #ambience-canvas {
   position:fixed; top:0; left:0; width:100%; height:100%;
-  z-index:0; pointer-events:none; opacity:0.55;
+  z-index:0; pointer-events:none; opacity:1;
+  display: none;
 }
 
 /* ===== FEATURE 1: VIDEO EXPORT BUTTON ===== */
@@ -2628,18 +2629,14 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <button class="act-btn" style="text-align:left" onclick="estimateScore()">◈ Score Estimate</button>
         <button class="act-btn" style="text-align:left" onclick="requestAIHint()">💡 AI Hint</button>
         <button class="act-btn" style="text-align:left" onclick="toggleJosekiOverlay()">⬡ Joseki Guide</button>
-        <button class="act-btn" style="text-align:left" onclick="exportSGF()">💾 Export SGF</button>
         <button class="act-btn" style="text-align:left" onclick="startReview()">▶ Review Game</button>
         <button class="act-btn" style="text-align:left" onclick="showMoveTree()">🌿 Move Tree</button>
         <button class="act-btn" style="text-align:left" onclick="showStats()">📊 Statistics</button>
-        <button class="act-btn" style="text-align:left" onclick="showTsumego()">⬡ Tsumego Puzzles</button>
         <button class="act-btn" style="text-align:left" onclick="showFamous()">🏆 Famous Games</button>
-        <button class="act-btn" style="text-align:left" onclick="showDaily()">🌅 Daily Challenge</button>
         <button class="act-btn" style="text-align:left" onclick="showTexture()">🖼 Board Texture</button>
         <button class="act-btn" style="text-align:left" onclick="toggleCoords()">⊞ Toggle Coords</button>
         <button class="act-btn" style="text-align:left" onclick="toggleSound()">♪ Sound: <span id="sound-state">ON</span></button>
         <button class="act-btn" style="text-align:left" onclick="showRules()">📖 How to Play</button>
-        <!-- NEW FEATURES -->
         <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
         <button class="act-btn" id="btn-commentary" style="text-align:left" onclick="toggleCommentary()">🎙 Commentary: <span id="commentary-state">OFF</span></button>
         <button class="act-btn" id="btn-heatmap" style="text-align:left" onclick="toggleHeatMap()">🌡 Heat Map: <span id="heatmap-state">OFF</span></button>
@@ -2647,11 +2644,9 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <button class="act-btn" id="btn-trail" style="text-align:left" onclick="toggleStoneTrail()">✨ Stone Trail: <span id="trail-state">OFF</span></button>
         <button class="act-btn" id="btn-annotate" style="text-align:left" onclick="toggleAnnotate()">✏️ Annotate: <span id="annotate-state">OFF</span></button>
         <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
-        <button class="act-btn" style="text-align:left" onclick="takeSnapshot()">📷 Snapshot</button>
         <button class="act-btn" id="btn-score-graph" style="text-align:left" onclick="toggleScoreGraph()">📈 Score Graph</button>
         <button class="act-btn" id="btn-ambience" style="text-align:left" onclick="toggleAmbience()">🌤 Ambience: <span id="ambience-state">OFF</span></button>
         <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
-        <button class="act-btn" id="btn-threed" style="text-align:left" onclick="toggle3DBoard()">🎲 3D Board: <span id="threed-state">OFF</span></button>
         <button class="act-btn" id="btn-complexity" style="text-align:left" onclick="toggleComplexity()">🌋 Complexity: <span id="complexity-state">OFF</span></button>
       </div>
     </div>
@@ -6761,11 +6756,366 @@ placeStone = function(i) {
 };
 
 // ============================================================
-//  NEW FEATURE 5: WEATHER & TIME-OF-DAY AMBIENCE
+//  CINEMATIC TIME-OF-DAY AMBIENCE SYSTEM
+//  Uses device local time (JS Date) — accounts for DST + time zones automatically
 // ============================================================
 let ambienceEnabled = false;
 let ambienceAnimId = null;
 let ambienceParticles = [];
+let ambienceClock = 0; // animation clock
+
+// Returns fractional hour 0–24 from device's LOCAL time (auto DST/timezone)
+function getLocalFractionalHour() {
+  const now = new Date();
+  return now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+}
+
+// Sky phase: 0=midnight, 0.25=dawn, 0.5=noon, 0.75=sunset, 1=midnight
+// Maps hour 0-24 -> phase 0-1
+function getSkyPhase() {
+  return getLocalFractionalHour() / 24;
+}
+
+// Sun/moon arc: returns {x, y, altitude} where altitude 1 = zenith, -1 = below horizon
+// Sun rises at ~6am, peaks at noon, sets at ~6pm
+function getSunPosition(W, H, phase) {
+  // phase 0=midnight, 0.5=noon
+  // Sun is above horizon roughly 6am-6pm (phase 0.25 - 0.75)
+  // angle sweeps from east (left) to west (right) from dawn to dusk
+  const sunPhase = (phase - 0.25) / 0.5; // 0=sunrise, 0.5=noon, 1=sunset
+  const angle = Math.PI - sunPhase * Math.PI; // arc from left to right
+  const altitude = Math.sin(sunPhase * Math.PI); // 0 at rise/set, 1 at noon
+  const x = W * 0.1 + (W * 0.8) * sunPhase;
+  const horizonY = H * 0.38;
+  const y = horizonY - altitude * H * 0.55;
+  return { x, y, altitude, angle: sunPhase };
+}
+
+// Moon travels opposite arc — visible 6pm to 6am
+function getMoonPosition(W, H, phase) {
+  // Moon is above horizon roughly 6pm-6am (phase 0.75-1.0 and 0.0-0.25)
+  // Normalize moon phase: 0=moonrise(6pm), 1=moonset(6am)
+  let moonPhase;
+  if (phase >= 0.75) moonPhase = (phase - 0.75) / 0.5;
+  else moonPhase = (phase + 0.25) / 0.5;
+  const altitude = Math.sin(moonPhase * Math.PI);
+  const x = W * 0.1 + (W * 0.8) * moonPhase;
+  const horizonY = H * 0.38;
+  const y = horizonY - altitude * H * 0.55;
+  return { x, y, altitude, phase: moonPhase };
+}
+
+// Interpolate between sky color states based on hour
+function getSkyColors(phase) {
+  // Key color stops (hour / 24):
+  // 0.0  midnight: deep navy
+  // 0.17 3am: darkest navy
+  // 0.25 6am: dawn orange-pink
+  // 0.33 8am: morning blue
+  // 0.5  12pm: bright blue
+  // 0.67 4pm: afternoon
+  // 0.75 6pm: sunset orange
+  // 0.83 8pm: dusk purple
+  // 1.0  midnight
+  const stops = [
+    { p: 0.00, top: [8,10,40],    bot: [12,15,60] },
+    { p: 0.17, top: [4,6,28],     bot: [8,10,45] },
+    { p: 0.25, top: [60,30,80],   bot: [220,100,60] },
+    { p: 0.33, top: [30,80,160],  bot: [190,140,90] },
+    { p: 0.50, top: [60,130,220], bot: [130,190,255] },
+    { p: 0.67, top: [45,110,200], bot: [120,175,240] },
+    { p: 0.75, top: [200,80,40],  bot: [240,160,60] },
+    { p: 0.83, top: [80,30,100],  bot: [180,80,80] },
+    { p: 1.00, top: [8,10,40],    bot: [12,15,60] },
+  ];
+  let a = stops[0], b = stops[1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (phase >= stops[i].p && phase <= stops[i+1].p) { a = stops[i]; b = stops[i+1]; break; }
+  }
+  const t = (a.p === b.p) ? 0 : (phase - a.p) / (b.p - a.p);
+  const lerp = (A, B) => Math.round(A + (B - A) * t);
+  const top = [lerp(a.top[0],b.top[0]), lerp(a.top[1],b.top[1]), lerp(a.top[2],b.top[2])];
+  const bot = [lerp(a.bot[0],b.bot[0]), lerp(a.bot[1],b.bot[1]), lerp(a.bot[2],b.bot[2])];
+  return { top, bot };
+}
+
+function getAmbientBoardLight(phase) {
+  // Returns color/intensity of light cast on the board from the sun/moon
+  const hour = phase * 24;
+  if (hour >= 10 && hour <= 14) {
+    // Bright noon — warm golden-white, strong
+    const t = 1 - Math.abs(hour - 12) / 2;
+    return { r: 255, g: 248, b: 200, alpha: 0.28 * t + 0.12 };
+  } else if (hour >= 6 && hour < 10) {
+    // Morning — soft warm orange
+    const t = (hour - 6) / 4;
+    return { r: 255, g: 200, b: 140, alpha: 0.15 * t + 0.04 };
+  } else if (hour > 14 && hour <= 18) {
+    // Afternoon fading
+    const t = 1 - (hour - 14) / 4;
+    return { r: 255, g: 220, b: 160, alpha: 0.2 * t + 0.05 };
+  } else if (hour > 18 && hour < 20) {
+    // Sunset glow on board
+    const t = 1 - (hour - 18) / 2;
+    return { r: 255, g: 120, b: 60, alpha: 0.18 * t };
+  } else if (hour >= 0 && hour < 5 || hour >= 21) {
+    // Moonlight — cool silver-blue
+    const moonPhase = getMoonAltitude(hour);
+    return { r: 180, g: 200, b: 255, alpha: 0.08 * moonPhase };
+  }
+  return { r: 200, g: 200, b: 255, alpha: 0.03 };
+}
+
+function getMoonAltitude(hour) {
+  // Moon arc from 6pm to 6am — peak at midnight
+  const moonHour = hour >= 18 ? hour - 18 : hour + 6;
+  return Math.max(0, Math.sin((moonHour / 12) * Math.PI));
+}
+
+function drawRealisticMoon(ct, x, y, altitude) {
+  if (altitude <= 0) return;
+  const R = Math.max(18, Math.min(38, 28));
+  const alpha = Math.min(1, altitude * 1.5);
+  ct.save();
+
+  // Outer glow — halo
+  const haloGrad = ct.createRadialGradient(x, y, R * 0.6, x, y, R * 3.5);
+  haloGrad.addColorStop(0, `rgba(210,220,255,${0.15 * alpha})`);
+  haloGrad.addColorStop(0.4, `rgba(180,195,255,${0.05 * alpha})`);
+  haloGrad.addColorStop(1, 'rgba(120,140,220,0)');
+  ct.fillStyle = haloGrad;
+  ct.beginPath(); ct.arc(x, y, R * 3.5, 0, Math.PI * 2); ct.fill();
+
+  // Moon base
+  const moonGrad = ct.createRadialGradient(x - R*0.25, y - R*0.25, R*0.05, x, y, R);
+  moonGrad.addColorStop(0, `rgba(255,255,248,${alpha})`);
+  moonGrad.addColorStop(0.4, `rgba(238,242,255,${alpha})`);
+  moonGrad.addColorStop(0.85, `rgba(200,210,240,${alpha})`);
+  moonGrad.addColorStop(1, `rgba(160,175,215,${alpha * 0.8})`);
+  ct.fillStyle = moonGrad;
+  ct.beginPath(); ct.arc(x, y, R, 0, Math.PI * 2); ct.fill();
+
+  // Craters — subtle surface detail
+  ct.globalAlpha = alpha * 0.12;
+  const craters = [
+    {dx:-0.3, dy:-0.2, r:0.18}, {dx:0.2, dy:0.15, r:0.12},
+    {dx:-0.1, dy:0.35, r:0.09}, {dx:0.35, dy:-0.3, r:0.07},
+    {dx:0.05, dy:-0.1, r:0.15},
+  ];
+  for (const c of craters) {
+    const cx2 = x + c.dx * R, cy2 = y + c.dy * R, cr = c.r * R;
+    ct.fillStyle = 'rgba(150,165,200,1)';
+    ct.beginPath(); ct.arc(cx2, cy2, cr, 0, Math.PI * 2); ct.fill();
+  }
+
+  // Shadow side (simulate phase — waxing gibbous style)
+  ct.globalAlpha = alpha * 0.35;
+  ct.fillStyle = 'rgba(20,25,60,1)';
+  ct.beginPath();
+  ct.arc(x + R * 0.18, y, R * 0.97, 0, Math.PI * 2);
+  ct.fill();
+
+  ct.restore();
+}
+
+function drawRealisticSun(ct, x, y, altitude, phase) {
+  if (altitude <= 0) return;
+  const R = 32;
+  const alpha = Math.min(1, altitude * 2);
+
+  // Sun color shifts — white at noon, orange at horizon
+  const horizonness = 1 - altitude; // 1 at horizon, 0 at zenith
+  const coreR = Math.round(255);
+  const coreG = Math.round(255 - horizonness * 120);
+  const coreB = Math.round(255 - horizonness * 220);
+  const outerR = 255, outerG = Math.round(180 - horizonness * 130), outerB = Math.round(50);
+
+  ct.save();
+
+  // Big atmospheric glow
+  const bigGlow = ct.createRadialGradient(x, y, R * 0.3, x, y, R * 8);
+  bigGlow.addColorStop(0, `rgba(${outerR},${outerG},${outerB},${0.20 * alpha})`);
+  bigGlow.addColorStop(0.3, `rgba(${outerR},${Math.round(outerG*0.6)},0,${0.08 * alpha})`);
+  bigGlow.addColorStop(0.7, `rgba(${outerR},${Math.round(outerG*0.3)},0,${0.03 * alpha})`);
+  bigGlow.addColorStop(1, 'rgba(255,100,0,0)');
+  ct.fillStyle = bigGlow;
+  ct.beginPath(); ct.arc(x, y, R * 8, 0, Math.PI * 2); ct.fill();
+
+  // Medium corona
+  const coronaGrad = ct.createRadialGradient(x, y, R * 0.8, x, y, R * 3);
+  coronaGrad.addColorStop(0, `rgba(${outerR},${outerG},${outerB},${0.5 * alpha})`);
+  coronaGrad.addColorStop(1, `rgba(${outerR},${outerG},0,0)`);
+  ct.fillStyle = coronaGrad;
+  ct.beginPath(); ct.arc(x, y, R * 3, 0, Math.PI * 2); ct.fill();
+
+  // Sun disk
+  const diskGrad = ct.createRadialGradient(x - R*0.2, y - R*0.2, 0, x, y, R);
+  diskGrad.addColorStop(0, `rgba(${coreR},${coreG},${coreB},${alpha})`);
+  diskGrad.addColorStop(0.6, `rgba(${outerR},${outerG},${outerB},${alpha})`);
+  diskGrad.addColorStop(1, `rgba(${outerR},${Math.max(0,outerG-30)},0,${alpha * 0.9})`);
+  ct.fillStyle = diskGrad;
+  ct.beginPath(); ct.arc(x, y, R, 0, Math.PI * 2); ct.fill();
+
+  ct.restore();
+}
+
+function drawSkyBackground(ct, W, H, phase) {
+  const { top, bot } = getSkyColors(phase);
+  const skyGrad = ct.createLinearGradient(0, 0, 0, H * 0.85);
+  skyGrad.addColorStop(0, `rgb(${top[0]},${top[1]},${top[2]})`);
+  skyGrad.addColorStop(0.55, `rgb(${bot[0]},${bot[1]},${bot[2]})`);
+  skyGrad.addColorStop(1, `rgba(${bot[0]},${bot[1]},${bot[2]},0)`);
+  ct.fillStyle = skyGrad;
+  ct.fillRect(0, 0, W, H * 0.85);
+}
+
+function drawHorizonGlow(ct, W, H, phase) {
+  const hour = phase * 24;
+  const horizonY = H * 0.38;
+  // Dawn/sunset horizon glow
+  if ((hour >= 5 && hour <= 8) || (hour >= 17 && hour <= 20)) {
+    const t = hour < 12 ? Math.min(1,(hour-5)/3) * (1 - Math.min(1,(hour-7)/1.5))
+                        : Math.min(1,(hour-17)/2) * (1 - Math.min(1,(hour-19)/1));
+    const hgGrad = ct.createLinearGradient(0, horizonY - H*0.1, 0, horizonY + H*0.05);
+    const isdawn = hour < 12;
+    hgGrad.addColorStop(0, `rgba(255,${isdown?120:80},0,0)`);
+    hgGrad.addColorStop(0.5, `rgba(255,${isdown?160:100},40,${0.35 * t})`);
+    hgGrad.addColorStop(1, `rgba(255,${isdown?180:60},20,0)`);
+    ct.fillStyle = hgGrad;
+    ct.fillRect(0, horizonY - H*0.1, W, H*0.15);
+  }
+}
+
+function drawBoardLightShaft(phase) {
+  // Cast soft directional light from sun/moon position onto the board
+  if (!document.getElementById('app').classList.contains('visible')) return;
+  const boardWrapper = document.getElementById('board-wrapper');
+  if (!boardWrapper) return;
+
+  const boardLight = getAmbientBoardLight(phase);
+  const hour = phase * 24;
+
+  // Update board wrapper glow dynamically
+  const sunX = hour >= 6 && hour <= 18 ? (hour - 6) / 12 : -1; // 0=east, 1=west
+  const fromLeft = sunX < 0.5;
+
+  let shadowColor, glowColor;
+  if (hour >= 6 && hour <= 18) {
+    // Sun time
+    const altitude = Math.sin(((hour-6)/12) * Math.PI);
+    const hotness = 1 - Math.abs(hour - 12) / 6;
+    const r = Math.round(200 + 55 * hotness);
+    const g = Math.round(160 + 40 * altitude);
+    const b = Math.round(60 * altitude);
+    glowColor = `rgba(${r},${g},${b},${boardLight.alpha * 2.2})`;
+    shadowColor = `rgba(${r},${g},${b},${boardLight.alpha * 1.5})`;
+  } else {
+    // Moon time
+    const moonAlt = getMoonAltitude(hour);
+    glowColor = `rgba(180,200,255,${0.12 * moonAlt})`;
+    shadowColor = `rgba(160,185,255,${0.08 * moonAlt})`;
+  }
+
+  boardWrapper.style.boxShadow = `
+    0 0 0 2px var(--board-dark),
+    0 0 0 4px rgba(0,0,0,0.5),
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 120px ${glowColor},
+    ${fromLeft ? '-' : ''}30px -20px 80px ${shadowColor}
+  `;
+}
+
+function drawStarsField(ct, W, H, phase, t) {
+  const hour = phase * 24;
+  // Stars visible roughly 7:30pm to 5:30am
+  let starAlpha = 0;
+  if (hour >= 20 || hour <= 5) starAlpha = 1;
+  else if (hour > 19 && hour < 20) starAlpha = (hour - 19);
+  else if (hour > 5 && hour < 6) starAlpha = 1 - (hour - 5);
+  if (starAlpha <= 0) return;
+
+  // Use seeded positions for stable stars
+  if (!window._starField) {
+    window._starField = [];
+    for (let i = 0; i < 180; i++) {
+      window._starField.push({
+        x: Math.random(),
+        y: Math.random() * 0.45, // only in upper sky
+        size: Math.random() * 1.8 + 0.3,
+        twinkleOffset: Math.random() * Math.PI * 2,
+        twinkleSpeed: 0.3 + Math.random() * 0.8,
+      });
+    }
+  }
+  for (const s of window._starField) {
+    const tw = 0.6 + 0.4 * Math.sin(t * s.twinkleSpeed + s.twinkleOffset);
+    const a = starAlpha * tw * 0.9;
+    ct.save();
+    ct.globalAlpha = a;
+    ct.fillStyle = `rgba(220,225,255,1)`;
+    ct.shadowColor = 'rgba(180,190,255,0.8)';
+    ct.shadowBlur = s.size * 3;
+    ct.beginPath();
+    ct.arc(s.x * W, s.y * H * 0.85, s.size * tw, 0, Math.PI * 2);
+    ct.fill();
+    ct.restore();
+  }
+}
+
+// Particles — petals, dust motes, fireflies at dusk, snow crystals etc.
+function createAmbienceParticle(phase, theme, W, H) {
+  const r = () => Math.random();
+  const hour = phase * 24;
+
+  if (theme === 'cherry') {
+    return { x: r()*W, y: -20, vx: (r()-0.5)*1.5+0.4, vy: r()*1.8+0.4,
+      size: r()*7+3, alpha: r()*0.7+0.25,
+      color: `rgba(${220+Math.round(r()*35)},${100+Math.round(r()*70)},${120+Math.round(r()*40)},`,
+      type: 'petal', angle: r()*Math.PI*2, av: (r()-0.5)*0.06 };
+  }
+  if (theme === 'cyber') {
+    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.6, vy: (r()-0.5)*0.6,
+      size: r()*2.5+0.5, alpha: r()*0.9+0.1,
+      color: `rgba(${r()>0.5?0:255},${r()>0.5?255:0},${r()>0.5?255:255},`,
+      type: 'spark', life: r() };
+  }
+  if (theme === 'jade') {
+    return { x: r()*W, y: -20, vx: (r()-0.5)*0.9+0.2, vy: r()*1.4+0.3,
+      size: r()*9+4, alpha: r()*0.45+0.15,
+      color: `rgba(${55+Math.round(r()*45)},${125+Math.round(r()*65)},${55+Math.round(r()*35)},`,
+      type: 'leaf', angle: r()*Math.PI*2, av: (r()-0.5)*0.035 };
+  }
+  if (theme === 'obsidian') {
+    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.35, vy: -(r()*0.6+0.1),
+      size: r()*3.5+1, alpha: r()*0.55+0.1,
+      color: `rgba(${195+Math.round(r()*60)},${75+Math.round(r()*50)},${15+Math.round(r()*25)},`,
+      type: 'ember', life: r() };
+  }
+
+  // Fireflies at dusk (6pm-10pm)
+  if (hour >= 18 && hour <= 22) {
+    return { x: r()*W, y: H*0.3 + r()*H*0.5, vx:(r()-0.5)*0.8, vy:(r()-0.5)*0.5,
+      size: r()*3+1.5, alpha: r()*0.9+0.1,
+      color: `rgba(${180+Math.round(r()*75)},${220+Math.round(r()*35)},${80+Math.round(r()*60)},`,
+      type: 'firefly', twinkle: r()*Math.PI*2, twinkleSpeed: 1.5 + r()*3 };
+  }
+
+  // Night stars / motes
+  if (hour >= 20 || hour <= 5) {
+    return { x: r()*W, y: r()*H*0.7, vx:(r()-0.5)*0.15, vy:(r()-0.5)*0.1,
+      size: r()*1.8+0.4, alpha: r()*0.6+0.2,
+      color:'rgba(200,210,255,', type:'star', twinkle:r()*Math.PI*2, twinkleSpeed:0.5+r()*1.5 };
+  }
+
+  // Dawn/day — warm dust motes
+  return { x: r()*W, y: r()*H,
+    vx: (r()-0.5)*0.3 + 0.12, vy: (r()-0.5)*0.25 - 0.08,
+    size: r()*4+1.5, alpha: r()*0.4+0.1,
+    color: hour < 12
+      ? `rgba(${240+Math.round(r()*15)},${180+Math.round(r()*50)},${90+Math.round(r()*50)},`
+      : `rgba(${240},${225+Math.round(r()*30)},${170+Math.round(r()*50)},`,
+    type: 'mote', twinkle: r()*Math.PI*2, twinkleSpeed: 0.3+r()*0.8 };
+}
 
 function toggleAmbience() {
   ambienceEnabled = !ambienceEnabled;
@@ -6774,21 +7124,23 @@ function toggleAmbience() {
   const cv = document.getElementById('ambience-canvas');
   if (ambienceEnabled) {
     cv.style.display = 'block';
+    cv.style.opacity = '1';
     initAmbience();
-    notify('🌤 Ambience ON — environment matches your local time');
+    const hour = Math.round(getLocalFractionalHour());
+    const timeNames = {5:'dawn',6:'morning',7:'morning',8:'morning',9:'day',10:'day',11:'day',
+      12:'noon',13:'afternoon',14:'afternoon',15:'afternoon',16:'afternoon',
+      17:'evening',18:'sunset',19:'dusk',20:'dusk',21:'night',22:'night',23:'night',
+      0:'midnight',1:'midnight',2:'midnight',3:'night',4:'pre-dawn'};
+    const tod = timeNames[hour % 24] || 'day';
+    notify(`🌤 Ambience ON — ${tod} atmosphere from your device clock`);
   } else {
     cv.style.display = 'none';
     if (ambienceAnimId) { cancelAnimationFrame(ambienceAnimId); ambienceAnimId = null; }
     ambienceParticles = [];
+    // Reset board wrapper shadow
+    const bw = document.getElementById('board-wrapper');
+    if (bw) bw.style.boxShadow = '';
   }
-}
-
-function getTimeOfDay() {
-  const h = new Date().getHours();
-  if (h >= 5 && h < 8) return 'dawn';
-  if (h >= 8 && h < 17) return 'noon';
-  if (h >= 17 && h < 20) return 'sunset';
-  return 'night';
 }
 
 function initAmbience() {
@@ -6796,139 +7148,183 @@ function initAmbience() {
   cv.width = window.innerWidth;
   cv.height = window.innerHeight;
   ambienceParticles = [];
+  ambienceClock = 0;
 
-  const tod = getTimeOfDay();
+  const phase = getSkyPhase();
   const theme = SETUP.theme || 'classic';
-  const count = 60;
-
+  const count = 55;
   for (let i = 0; i < count; i++) {
-    const p = createAmbienceParticle(tod, theme, cv.width, cv.height);
-    // Start at random position
-    p.y = Math.random() * cv.height;
+    const p = createAmbienceParticle(phase, theme, cv.width, cv.height);
+    p.y = Math.random() * cv.height; // scatter initial positions
     ambienceParticles.push(p);
   }
 
   animateAmbience();
 }
 
-function createAmbienceParticle(tod, theme, W, H) {
-  const r = () => Math.random();
-
-  // Special theme overrides
-  if (theme === 'cherry') {
-    return { x: r()*W, y: -20, vx: (r()-0.5)*1.2, vy: r()*1.5+0.5,
-      size: r()*6+3, alpha: r()*0.6+0.3,
-      color: `rgba(${220+Math.round(r()*35)},${100+Math.round(r()*60)},${120+Math.round(r()*30)},`,
-      type: 'petal', angle: r()*Math.PI*2, av: (r()-0.5)*0.05 };
-  }
-  if (theme === 'cyber') {
-    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.5, vy: (r()-0.5)*0.5,
-      size: r()*2+1, alpha: r()*0.8+0.2,
-      color: `rgba(${r()>0.5?0:255},${r()>0.5?255:0},${r()>0.5?255:255},`,
-      type: 'spark', life: r() };
-  }
-  if (theme === 'jade') {
-    return { x: r()*W, y: -20, vx: (r()-0.5)*0.8, vy: r()*1.2+0.3,
-      size: r()*8+4, alpha: r()*0.4+0.2,
-      color: `rgba(${60+Math.round(r()*40)},${130+Math.round(r()*60)},${60+Math.round(r()*30)},`,
-      type: 'leaf', angle: r()*Math.PI*2, av: (r()-0.5)*0.03 };
-  }
-  if (theme === 'obsidian') {
-    return { x: r()*W, y: r()*H, vx: (r()-0.5)*0.3, vy: -(r()*0.5+0.1),
-      size: r()*3+1, alpha: r()*0.5+0.1,
-      color: `rgba(${200+Math.round(r()*55)},${80+Math.round(r()*40)},${20+Math.round(r()*20)},`,
-      type: 'ember', life: r() };
-  }
-
-  // Time-of-day defaults
-  const timeColors = {
-    dawn:   `rgba(${240+Math.round(r()*15)},${180+Math.round(r()*40)},${100+Math.round(r()*40)},`,
-    noon:   `rgba(${240+Math.round(r()*15)},${230+Math.round(r()*25)},${180+Math.round(r()*40)},`,
-    sunset: `rgba(${240+Math.round(r()*15)},${100+Math.round(r()*60)},${40+Math.round(r()*40)},`,
-    night:  `rgba(${200+Math.round(r()*55)},${200+Math.round(r()*55)},${255},`,
-  };
-  const timeTypes = { dawn:'mote', noon:'shimmer', sunset:'glow', night:'star' };
-
-  return {
-    x: r()*W, y: r()*H,
-    vx: (r()-0.5)*0.4, vy: (r()-0.5)*0.4,
-    size: tod==='night' ? r()*2+0.5 : r()*4+1,
-    alpha: r()*0.5+0.2,
-    color: timeColors[tod],
-    type: timeTypes[tod],
-    angle: r()*Math.PI*2, av: (r()-0.5)*0.02,
-    life: r(), twinkle: r()*Math.PI*2,
-  };
-}
-
 function animateAmbience() {
   const cv = document.getElementById('ambience-canvas');
   if (!cv || !ambienceEnabled) { ambienceAnimId = null; return; }
   const ct = cv.getContext('2d');
-  ct.clearRect(0, 0, cv.width, cv.height);
-
-  const tod = getTimeOfDay();
-  const theme = SETUP.theme || 'classic';
   const W = cv.width, H = cv.height;
+  ambienceClock += 0.016;
 
+  ct.clearRect(0, 0, W, H);
+
+  const phase = getSkyPhase();
+  const theme = SETUP.theme || 'classic';
+  const hour = phase * 24;
+
+  // ---- 1. Sky gradient background ----
+  if (theme === 'classic' || theme === 'obsidian' || theme === 'jade') {
+    drawSkyBackground(ct, W, H, phase);
+  }
+
+  // ---- 2. Stars ----
+  drawStarsField(ct, W, H, phase, ambienceClock);
+
+  // ---- 3. Moon (visible ~6pm to ~6am) ----
+  if (hour >= 18 || hour <= 7) {
+    const moonPos = getMoonPosition(W, H, phase);
+    if (moonPos.altitude > 0) {
+      drawRealisticMoon(ct, moonPos.x, moonPos.y, moonPos.altitude);
+      // Moonbeam on the bottom — soft column of light
+      if (moonPos.altitude > 0.15) {
+        const mbAlpha = moonPos.altitude * 0.07;
+        const beamGrad = ct.createLinearGradient(moonPos.x, moonPos.y + 30, moonPos.x, H);
+        beamGrad.addColorStop(0, `rgba(190,210,255,${mbAlpha})`);
+        beamGrad.addColorStop(0.5, `rgba(170,190,255,${mbAlpha * 0.4})`);
+        beamGrad.addColorStop(1, 'rgba(160,180,255,0)');
+        const bw2 = 60 + moonPos.altitude * 80;
+        ct.save();
+        ct.fillStyle = beamGrad;
+        ct.beginPath();
+        ct.moveTo(moonPos.x - bw2, moonPos.y + 30);
+        ct.lineTo(moonPos.x + bw2, moonPos.y + 30);
+        ct.lineTo(moonPos.x + bw2*2.5, H);
+        ct.lineTo(moonPos.x - bw2*2.5, H);
+        ct.closePath();
+        ct.fill();
+        ct.restore();
+      }
+    }
+  }
+
+  // ---- 4. Sun (visible ~6am to ~6pm) ----
+  if (hour >= 5 && hour <= 19) {
+    const sunPos = getSunPosition(W, H, phase);
+    if (sunPos.altitude > 0) {
+      drawRealisticSun(ct, sunPos.x, sunPos.y, sunPos.altitude, phase);
+      // Light shaft from sun — crepuscular rays at dawn/sunset
+      const raysNeeded = sunPos.altitude < 0.25;
+      if (raysNeeded) {
+        const rayCount = 6;
+        const rayAlpha = (0.25 - sunPos.altitude) / 0.25 * 0.06;
+        for (let r = 0; r < rayCount; r++) {
+          const rayAngle = (r / rayCount) * Math.PI - Math.PI / 2 + (r % 2 === 0 ? 0.05 : -0.05);
+          const rayLen = H * 1.2;
+          const rayGrad = ct.createLinearGradient(
+            sunPos.x, sunPos.y,
+            sunPos.x + Math.cos(rayAngle) * rayLen,
+            sunPos.y + Math.sin(rayAngle) * rayLen
+          );
+          rayGrad.addColorStop(0, `rgba(255,200,80,${rayAlpha * 2})`);
+          rayGrad.addColorStop(1, 'rgba(255,150,40,0)');
+          ct.save();
+          ct.strokeStyle = rayGrad;
+          ct.lineWidth = 18 + r * 8;
+          ct.globalAlpha = rayAlpha;
+          ct.beginPath();
+          ct.moveTo(sunPos.x, sunPos.y);
+          ct.lineTo(sunPos.x + Math.cos(rayAngle)*rayLen, sunPos.y + Math.sin(rayAngle)*rayLen);
+          ct.stroke();
+          ct.restore();
+        }
+      }
+    }
+  }
+
+  // ---- 5. Horizon glow at dawn/sunset ----
+  const horizonY = H * 0.38;
+  if ((hour >= 5 && hour <= 9) || (hour >= 16 && hour <= 20)) {
+    const isDawn = hour < 12;
+    const t2 = isDawn ? Math.min(1, (hour - 5) / 2) * Math.max(0, 1 - (hour - 7) / 2)
+                      : Math.min(1, (hour - 16) / 1.5) * Math.max(0, 1 - (hour - 18.5) / 1.5);
+    if (t2 > 0) {
+      const hgGrad = ct.createLinearGradient(0, horizonY - H*0.12, 0, horizonY + H*0.06);
+      const r2 = 255, g2 = isDawn ? 140 : 90, b2 = isDawn ? 60 : 20;
+      hgGrad.addColorStop(0, `rgba(${r2},${g2},${b2},0)`);
+      hgGrad.addColorStop(0.45, `rgba(${r2},${g2},${b2},${0.45 * t2})`);
+      hgGrad.addColorStop(1, `rgba(${r2},${Math.max(0,g2-40)},0,0)`);
+      ct.fillStyle = hgGrad;
+      ct.fillRect(0, horizonY - H*0.12, W, H*0.18);
+    }
+  }
+
+  // ---- 6. Screen-wide ambient light wash (time-colored) ----
+  const boardLight = getAmbientBoardLight(phase);
+  const screenWash = ct.createRadialGradient(W/2, H*0.45, 0, W/2, H*0.45, Math.max(W,H)*0.75);
+  screenWash.addColorStop(0, `rgba(${boardLight.r},${boardLight.g},${boardLight.b},${boardLight.alpha * 0.5})`);
+  screenWash.addColorStop(1, `rgba(${boardLight.r},${boardLight.g},${boardLight.b},0)`);
+  ct.fillStyle = screenWash;
+  ct.fillRect(0, 0, W, H);
+
+  // ---- 7. Atmospheric particles ----
   for (const p of ambienceParticles) {
     p.x += p.vx;
     p.y += p.vy;
     if (p.angle !== undefined) p.angle += (p.av || 0);
-    if (p.twinkle !== undefined) p.twinkle += 0.04;
-    p.life = (p.life || 0) + 0.005;
+    if (p.twinkle !== undefined) p.twinkle += (p.twinkleSpeed || 0.04) * 0.016;
 
-    // Wrap
-    if (p.x < -20) p.x = W + 20;
-    if (p.x > W + 20) p.x = -20;
-    if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
-    if (p.y < -20) p.y = H + 20;
+    if (p.x < -30) p.x = W + 30;
+    if (p.x > W + 30) p.x = -30;
+    if (p.y > H + 30) { p.y = -30; p.x = Math.random() * W; }
+    if (p.y < -30 && p.vy < 0) p.y = H + 30;
 
-    const alpha = p.type === 'star' ? p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle)) : p.alpha;
+    let alpha = p.alpha;
+    if (p.type === 'star' || p.type === 'firefly') {
+      alpha = p.alpha * (0.4 + 0.6 * Math.sin(p.twinkle || 0));
+    } else if (p.type === 'mote') {
+      alpha = p.alpha * (0.6 + 0.4 * Math.sin(p.twinkle || 0));
+    }
 
     ct.save();
-    ct.globalAlpha = alpha;
+    ct.globalAlpha = Math.max(0, alpha);
 
     if (p.type === 'petal') {
-      // Cherry blossom petal
-      ct.translate(p.x, p.y);
-      ct.rotate(p.angle);
+      ct.translate(p.x, p.y); ct.rotate(p.angle);
       ct.fillStyle = p.color + alpha + ')';
-      ct.beginPath();
-      ct.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
-      ct.fill();
+      ct.beginPath(); ct.ellipse(0, 0, p.size, p.size*0.5, 0, 0, Math.PI*2); ct.fill();
     } else if (p.type === 'leaf') {
-      ct.translate(p.x, p.y);
-      ct.rotate(p.angle);
+      ct.translate(p.x, p.y); ct.rotate(p.angle);
       ct.fillStyle = p.color + alpha + ')';
-      ct.beginPath();
-      ct.ellipse(0, 0, p.size * 0.5, p.size, 0, 0, Math.PI * 2);
-      ct.fill();
+      ct.beginPath(); ct.ellipse(0, 0, p.size*0.45, p.size, 0, 0, Math.PI*2); ct.fill();
     } else if (p.type === 'spark' || p.type === 'ember') {
       ct.fillStyle = p.color + alpha + ')';
-      ct.shadowColor = p.color + '0.9)';
-      ct.shadowBlur = 6;
-      ct.beginPath();
-      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ct.fill();
+      ct.shadowColor = p.color + '1)'; ct.shadowBlur = 8;
+      ct.beginPath(); ct.arc(p.x, p.y, p.size, 0, Math.PI*2); ct.fill();
+    } else if (p.type === 'firefly') {
+      ct.fillStyle = p.color + alpha + ')';
+      ct.shadowColor = p.color + '1)'; ct.shadowBlur = p.size * 5;
+      ct.beginPath(); ct.arc(p.x, p.y, p.size, 0, Math.PI*2); ct.fill();
     } else if (p.type === 'star') {
       ct.fillStyle = p.color + alpha + ')';
-      ct.shadowColor = p.color + '0.8)';
-      ct.shadowBlur = p.size * 3;
-      ct.beginPath();
-      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ct.fill();
+      ct.shadowColor = p.color + '0.9)'; ct.shadowBlur = p.size * 4;
+      ct.beginPath(); ct.arc(p.x, p.y, p.size, 0, Math.PI*2); ct.fill();
     } else {
-      // mote / shimmer / glow
-      const grad = ct.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-      grad.addColorStop(0, p.color + alpha + ')');
-      grad.addColorStop(1, p.color + '0)');
-      ct.fillStyle = grad;
-      ct.beginPath();
-      ct.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ct.fill();
+      // mote / shimmer
+      const grad2 = ct.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
+      grad2.addColorStop(0, p.color + alpha + ')');
+      grad2.addColorStop(1, p.color + '0)');
+      ct.fillStyle = grad2;
+      ct.beginPath(); ct.arc(p.x, p.y, p.size * 2, 0, Math.PI*2); ct.fill();
     }
     ct.restore();
+  }
+
+  // ---- 8. Update board light shaft (every ~60 frames to avoid reflow spam) ----
+  if (Math.round(ambienceClock * 60) % 60 === 0) {
+    drawBoardLightShaft(phase);
   }
 
   ambienceAnimId = requestAnimationFrame(animateAmbience);
