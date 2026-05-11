@@ -1475,6 +1475,118 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
   z-index:0; pointer-events:none; opacity:0.55;
 }
 
+/* ===== FEATURE 1: VIDEO EXPORT BUTTON ===== */
+.video-export-btn {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  border: none;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  padding: 12px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  flex: 1;
+}
+.video-export-btn:hover { background: linear-gradient(135deg, #e74c3c, #c0392b); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(231,76,60,0.4); }
+.video-export-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+#video-progress-bar {
+  display: none;
+  width: 100%; height: 4px;
+  background: var(--ui-border);
+  margin-top: 8px;
+  overflow: hidden;
+}
+#video-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
+  width: 0%;
+  transition: width 0.2s linear;
+}
+
+/* ===== FEATURE 2: 3D BOARD MODE ===== */
+#webgl-canvas {
+  display: none;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 5;
+  cursor: grab;
+}
+#webgl-canvas:active { cursor: grabbing; }
+#threed-badge {
+  display: none;
+  position: absolute;
+  top: -24px; left: 50%; transform: translateX(-50%);
+  background: rgba(196,154,80,0.15);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 9px; letter-spacing: 0.3em;
+  padding: 3px 10px;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ===== FEATURE 3: COORDINATE TOOLTIP ===== */
+#coord-tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 700;
+  background: rgba(196,154,80,0.95);
+  color: #000;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  letter-spacing: 0.15em;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+#coord-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== FEATURE 5: COMPLEXITY METER ===== */
+#complexity-panel {
+  display: none;
+  max-width: 600px;
+  width: 100%;
+  padding: 16px 20px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--ui-border);
+  position: relative;
+}
+#complexity-panel.visible { display: block; }
+.complexity-gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+#complexity-gauge {
+  flex-shrink: 0;
+}
+.complexity-breakdown {
+  flex: 1;
+  min-width: 160px;
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--text-dim);
+  font-family: 'Share Tech Mono', monospace;
+}
+.complexity-breakdown span { color: var(--accent); }
+.complexity-label {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 4px;
+  letter-spacing: 0.15em;
+}
 
 </style>
 </head>
@@ -1483,6 +1595,7 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 <canvas id="bg-canvas"></canvas>
 <canvas id="confetti-canvas"></canvas>
 <canvas id="ambience-canvas" style="display:none"></canvas>
+<div id="coord-tooltip">📋 Q16 copied!</div>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -1659,11 +1772,9 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
     <div style="margin-top:8px;display:flex;gap:8px">
       <button class="act-btn" style="flex:1" onclick="showSetup()">⚙ New Setup</button>
       <button class="act-btn primary" style="flex:1" onclick="requestPostGameAnalysis()">🔍 AI Analysis</button>
+      <button class="video-export-btn" id="video-export-btn" onclick="exportGameVideo()">🎬 Export Video</button>
     </div>
-    <div style="margin-top:8px;display:flex;gap:8px">
-      <button id="export-video-btn" class="act-btn" style="flex:1;background:rgba(180,60,60,0.15);border-color:rgba(200,80,80,0.5);color:#e87070" onclick="exportGameVideo()">🎬 Export Video</button>
-      <div id="video-export-status" style="flex:1;font-size:11px;color:var(--text-dim);display:flex;align-items:center;padding-left:8px;letter-spacing:0.1em"></div>
-    </div>
+    <div id="video-progress-bar"><div id="video-progress-fill"></div></div>
     <!-- AI Analysis result panel -->
     <div id="ai-analysis-panel" style="display:none;margin-top:14px;text-align:left;font-size:12px;line-height:1.8"></div>
   </div>
@@ -2370,9 +2481,9 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 
     <div class="board-wrapper" id="board-wrapper">
       <canvas id="go-board"></canvas>
+      <canvas id="webgl-canvas"></canvas>
+      <div id="threed-badge">🎲 3D MODE ACTIVE — drag to rotate</div>
       <canvas id="trail-canvas"></canvas>
-      <!-- FEATURE 2: 3D WebGL Board Overlay -->
-      <canvas id="webgl-board" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;z-index:60;border-radius:0"></canvas>
       <div id="heatmap-legend">
         <div class="hm-row"><div class="hm-swatch" style="background:rgba(60,100,255,0.7)"></div> Black influence</div>
         <div class="hm-row"><div class="hm-swatch" style="background:rgba(220,60,60,0.7)"></div> White influence</div>
@@ -2399,13 +2510,6 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <canvas id="score-graph-canvas" height="100" style="width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(196,154,80,0.15);display:block"></canvas>
     </div>
 
-    <!-- FEATURE 5: COMPLEXITY METER -->
-    <div id="complexity-panel" style="display:none;width:100%;max-width:600px;padding:14px;background:var(--panel-bg);border:1px solid var(--ui-border);margin-top:4px">
-      <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">🌋 Positional Complexity</div>
-      <canvas id="complexity-canvas" width="580" height="160" style="display:block;width:100%;max-width:580px"></canvas>
-      <div id="complexity-breakdown" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--text-dim);letter-spacing:0.15em"></div>
-    </div>
-
     <!-- KO VISUALIZER PANEL (Feature 6) -->
     <div id="ko-panel" style="display:none;padding:10px 14px;background:rgba(255,100,0,0.08);border:1px solid rgba(255,140,0,0.3);font-size:12px;line-height:1.7;max-width:600px;width:100%">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
@@ -2417,6 +2521,21 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <div>Est. Value: <strong id="ko-value" style="color:#ff8c00">—</strong></div>
         <div>Ko Threats: <strong id="ko-threat-count" style="color:#ff8c00">0</strong></div>
       </div>
+    </div>
+
+    <!-- COMPLEXITY METER PANEL (Feature 5) -->
+    <div id="complexity-panel">
+      <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">🌋 Positional Complexity</div>
+      <div class="complexity-gauge-wrap">
+        <canvas id="complexity-gauge" width="180" height="100"></canvas>
+        <div class="complexity-breakdown" id="complexity-breakdown">
+          Atari threats: <span id="cx-atari">0</span><br>
+          Ko fights: <span id="cx-ko">0</span><br>
+          Unsettled groups: <span id="cx-groups">0</span><br>
+          Total captures: <span id="cx-caps">0</span>
+        </div>
+      </div>
+      <div class="complexity-label" id="complexity-label" style="color:var(--accent)">Calm</div>
     </div>
 
     <!-- Annotation toolbar -->
@@ -2522,9 +2641,6 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <button class="act-btn" style="text-align:left" onclick="showRules()">📖 How to Play</button>
         <!-- NEW FEATURES -->
         <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
-        <button class="act-btn" id="btn-3d" style="text-align:left" onclick="toggle3DBoard()">🎲 3D Board: <span id="3d-state">OFF</span></button>
-        <button class="act-btn" id="btn-complexity" style="text-align:left" onclick="toggleComplexityMeter()">🌋 Complexity: <span id="complexity-state">OFF</span></button>
-        <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
         <button class="act-btn" id="btn-commentary" style="text-align:left" onclick="toggleCommentary()">🎙 Commentary: <span id="commentary-state">OFF</span></button>
         <button class="act-btn" id="btn-heatmap" style="text-align:left" onclick="toggleHeatMap()">🌡 Heat Map: <span id="heatmap-state">OFF</span></button>
         <button class="act-btn" style="text-align:left" onclick="showOpeningLibrary()">📚 Opening Library</button>
@@ -2534,6 +2650,9 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
         <button class="act-btn" style="text-align:left" onclick="takeSnapshot()">📷 Snapshot</button>
         <button class="act-btn" id="btn-score-graph" style="text-align:left" onclick="toggleScoreGraph()">📈 Score Graph</button>
         <button class="act-btn" id="btn-ambience" style="text-align:left" onclick="toggleAmbience()">🌤 Ambience: <span id="ambience-state">OFF</span></button>
+        <div style="height:1px;background:var(--ui-border);margin:4px 0"></div>
+        <button class="act-btn" id="btn-threed" style="text-align:left" onclick="toggle3DBoard()">🎲 3D Board: <span id="threed-state">OFF</span></button>
+        <button class="act-btn" id="btn-complexity" style="text-align:left" onclick="toggleComplexity()">🌋 Complexity: <span id="complexity-state">OFF</span></button>
       </div>
     </div>
 
@@ -7076,12 +7195,702 @@ function animateCapturedStones(capturedIndices, capturedColor) {
   animFrame();
 }
 
-// Override animateCaptures to use physics animation
-// (replaces the flash-only version defined earlier)
+// animateCaptures is fully overridden below (Feature 4 section) with physics + cascade + flash combined.
+
+// ============================================================
+//  FEATURE 1: ANIMATED GAME VIDEO EXPORT
+// ============================================================
+async function exportGameVideo() {
+  if (!G.fullMoveRecord || G.fullMoveRecord.length === 0) {
+    notify('No moves to export!');
+    return;
+  }
+  const btn = document.getElementById('video-export-btn');
+  const progressBar = document.getElementById('video-progress-bar');
+  const progressFill = document.getElementById('video-progress-fill');
+  btn.disabled = true;
+  btn.textContent = '⏳ Recording…';
+  progressBar.style.display = 'block';
+  progressFill.style.width = '0%';
+
+  // Fixed render canvas 600×660
+  const VW = 600, VH = 660;
+  const vc = document.createElement('canvas');
+  vc.width = VW; vc.height = VH;
+  const vc_ctx = vc.getContext('2d');
+
+  // Compute board layout for video canvas
+  const VN = G.N;
+  const VCELL = Math.floor(Math.min(VW, VH - 60) / (VN + 1));
+  const VPad = VCELL * 1.2;
+  const VBoardW = VCELL * (VN - 1) + VPad * 2;
+  const VOffX = (VW - VBoardW) / 2 + VPad;
+  const VOffY = VPad + 30;
+
+  function drawVideoFrame(board, moveNum, lastMoveIdx, bPrisoners, wPrisoners) {
+    // Background
+    vc_ctx.fillStyle = '#1a1209';
+    vc_ctx.fillRect(0, 0, VW, VH);
+
+    // Score counters at top
+    vc_ctx.fillStyle = 'rgba(196,154,80,0.12)';
+    vc_ctx.fillRect(0, 0, VW, 28);
+    vc_ctx.fillStyle = '#C49A50';
+    vc_ctx.font = 'bold 11px monospace';
+    vc_ctx.textAlign = 'left';
+    vc_ctx.fillText(`⚫ Black captured: ${bPrisoners}`, 14, 18);
+    vc_ctx.textAlign = 'right';
+    vc_ctx.fillText(`White captured: ${wPrisoners} ⚪`, VW - 14, 18);
+    vc_ctx.textAlign = 'center';
+    vc_ctx.fillStyle = 'rgba(196,154,80,0.8)';
+    vc_ctx.fillText(`Move ${moveNum}`, VW / 2, 18);
+
+    // Board background
+    const grad = vc_ctx.createLinearGradient(VOffX - VPad, VOffY - VPad, VOffX - VPad + VBoardW, VOffY - VPad + VBoardW);
+    grad.addColorStop(0, '#DCB16C');
+    grad.addColorStop(1, '#C49A50');
+    vc_ctx.fillStyle = grad;
+    vc_ctx.fillRect(VOffX - VPad, VOffY - VPad, VBoardW, VBoardW);
+
+    // Grid
+    vc_ctx.strokeStyle = 'rgba(100,60,0,0.8)';
+    vc_ctx.lineWidth = 1;
+    for (let i = 0; i < VN; i++) {
+      const x = VOffX + i * VCELL;
+      const y = VOffY + i * VCELL;
+      vc_ctx.beginPath(); vc_ctx.moveTo(VOffX, y); vc_ctx.lineTo(VOffX + (VN-1)*VCELL, y); vc_ctx.stroke();
+      vc_ctx.beginPath(); vc_ctx.moveTo(x, VOffY); vc_ctx.lineTo(x, VOffY + (VN-1)*VCELL); vc_ctx.stroke();
+    }
+
+    // Hoshi
+    const hoshi = getHoshiPoints(VN);
+    vc_ctx.fillStyle = 'rgba(100,60,0,0.9)';
+    for (const [r, c] of hoshi) {
+      vc_ctx.beginPath();
+      vc_ctx.arc(VOffX + c * VCELL, VOffY + r * VCELL, VCELL * 0.1, 0, Math.PI * 2);
+      vc_ctx.fill();
+    }
+
+    // Move number labels on stones
+    for (let i = 0; i < VN * VN; i++) {
+      if (board[i] === 0) continue;
+      const [r, c] = pos(i, VN);
+      const x = VOffX + c * VCELL;
+      const y = VOffY + r * VCELL;
+      const R = VCELL * 0.47;
+
+      // Stone
+      vc_ctx.save();
+      vc_ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      vc_ctx.shadowBlur = 4;
+      vc_ctx.shadowOffsetX = 1; vc_ctx.shadowOffsetY = 2;
+      if (board[i] === 1) {
+        const sg = vc_ctx.createRadialGradient(x - R*0.3, y - R*0.35, R*0.05, x, y, R);
+        sg.addColorStop(0, '#555'); sg.addColorStop(0.3, '#222'); sg.addColorStop(1, '#050505');
+        vc_ctx.fillStyle = sg;
+      } else {
+        const sg = vc_ctx.createRadialGradient(x - R*0.3, y - R*0.35, R*0.05, x, y, R);
+        sg.addColorStop(0, '#ffffff'); sg.addColorStop(0.4, '#e8e0d0'); sg.addColorStop(1, '#c0b8a8');
+        vc_ctx.fillStyle = sg;
+      }
+      vc_ctx.beginPath(); vc_ctx.arc(x, y, R, 0, Math.PI * 2); vc_ctx.fill();
+      vc_ctx.restore();
+
+      // Last move indicator
+      if (i === lastMoveIdx) {
+        vc_ctx.save();
+        vc_ctx.strokeStyle = board[i] === 1 ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)';
+        vc_ctx.lineWidth = 2;
+        vc_ctx.beginPath(); vc_ctx.arc(x, y, R * 0.42, 0, Math.PI * 2); vc_ctx.stroke();
+        vc_ctx.restore();
+      }
+    }
+
+    // Watermark
+    vc_ctx.save();
+    vc_ctx.globalAlpha = 0.25;
+    vc_ctx.fillStyle = '#C49A50';
+    vc_ctx.font = '11px monospace';
+    vc_ctx.textAlign = 'center';
+    vc_ctx.fillText('Made by James Degenhardt', VW / 2, VH - 8);
+    vc_ctx.restore();
+  }
+
+  // Check MediaRecorder support
+  if (!window.MediaRecorder || !vc.captureStream) {
+    btn.disabled = false;
+    btn.textContent = '🎬 Export Video';
+    progressBar.style.display = 'none';
+    notify('⚠ Video export requires Chrome/Edge');
+    return;
+  }
+
+  const stream = vc.captureStream(30);
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 2500000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `go_game_${new Date().toISOString().slice(0,10)}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+    btn.disabled = false;
+    btn.textContent = '🎬 Export Video';
+    progressBar.style.display = 'none';
+    notify('🎬 Video downloaded!');
+  };
+
+  recorder.start();
+
+  const records = G.fullMoveRecord;
+  const total = records.length;
+  let bp = 0, wp = 0;
+
+  // Replay each move at 500ms/move
+  const playNext = (idx_v) => {
+    if (idx_v > total) {
+      // Winner screen for 3 seconds
+      vc_ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      vc_ctx.fillRect(0, 0, VW, VH);
+      vc_ctx.fillStyle = '#C49A50';
+      vc_ctx.font = 'bold 42px serif';
+      vc_ctx.textAlign = 'center';
+      const wt = document.getElementById('win-title').textContent;
+      vc_ctx.fillText(wt, VW/2, VH/2 - 20);
+      vc_ctx.font = '16px monospace';
+      vc_ctx.fillStyle = 'rgba(196,154,80,0.7)';
+      vc_ctx.fillText(`Black: ${document.getElementById('win-black').textContent} · White: ${document.getElementById('win-white').textContent}`, VW/2, VH/2 + 20);
+      vc_ctx.font = '11px monospace';
+      vc_ctx.globalAlpha = 0.4;
+      vc_ctx.fillText('Made by James Degenhardt', VW/2, VH/2 + 60);
+      progressFill.style.width = '100%';
+      setTimeout(() => recorder.stop(), 3000);
+      return;
+    }
+
+    if (idx_v < total) {
+      const rec = records[idx_v];
+      // Update prisoner counts
+      if (idx_v > 0) {
+        const prev = records[idx_v - 1];
+        const prevBp = prev.prisoners ? prev.prisoners[0] : bp;
+        const prevWp = prev.prisoners ? prev.prisoners[1] : wp;
+        bp = rec.prisoners ? rec.prisoners[0] : bp;
+        wp = rec.prisoners ? rec.prisoners[1] : wp;
+      }
+      drawVideoFrame(rec.board, idx_v + 1, rec.move, bp, wp);
+    }
+    progressFill.style.width = (idx_v / total * 90) + '%';
+    setTimeout(() => playNext(idx_v + 1), 500);
+  };
+
+  // Start with empty board
+  drawVideoFrame(Array(VN * VN).fill(0), 0, -1, 0, 0);
+  setTimeout(() => playNext(0), 600);
+}
+
+// ============================================================
+//  FEATURE 2: 3D BOARD MODE (WebGL)
+// ============================================================
+let threedEnabled = false;
+let webgl = null;
+let webglProgram = null;
+let webglDragStart = null;
+let webglRotX = 30;
+let webglRotY = 0;
+let webglAnimFrame = null;
+
+function toggle3DBoard() {
+  threedEnabled = !threedEnabled;
+  document.getElementById('threed-state').textContent = threedEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-threed').classList.toggle('toggle-on', threedEnabled);
+  const webglCanvas = document.getElementById('webgl-canvas');
+  const badge = document.getElementById('threed-badge');
+  if (threedEnabled) {
+    webglCanvas.width = canvas.width;
+    webglCanvas.height = canvas.height;
+    webglCanvas.style.width = canvas.style.width;
+    webglCanvas.style.height = canvas.style.height;
+    webglCanvas.style.display = 'block';
+    badge.style.display = 'block';
+    if (!webgl) initWebGL(webglCanvas);
+    setup3DInteraction(webglCanvas);
+    render3D();
+    notify('🎲 3D Board ON — drag to rotate');
+  } else {
+    webglCanvas.style.display = 'none';
+    badge.style.display = 'none';
+    if (webglAnimFrame) { cancelAnimationFrame(webglAnimFrame); webglAnimFrame = null; }
+    remove3DInteraction(webglCanvas);
+  }
+}
+
+function initWebGL(c) {
+  webgl = c.getContext('webgl') || c.getContext('experimental-webgl');
+  if (!webgl) { notify('WebGL not supported'); threedEnabled = false; return; }
+
+  const gl = webgl;
+
+  const vsSource = `
+    attribute vec3 aPos;
+    attribute vec3 aNorm;
+    attribute vec3 aColor;
+    uniform mat4 uMVP;
+    uniform mat4 uModel;
+    varying vec3 vNorm;
+    varying vec3 vColor;
+    varying vec3 vWorldPos;
+    void main() {
+      vec4 worldPos = uModel * vec4(aPos, 1.0);
+      vWorldPos = worldPos.xyz;
+      vNorm = mat3(uModel) * aNorm;
+      vColor = aColor;
+      gl_Position = uMVP * vec4(aPos, 1.0);
+    }
+  `;
+
+  const fsSource = `
+    precision mediump float;
+    varying vec3 vNorm;
+    varying vec3 vColor;
+    varying vec3 vWorldPos;
+    void main() {
+      vec3 light = normalize(vec3(0.5, 1.0, 0.8));
+      float diff = max(dot(normalize(vNorm), light), 0.0);
+      vec3 ambient = vColor * 0.35;
+      vec3 diffuse = vColor * diff * 0.65;
+      // Specular
+      vec3 viewDir = normalize(vec3(0.0, 0.0, 5.0) - vWorldPos);
+      vec3 reflectDir = reflect(-light, normalize(vNorm));
+      float spec = pow(max(dot(viewDir, reflectDir), 0.0), 24.0);
+      vec3 specular = vec3(1.0) * spec * 0.3;
+      // Soft shadow bottom
+      float shadow = 0.7 + 0.3 * max(0.0, normalize(vNorm).y);
+      gl_FragColor = vec4((ambient + diffuse + specular) * shadow, 1.0);
+    }
+  `;
+
+  function compileShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, vsSource));
+  gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, fsSource));
+  gl.linkProgram(prog);
+  webglProgram = prog;
+  gl.useProgram(prog);
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+}
+
+function mat4Mult(a, b) {
+  const r = new Float32Array(16);
+  for (let i = 0; i < 4; i++)
+    for (let j = 0; j < 4; j++)
+      for (let k = 0; k < 4; k++)
+        r[i*4+j] += a[i*4+k] * b[k*4+j];
+  return r;
+}
+
+function mat4Perspective(fov, aspect, near, far) {
+  const f = 1.0 / Math.tan(fov / 2);
+  const nf = 1 / (near - far);
+  return new Float32Array([
+    f/aspect, 0, 0, 0,
+    0, f, 0, 0,
+    0, 0, (far+near)*nf, -1,
+    0, 0, 2*far*near*nf, 0
+  ]);
+}
+
+function mat4RotX(a) {
+  const c = Math.cos(a), s = Math.sin(a);
+  return new Float32Array([1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]);
+}
+
+function mat4RotY(a) {
+  const c = Math.cos(a), s = Math.sin(a);
+  return new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]);
+}
+
+function mat4Trans(x, y, z) {
+  return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1]);
+}
+
+function mat4Identity() {
+  return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+}
+
+function buildSphereGeometry(rx, ry, rz, segs) {
+  const verts = [], norms = [], inds = [];
+  for (let lat = 0; lat <= segs; lat++) {
+    const theta = lat * Math.PI / segs;
+    const sinT = Math.sin(theta), cosT = Math.cos(theta);
+    for (let lon = 0; lon <= segs; lon++) {
+      const phi = lon * 2 * Math.PI / segs;
+      const sinP = Math.sin(phi), cosP = Math.cos(phi);
+      verts.push(rx * sinT * cosP, ry * cosT, rz * sinT * sinP);
+      const nx = sinT * cosP / rx, ny = cosT / ry, nz = sinT * sinP / rz;
+      const nl = Math.hypot(nx, ny, nz);
+      norms.push(nx/nl, ny/nl, nz/nl);
+    }
+  }
+  for (let lat = 0; lat < segs; lat++) {
+    for (let lon = 0; lon < segs; lon++) {
+      const a = lat*(segs+1)+lon, b = a+segs+1;
+      inds.push(a, b, a+1, b, b+1, a+1);
+    }
+  }
+  return { verts: new Float32Array(verts), norms: new Float32Array(norms), inds: new Uint16Array(inds) };
+}
+
+function buildBoardGeometry(size, N_v) {
+  const verts = [], norms = [], cols = [];
+  const step = size / (N_v - 1);
+  const h = size * 0.03;
+  // Board slab
+  const hw = size / 2 + step * 0.6;
+  const woodColor = [0.86, 0.69, 0.42];
+  const woodDark = [0.77, 0.60, 0.31];
+  // Top face
+  function addQuad(x0,y0,z0, x1,y1,z1, x2,y2,z2, x3,y3,z3, col) {
+    const base = verts.length / 3;
+    verts.push(x0,y0,z0, x1,y1,z1, x2,y2,z2, x3,y3,z3);
+    norms.push(0,1,0, 0,1,0, 0,1,0, 0,1,0);
+    for (let k = 0; k < 4; k++) cols.push(...col);
+    return base;
+  }
+  // Top face alternating wood grain stripes
+  const inds = [];
+  for (let i = 0; i < N_v - 1; i++) {
+    for (let j = 0; j < N_v - 1; j++) {
+      const x0 = -size/2 + j*step, z0 = -size/2 + i*step;
+      const col = ((i+j) % 2 === 0) ? woodColor : woodDark;
+      const base = addQuad(x0,h,z0, x0+step,h,z0, x0+step,h,z0+step, x0,h,z0+step, col);
+      inds.push(base, base+1, base+2, base, base+2, base+3);
+    }
+  }
+  // Side faces
+  function addSide(x0,y0,z0, x1,y1,z1, nx,ny,nz, col) {
+    const base = verts.length / 3;
+    verts.push(x0,y0,z0, x1,y1,z1, x1,0,z1, x0,0,z0);
+    for (let k = 0; k < 4; k++) { norms.push(nx,ny,nz); cols.push(...col); }
+    inds.push(base, base+1, base+2, base, base+2, base+3);
+  }
+  addSide(-hw,h,-hw, hw,h,-hw, 0,0,-1, woodDark);
+  addSide(hw,h,-hw, hw,h,hw, 1,0,0, woodDark);
+  addSide(hw,h,hw, -hw,h,hw, 0,0,1, woodDark);
+  addSide(-hw,h,hw, -hw,h,-hw, -1,0,0, woodDark);
+
+  return {
+    verts: new Float32Array(verts),
+    norms: new Float32Array(norms),
+    cols: new Float32Array(cols),
+    inds: new Uint16Array(inds)
+  };
+}
+
+function render3D() {
+  if (!threedEnabled || !webgl) { webglAnimFrame = null; return; }
+  const gl = webgl;
+  const prog = webglProgram;
+  const c = document.getElementById('webgl-canvas');
+  gl.viewport(0, 0, c.width, c.height);
+  gl.clearColor(0.07, 0.06, 0.05, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  const aspect = c.width / c.height;
+  const proj = mat4Perspective(0.8, aspect, 0.1, 100);
+  const rx = mat4RotX(webglRotX * Math.PI / 180);
+  const ry = mat4RotY(webglRotY * Math.PI / 180);
+  const view = mat4Trans(0, -0.5, -6.5);
+  const rot = mat4Mult(rx, ry);
+  const mv = mat4Mult(view, rot);
+  const mvp = mat4Mult(proj, mv);
+
+  const uMVP = gl.getUniformLocation(prog, 'uMVP');
+  const uModel = gl.getUniformLocation(prog, 'uModel');
+
+  // Draw board
+  const boardSize = 4.0;
+  const boardGeo = buildBoardGeometry(boardSize, G ? G.N : 19);
+  drawWebGLMesh(gl, prog, boardGeo.verts, boardGeo.norms, boardGeo.cols, boardGeo.inds, mvp, mat4Identity(), true);
+
+  // Draw grid lines as thin rectangles
+  const VN = G ? G.N : 19;
+  const step = boardSize / (VN - 1);
+  const lineCol = new Float32Array([0.39, 0.26, 0.06]);
+
+  // Draw stones
+  if (G && G.board) {
+    const sphereGeo = buildSphereGeometry(step*0.42, step*0.20, step*0.42, 10);
+    for (let si = 0; si < VN * VN; si++) {
+      if (G.board[si] === 0) continue;
+      const [r, cc] = pos(si, VN);
+      const sx = -boardSize/2 + cc * step;
+      const sz = -boardSize/2 + r * step;
+      const sy = boardSize * 0.03 + step * 0.20;
+      const isBlack = G.board[si] === 1;
+      const col = isBlack ? [0.13, 0.13, 0.13] : [0.92, 0.88, 0.82];
+      const stoneCols = new Float32Array(sphereGeo.verts.length / 3 * 3);
+      for (let k = 0; k < stoneCols.length; k += 3) {
+        stoneCols[k] = col[0]; stoneCols[k+1] = col[1]; stoneCols[k+2] = col[2];
+      }
+      const stoneModel = mat4Mult(mv, mat4Trans(sx, sy, sz));
+      const stoneMVP = mat4Mult(proj, stoneModel);
+      drawWebGLMesh(gl, prog, sphereGeo.verts, sphereGeo.norms, stoneCols, sphereGeo.inds, stoneMVP, mat4Identity(), false);
+    }
+  }
+
+  webglAnimFrame = requestAnimationFrame(render3D);
+}
+
+function drawWebGLMesh(gl, prog, verts, norms, cols, inds, mvp, model, hasCols) {
+  const aPos = gl.getAttribLocation(prog, 'aPos');
+  const aNorm = gl.getAttribLocation(prog, 'aNorm');
+  const aColor = gl.getAttribLocation(prog, 'aColor');
+  const uMVP = gl.getUniformLocation(prog, 'uMVP');
+  const uModel = gl.getUniformLocation(prog, 'uModel');
+
+  const vBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+
+  const nBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, nBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, norms, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(aNorm);
+  gl.vertexAttribPointer(aNorm, 3, gl.FLOAT, false, 0, 0);
+
+  const cBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, cols, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(aColor);
+  gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 0, 0);
+
+  const iBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuf);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, inds, gl.STATIC_DRAW);
+
+  gl.uniformMatrix4fv(uMVP, false, mvp);
+  gl.uniformMatrix4fv(uModel, false, model);
+  gl.drawElements(gl.TRIANGLES, inds.length, gl.UNSIGNED_SHORT, 0);
+
+  gl.deleteBuffer(vBuf); gl.deleteBuffer(nBuf); gl.deleteBuffer(cBuf); gl.deleteBuffer(iBuf);
+}
+
+function setup3DInteraction(c) {
+  c._3d_mousedown = (e) => {
+    webglDragStart = { x: e.clientX, y: e.clientY, rotX: webglRotX, rotY: webglRotY };
+  };
+  c._3d_mousemove = (e) => {
+    if (!webglDragStart) return;
+    const dx = e.clientX - webglDragStart.x;
+    const dy = e.clientY - webglDragStart.y;
+    webglRotY = webglDragStart.rotY + dx * 0.5;
+    webglRotX = Math.max(10, Math.min(80, webglDragStart.rotX + dy * 0.5));
+  };
+  c._3d_mouseup = () => { webglDragStart = null; };
+  c._3d_touchstart = (e) => {
+    const t = e.touches[0];
+    webglDragStart = { x: t.clientX, y: t.clientY, rotX: webglRotX, rotY: webglRotY };
+  };
+  c._3d_touchmove = (e) => {
+    if (!webglDragStart) return;
+    const t = e.touches[0];
+    const dx = t.clientX - webglDragStart.x;
+    const dy = t.clientY - webglDragStart.y;
+    webglRotY = webglDragStart.rotY + dx * 0.5;
+    webglRotX = Math.max(10, Math.min(80, webglDragStart.rotX + dy * 0.5));
+    e.preventDefault();
+  };
+  c._3d_touchend = () => { webglDragStart = null; };
+  c.addEventListener('mousedown', c._3d_mousedown);
+  c.addEventListener('mousemove', c._3d_mousemove);
+  c.addEventListener('mouseup', c._3d_mouseup);
+  c.addEventListener('touchstart', c._3d_touchstart, { passive: false });
+  c.addEventListener('touchmove', c._3d_touchmove, { passive: false });
+  c.addEventListener('touchend', c._3d_touchend);
+}
+
+function remove3DInteraction(c) {
+  if (!c._3d_mousedown) return;
+  c.removeEventListener('mousedown', c._3d_mousedown);
+  c.removeEventListener('mousemove', c._3d_mousemove);
+  c.removeEventListener('mouseup', c._3d_mouseup);
+  c.removeEventListener('touchstart', c._3d_touchstart);
+  c.removeEventListener('touchmove', c._3d_touchmove);
+  c.removeEventListener('touchend', c._3d_touchend);
+}
+
+// ============================================================
+//  FEATURE 3: COORDINATE CLICK-TO-COPY
+// ============================================================
+(function setupCoordCopy() {
+  const tooltip = document.getElementById('coord-tooltip');
+  let tooltipTimeout = null;
+
+  function showCoordTooltip(coord, x, y) {
+    tooltip.textContent = `📋 ${coord} copied!`;
+    tooltip.style.left = (x + 12) + 'px';
+    tooltip.style.top = (y - 36) + 'px';
+    tooltip.classList.add('visible');
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = setTimeout(() => tooltip.classList.remove('visible'), 1800);
+  }
+
+  function copyCoordAtEvent(e) {
+    if (!canvas || !G || !G.board) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const cx = (e.clientX - rect.left) * scaleX;
+    const cy = (e.clientY - rect.top) * scaleY;
+    const cc = Math.round((cx - boardOffsetX) / CELL);
+    const r = Math.round((cy - boardOffsetY) / CELL);
+    if (r < 0 || r >= N || cc < 0 || cc >= N) return;
+    const letters = 'ABCDEFGHJKLMNOPQRST';
+    const coord = letters[cc] + (N - r);
+    navigator.clipboard.writeText(coord).catch(() => {});
+    showCoordTooltip(coord, e.clientX, e.clientY);
+  }
+
+  // Right-click
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target && e.target.id === 'go-board') {
+      e.preventDefault();
+      copyCoordAtEvent(e);
+    }
+  });
+
+  // Shift+click
+  document.addEventListener('click', (e) => {
+    if (e.shiftKey && e.target && e.target.id === 'go-board') {
+      copyCoordAtEvent(e);
+    }
+  });
+})();
+
+// ============================================================
+//  FEATURE 4: ANIMATED CAPTURE COUNTER CASCADE (pitched sounds)
+// ============================================================
+function playPitchedCaptureSound(pitchIdx) {
+  if (!soundEnabled) return;
+  ensureAudio();
+  const baseFreq = 500;
+  const freq = baseFreq * Math.pow(1.12, pitchIdx % 8);
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = freq * 1.5;
+  filter.Q.value = 3;
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(freq, audioCtx.currentTime + 0.04);
+  osc.type = 'sine';
+  gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+  osc.start(audioCtx.currentTime);
+  osc.stop(audioCtx.currentTime + 0.12);
+}
+
+function animateCaptureCounterCascade(captured, capturedColor) {
+  // Get the prisoner bowl element position
+  const prisonerEl = document.getElementById(capturedColor === 1 ? 'prisoner-black-count' : 'prisoner-white-count');
+  if (!prisonerEl || !canvas) return;
+
+  const prisonerRect = prisonerEl.getBoundingClientRect();
+  const targetX = prisonerRect.left + prisonerRect.width / 2;
+  const targetY = prisonerRect.top + prisonerRect.height / 2;
+
+  // Stagger each stone landing
+  captured.forEach((stoneIdx, n) => {
+    setTimeout(() => {
+      // Play pitched click sound
+      playPitchedCaptureSound(n);
+
+      // Pulse the prisoner count element
+      prisonerEl.style.transform = 'scale(1.4)';
+      prisonerEl.style.color = capturedColor === 1 ? '#888' : '#fff';
+      prisonerEl.style.transition = 'transform 0.15s, color 0.15s';
+      setTimeout(() => {
+        prisonerEl.style.transform = 'scale(1)';
+        prisonerEl.style.color = 'var(--accent)';
+      }, 150);
+
+      // Flying stone overlay (DOM-based for high visibility)
+      const [r, cc] = pos(stoneIdx, N);
+      const stoneRect = canvas.getBoundingClientRect();
+      const stoneX = stoneRect.left + (boardOffsetX + cc * CELL) * (stoneRect.width / canvas.width);
+      const stoneY = stoneRect.top + (boardOffsetY + r * CELL) * (stoneRect.height / canvas.height);
+
+      const flyDiv = document.createElement('div');
+      flyDiv.style.cssText = `
+        position:fixed;
+        left:${stoneX - 8}px;
+        top:${stoneY - 8}px;
+        width:16px; height:16px;
+        border-radius:50%;
+        background:${capturedColor === 1 ? 'radial-gradient(circle at 35% 35%,#555,#111)' : 'radial-gradient(circle at 35% 35%,#fff,#c8c0b0)'};
+        pointer-events:none;
+        z-index:9999;
+        box-shadow:2px 2px 6px rgba(0,0,0,0.5);
+        transition:none;
+      `;
+      document.body.appendChild(flyDiv);
+
+      // Animate parabolic arc to prisoner bowl
+      const dx = targetX - stoneX;
+      const dy = targetY - stoneY;
+      const duration = 600;
+      const arcHeight = -Math.min(80, Math.abs(dy) * 0.6);
+      let start = null;
+
+      function flyFrame(ts) {
+        if (!start) start = ts;
+        const progress = Math.min(1, (ts - start) / duration);
+        const easedP = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        const x = stoneX + dx * easedP;
+        const parabola = arcHeight * 4 * easedP * (1 - easedP);
+        const y = stoneY + dy * easedP + parabola;
+        const scale = 1 - easedP * 0.65;
+        const rot = easedP * 360;
+        flyDiv.style.left = (x - 8) + 'px';
+        flyDiv.style.top = (y - 8) + 'px';
+        flyDiv.style.transform = `scale(${scale}) rotate(${rot}deg)`;
+        flyDiv.style.opacity = 1 - easedP * 0.6;
+        if (progress < 1) {
+          requestAnimationFrame(flyFrame);
+        } else {
+          flyDiv.remove();
+        }
+      }
+      requestAnimationFrame(flyFrame);
+    }, n * 120);
+  });
+}
+
+// Hook capture cascade into animateCaptures (already overridden above for physics;
+// this replaces that override with one that does both physics AND cascade)
 animateCaptures = function(captured) {
   if (captured && captured.length > 0) {
     const capturedColor = G.turn === 1 ? 2 : 1;
     animateCapturedStones(captured, capturedColor);
+    animateCaptureCounterCascade(captured, capturedColor);
   }
   let flashCount = 0;
   const flash = () => {
@@ -7106,772 +7915,191 @@ animateCaptures = function(captured) {
   flash();
 };
 
-
-// ============================================================
-//  FEATURE 1: ANIMATED GAME VIDEO EXPORT
-// ============================================================
-async function exportGameVideo() {
-  if (!G.fullMoveRecord || G.fullMoveRecord.length === 0) {
-    notify('No moves to export!');
-    return;
-  }
-  if (!window.MediaRecorder) {
-    notify('Video export requires Chrome/Edge');
-    return;
-  }
-  const statusEl = document.getElementById('video-export-status');
-  const btn = document.getElementById('export-video-btn');
-  btn.disabled = true;
-  btn.textContent = '🎬 Recording...';
-  statusEl.textContent = 'Preparing...';
-
-  // Create offscreen canvas at fixed 600x660 resolution
-  const VW = 600, VH = 660;
-  const vc = document.createElement('canvas');
-  vc.width = VW; vc.height = VH;
-  const vct = vc.getContext('2d');
-
-  const VCELL = Math.floor(Math.min(VW - 80, VH - 100) / (G.N + 1));
-  const VOX = Math.floor((VW - VCELL * (G.N - 1)) / 2);
-  const VOY = Math.floor((VH - 80 - VCELL * (G.N - 1)) / 2) + 30;
-
-  function drawVideoFrame(moveIdx, bPrisoners, wPrisoners) {
-    // Board background
-    const bg = vct.createLinearGradient(0, 0, VW, VH);
-    bg.addColorStop(0, '#1a1006'); bg.addColorStop(1, '#0d0a04');
-    vct.fillStyle = bg; vct.fillRect(0, 0, VW, VH);
-
-    // Header
-    vct.fillStyle = 'rgba(196,154,80,0.08)';
-    vct.fillRect(0, 0, VW, 36);
-    vct.font = 'bold 13px "Cinzel", serif';
-    vct.fillStyle = '#C49A50';
-    vct.textAlign = 'left';
-    vct.fillText('囲碁 · GO', 16, 22);
-    vct.textAlign = 'right';
-    vct.fillStyle = '#888';
-    vct.font = '11px "Share Tech Mono", monospace';
-    vct.fillText('Made by James Degenhardt', VW - 12, 22);
-    vct.textAlign = 'center';
-    vct.fillStyle = '#C49A50';
-    vct.font = 'bold 11px monospace';
-    vct.fillText(`MOVE ${moveIdx}/${G.fullMoveRecord.length}`, VW / 2, 22);
-
-    // Board wood background
-    const bgrad = vct.createLinearGradient(VOX - VCELL, VOY - VCELL, VOX + G.N * VCELL, VOY + G.N * VCELL);
-    bgrad.addColorStop(0, '#DCB16C'); bgrad.addColorStop(1, '#C49A50');
-    vct.fillStyle = bgrad;
-    const pad = VCELL * 1.1;
-    vct.fillRect(VOX - pad, VOY - pad, VCELL * (G.N - 1) + pad * 2, VCELL * (G.N - 1) + pad * 2);
-    // Subtle border
-    vct.strokeStyle = '#8B6914'; vct.lineWidth = 2;
-    vct.strokeRect(VOX - pad, VOY - pad, VCELL * (G.N - 1) + pad * 2, VCELL * (G.N - 1) + pad * 2);
-
-    // Grid
-    vct.strokeStyle = 'rgba(100,60,0,0.85)'; vct.lineWidth = 0.8;
-    for (let i = 0; i < G.N; i++) {
-      vct.beginPath(); vct.moveTo(VOX, VOY + i * VCELL); vct.lineTo(VOX + (G.N-1)*VCELL, VOY + i*VCELL); vct.stroke();
-      vct.beginPath(); vct.moveTo(VOX + i*VCELL, VOY); vct.lineTo(VOX + i*VCELL, VOY + (G.N-1)*VCELL); vct.stroke();
-    }
-    // Hoshi
-    const hpts = getHoshiPoints(G.N);
-    vct.fillStyle = 'rgba(100,60,0,0.9)';
-    for (const [r,c] of hpts) { vct.beginPath(); vct.arc(VOX+c*VCELL, VOY+r*VCELL, VCELL*0.1, 0, Math.PI*2); vct.fill(); }
-
-    // Stones
-    const board = moveIdx === 0 ? Array(G.N*G.N).fill(0) : G.fullMoveRecord[moveIdx-1].board;
-    for (let i = 0; i < G.N*G.N; i++) {
-      if (!board[i]) continue;
-      const r=Math.floor(i/G.N), c=i%G.N;
-      const x=VOX+c*VCELL, y=VOY+r*VCELL, R=VCELL*0.46;
-      const g2=vct.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
-      if(board[i]===1){g2.addColorStop(0,'#555');g2.addColorStop(0.3,'#222');g2.addColorStop(1,'#050505');}
-      else{g2.addColorStop(0,'#fff');g2.addColorStop(0.4,'#e8e0d0');g2.addColorStop(1,'#c0b8a8');}
-      vct.save(); vct.shadowColor='rgba(0,0,0,0.6)'; vct.shadowBlur=5; vct.shadowOffsetX=1; vct.shadowOffsetY=2;
-      vct.fillStyle=g2; vct.beginPath(); vct.arc(x,y,R,0,Math.PI*2); vct.fill(); vct.restore();
-      // Move number
-      if (i === (moveIdx > 0 ? G.fullMoveRecord[moveIdx-1].move : -1) && moveIdx > 0) {
-        vct.save(); vct.fillStyle=board[i]===1?'rgba(255,255,255,0.85)':'rgba(0,0,0,0.7)';
-        vct.font=`bold ${Math.max(7,VCELL*0.28)}px monospace`; vct.textAlign='center'; vct.textBaseline='middle';
-        vct.fillText(moveIdx, x, y); vct.restore();
-      }
-    }
-
-    // Score counters at bottom
-    const SY = VH - 30;
-    vct.fillStyle='rgba(0,0,0,0.5)'; vct.fillRect(0, VH-50, VW, 50);
-    vct.textAlign='left'; vct.font='bold 12px monospace'; vct.fillStyle='#888';
-    vct.fillText(`⚫ Black: ${bPrisoners} captures`, 16, SY);
-    vct.textAlign='right'; vct.fillStyle='#bbb';
-    vct.fillText(`White: ${wPrisoners} captures ⚪`, VW - 16, SY);
-    vct.textAlign='center'; vct.fillStyle='#C49A50';
-    vct.fillText(`${G.N}×${G.N} · Komi ${SETUP.komi}`, VW/2, SY);
-  }
-
-  function drawWinnerFrame(winner) {
-    const bg = vct.createLinearGradient(0, 0, VW, VH);
-    bg.addColorStop(0, '#0a0a0a'); bg.addColorStop(1, '#1a1006');
-    vct.fillStyle = bg; vct.fillRect(0, 0, VW, VH);
-    vct.font = 'bold 52px Cinzel, serif';
-    const wg = vct.createLinearGradient(VW/2-150, VH/2-60, VW/2+150, VH/2+20);
-    wg.addColorStop(0,'#C49A50'); wg.addColorStop(0.5,'#f0d090'); wg.addColorStop(1,'#C49A50');
-    vct.fillStyle = wg; vct.textAlign='center'; vct.textBaseline='middle';
-    vct.fillText(winner ? winner.toUpperCase() + ' WINS' : 'DRAW', VW/2, VH/2 - 20);
-    vct.font = '18px Cinzel, serif'; vct.fillStyle='rgba(196,154,80,0.6)';
-    vct.fillText('囲碁 · GO · Made by James Degenhardt', VW/2, VH/2 + 40);
-  }
-
-  // Set up MediaRecorder
-  const stream = vc.captureStream(30);
-  const chunks = [];
-  const mr = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 4000000 });
-  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  mr.onstop = () => {
-    const blob = new Blob(chunks, { type: 'video/webm' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `go_game_${new Date().toISOString().slice(0,10)}.webm`;
-    a.click(); URL.revokeObjectURL(url);
-    btn.disabled = false; btn.textContent = '🎬 Export Video';
-    statusEl.textContent = '✓ Downloaded!';
-    setTimeout(() => { statusEl.textContent = ''; }, 3000);
-    notify('Game video exported!');
-  };
-
-  mr.start();
-  const FRAME_MS = 500;
-  let bPris = 0, wPris = 0;
-  for (let m = 0; m <= G.fullMoveRecord.length; m++) {
-    statusEl.textContent = `Rendering ${m}/${G.fullMoveRecord.length}...`;
-    if (m > 0) {
-      const rec = G.fullMoveRecord[m-1];
-      if (rec.prisoners) { bPris = rec.prisoners[0]; wPris = rec.prisoners[1]; }
-    }
-    drawVideoFrame(m, bPris, wPris);
-    await new Promise(r => setTimeout(r, FRAME_MS));
-  }
-  // Winner screen for 3 seconds
-  const winner = document.getElementById('win-title').textContent.replace(' WINS','');
-  for (let i = 0; i < 6; i++) {
-    drawWinnerFrame(winner === 'DRAW' ? null : winner);
-    await new Promise(r => setTimeout(r, 500));
-  }
-  mr.stop();
-}
-
-// ============================================================
-//  FEATURE 2: 3D BOARD MODE (WebGL)
-// ============================================================
-let board3DActive = false;
-let glctx = null;
-let gl3dProgram = null;
-let gl3dAngleX = 0.45, gl3dAngleY = 0.0;
-let gl3dDragging = false, gl3dLastX = 0, gl3dLastY = 0;
-let gl3dAnimId = null;
-
-const VERT_SHADER = `
-  attribute vec3 aPos;
-  attribute vec3 aNormal;
-  attribute vec3 aColor;
-  uniform mat4 uMVP;
-  uniform mat4 uModel;
-  varying vec3 vNormal;
-  varying vec3 vColor;
-  varying vec3 vFragPos;
-  void main() {
-    vec4 world = uModel * vec4(aPos, 1.0);
-    vFragPos = world.xyz;
-    vNormal = (uModel * vec4(aNormal, 0.0)).xyz;
-    vColor = aColor;
-    gl_Position = uMVP * vec4(aPos, 1.0);
-  }
-`;
-const FRAG_SHADER = `
-  precision mediump float;
-  varying vec3 vNormal;
-  varying vec3 vColor;
-  varying vec3 vFragPos;
-  uniform vec3 uLight;
-  void main() {
-    vec3 N = normalize(vNormal);
-    vec3 L = normalize(uLight - vFragPos);
-    float diff = max(dot(N, L), 0.0);
-    vec3 ambient = vColor * 0.35;
-    vec3 diffuse = vColor * diff * 0.75;
-    vec3 R2 = reflect(-L, N);
-    vec3 V = normalize(vec3(0,0,5) - vFragPos);
-    float spec = pow(max(dot(R2, V), 0.0), 24.0) * 0.4;
-    gl_FragColor = vec4(ambient + diffuse + spec, 1.0);
-  }
-`;
-
-function toggle3DBoard() {
-  board3DActive = !board3DActive;
-  document.getElementById('3d-state').textContent = board3DActive ? 'ON' : 'OFF';
-  document.getElementById('btn-3d').classList.toggle('toggle-on', board3DActive);
-  const glCanvas = document.getElementById('webgl-board');
-  if (board3DActive) {
-    glCanvas.style.display = 'block';
-    init3DBoard();
-  } else {
-    glCanvas.style.display = 'none';
-    if (gl3dAnimId) { cancelAnimationFrame(gl3dAnimId); gl3dAnimId = null; }
-    glctx = null; gl3dProgram = null;
-  }
-  notify(board3DActive ? '🎲 3D mode ON — drag to rotate' : '3D mode OFF');
-}
-
-function init3DBoard() {
-  const glCanvas = document.getElementById('webgl-board');
-  // Match size to 2D canvas
-  const rect = canvas.getBoundingClientRect();
-  glCanvas.width = rect.width; glCanvas.height = rect.height;
-  glctx = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
-  if (!glctx) { notify('WebGL not supported'); board3DActive = false; return; }
-  const gl = glctx;
-
-  // Compile shaders
-  function mkShader(type, src) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, src); gl.compileShader(s);
-    return s;
-  }
-  gl3dProgram = gl.createProgram();
-  gl.attachShader(gl3dProgram, mkShader(gl.VERTEX_SHADER, VERT_SHADER));
-  gl.attachShader(gl3dProgram, mkShader(gl.FRAGMENT_SHADER, FRAG_SHADER));
-  gl.linkProgram(gl3dProgram);
-  gl.useProgram(gl3dProgram);
-  gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(0.05, 0.04, 0.03, 1);
-
-  // Drag to rotate
-  glCanvas.onmousedown = (e) => { gl3dDragging=true; gl3dLastX=e.clientX; gl3dLastY=e.clientY; };
-  glCanvas.onmousemove = (e) => {
-    if (!gl3dDragging) return;
-    gl3dAngleY += (e.clientX-gl3dLastX) * 0.01;
-    gl3dAngleX += (e.clientY-gl3dLastY) * 0.008;
-    gl3dAngleX = Math.max(-0.1, Math.min(Math.PI/2, gl3dAngleX));
-    gl3dLastX=e.clientX; gl3dLastY=e.clientY;
-  };
-  glCanvas.onmouseup = glCanvas.onmouseleave = () => { gl3dDragging = false; };
-  glCanvas.ontouchstart = (e) => { gl3dDragging=true; gl3dLastX=e.touches[0].clientX; gl3dLastY=e.touches[0].clientY; e.preventDefault(); };
-  glCanvas.ontouchmove = (e) => {
-    if (!gl3dDragging) return;
-    gl3dAngleY += (e.touches[0].clientX-gl3dLastX)*0.012;
-    gl3dAngleX += (e.touches[0].clientY-gl3dLastY)*0.01;
-    gl3dAngleX = Math.max(-0.1, Math.min(Math.PI/2, gl3dAngleX));
-    gl3dLastX=e.touches[0].clientX; gl3dLastY=e.touches[0].clientY; e.preventDefault();
-  };
-  glCanvas.ontouchend = () => { gl3dDragging = false; };
-
-  render3D();
-}
-
-function mat4mul(a, b) {
-  const r = new Float32Array(16);
-  for (let i=0;i<4;i++) for (let j=0;j<4;j++) {
-    r[i*4+j] = a[i*4+0]*b[0*4+j]+a[i*4+1]*b[1*4+j]+a[i*4+2]*b[2*4+j]+a[i*4+3]*b[3*4+j];
-  }
-  return r;
-}
-function matPerspective(fov, aspect, near, far) {
-  const f = 1/Math.tan(fov/2), d=far-near;
-  return new Float32Array([f/aspect,0,0,0, 0,f,0,0, 0,0,-(far+near)/d,-1, 0,0,-2*far*near/d,0]);
-}
-function matRotX(a) {
-  const c=Math.cos(a),s=Math.sin(a);
-  return new Float32Array([1,0,0,0, 0,c,-s,0, 0,s,c,0, 0,0,0,1]);
-}
-function matRotY(a) {
-  const c=Math.cos(a),s=Math.sin(a);
-  return new Float32Array([c,0,s,0, 0,1,0,0, -s,0,c,0, 0,0,0,1]);
-}
-function matTrans(x,y,z) {
-  return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1]);
-}
-function matIdentity() { return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]); }
-
-function buildBoardGeometry(N, cell) {
-  const verts = [], norms = [], colors = [];
-  const bw = (N-1)*cell, bh = (N-1)*cell, bd = 0.18;
-  const bx = -bw/2, by = -bh/2;
-  // Board quad (flat)
-  const bc = [0.86, 0.69, 0.42];
-  const q = [[bx,by,0],[bx+bw,by,0],[bx+bw,by+bh,0],[bx,by+bh,0]];
-  function tri(a,b,c,col) {
-    [a,b,c].forEach(v=>{ verts.push(...v); norms.push(0,0,1); colors.push(...col); });
-  }
-  tri(q[0],q[1],q[2],bc); tri(q[0],q[2],q[3],bc);
-  // Grid lines as thin raised quads
-  const lc = [0.39, 0.24, 0.0];
-  for (let i=0;i<N;i++) {
-    const lw=0.015;
-    // Horizontal
-    const hx=bx, hy=by+i*cell;
-    const hq=[[hx,hy-lw,0.001],[hx+bw,hy-lw,0.001],[hx+bw,hy+lw,0.001],[hx,hy+lw,0.001]];
-    tri(hq[0],hq[1],hq[2],lc); tri(hq[0],hq[2],hq[3],lc);
-    // Vertical
-    const vx2=bx+i*cell, vy2=by;
-    const vq=[[vx2-lw,vy2,0.001],[vx2+lw,vy2,0.001],[vx2+lw,vy2+bh,0.001],[vx2-lw,vy2,0.001],[vx2+lw,vy2+bh,0.001],[vx2-lw,vy2+bh,0.001]];
-    for (const v of vq) { verts.push(...v); norms.push(0,0,1); colors.push(...lc); }
-  }
-  return { verts, norms, colors };
-}
-
-function buildStoneGeometry(N, cell, board, lastMove) {
-  const verts = [], norms = [], colors = [];
-  const bx = -(N-1)*cell/2, by = -(N-1)*cell/2;
-  const SEG = 10;
-  for (let i=0;i<N*N;i++) {
-    if (!board[i]) continue;
-    const r=Math.floor(i/N), c=i%N;
-    const cx=bx+c*cell, cy=by+r*cell;
-    const R=cell*0.44, RY=cell*0.13;
-    const isBlack=board[i]===1;
-    const sc = isBlack ? [0.18,0.18,0.20] : [0.94,0.90,0.84];
-    const specC = isBlack ? [0.45,0.45,0.5] : [1.0,1.0,1.0];
-    // Ellipsoid via latitude/longitude
-    for (let la=0;la<SEG;la++) {
-      for (let lo=0;lo<SEG;lo++) {
-        const a0=la/SEG*Math.PI-Math.PI/2, a1=(la+1)/SEG*Math.PI-Math.PI/2;
-        const b0=lo/SEG*2*Math.PI, b1=(lo+1)/SEG*2*Math.PI;
-        const pts = [[a0,b0],[a0,b1],[a1,b1],[a1,b0]];
-        const vs = pts.map(([a,b]) => [
-          cx+R*Math.cos(a)*Math.cos(b),
-          cy+R*Math.cos(a)*Math.sin(b),
-          RY*Math.sin(a)+0.04
-        ]);
-        const ns = pts.map(([a,b]) => [Math.cos(a)*Math.cos(b),Math.cos(a)*Math.sin(b),Math.sin(a)*2]);
-        // Highlight on top-left of stone
-        const bright = la > SEG*0.55 && lo < SEG*0.4 ? specC : sc;
-        [[0,1,2],[0,2,3]].forEach(([i0,i1,i2]) => {
-          [vs[i0],vs[i1],vs[i2]].forEach((v,vi) => {
-            verts.push(...v); norms.push(...ns[[i0,i1,i2][vi]]); colors.push(...bright);
-          });
-        });
-      }
-    }
-  }
-  return { verts, norms, colors };
-}
-
-function render3D() {
-  if (!board3DActive || !glctx) { gl3dAnimId = null; return; }
-  const gl = glctx;
-  const glCanvas = document.getElementById('webgl-board');
-  const rect = canvas.getBoundingClientRect();
-  if (glCanvas.width !== rect.width || glCanvas.height !== rect.height) {
-    glCanvas.width = rect.width; glCanvas.height = rect.height;
-  }
-  gl.viewport(0, 0, glCanvas.width, glCanvas.height);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  const prog = gl3dProgram;
-  const N3 = G.N || 19;
-  const cell = 0.11; // world-space cell size
-
-  // Build and upload geometry
-  const bg = buildBoardGeometry(N3, cell);
-  const sg = buildStoneGeometry(N3, cell, G.board, G.lastMove);
-
-  const allV = [...bg.verts, ...sg.verts];
-  const allN = [...bg.norms, ...sg.norms];
-  const allC = [...bg.colors, ...sg.colors];
-
-  function uploadBuf(attr, data, size) {
-    const loc = gl.getAttribLocation(prog, attr);
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
-  }
-  uploadBuf('aPos', allV, 3);
-  uploadBuf('aNormal', allN, 3);
-  uploadBuf('aColor', allC, 3);
-
-  // Matrices
-  const aspect = glCanvas.width / glCanvas.height;
-  const P = matPerspective(0.9, aspect, 0.01, 50);
-  const T = matTrans(0, 0, -2.2);
-  const RX = matRotX(gl3dAngleX);
-  const RY2 = matRotY(gl3dAngleY);
-  const model = mat4mul(mat4mul(matIdentity(), RY2), RX);
-  const view = T;
-  const MVP = mat4mul(mat4mul(P, view), model);
-
-  gl.uniformMatrix4fv(gl.getUniformLocation(prog,'uMVP'), false, MVP);
-  gl.uniformMatrix4fv(gl.getUniformLocation(prog,'uModel'), false, model);
-  gl.uniform3f(gl.getUniformLocation(prog,'uLight'), 2, 3, 4);
-
-  gl.drawArrays(gl.TRIANGLES, 0, allV.length/3);
-
-  gl3dAnimId = requestAnimationFrame(render3D);
-}
-
-// Hook 3D rendering into drawBoard
-const _origDrawBoard = drawBoard;
-drawBoard = function() {
-  _origDrawBoard();
-  if (board3DActive && glctx) { /* render3D runs in its own RAF loop */ }
-};
-
-// ============================================================
-//  FEATURE 3: COORDINATE CLICK-TO-COPY
-// ============================================================
-(function setupCoordCopy() {
-  function showCoordTooltip(x, y, text) {
-    let tip = document.getElementById('coord-copy-tip');
-    if (!tip) {
-      tip = document.createElement('div');
-      tip.id = 'coord-copy-tip';
-      tip.style.cssText = 'position:fixed;padding:6px 14px;background:#C49A50;color:#000;font-family:"Cinzel",serif;font-size:12px;letter-spacing:0.2em;font-weight:700;pointer-events:none;z-index:9999;opacity:0;transition:opacity 0.2s;box-shadow:0 4px 12px rgba(196,154,80,0.5);';
-      document.body.appendChild(tip);
-    }
-    tip.textContent = '✓ ' + text + ' copied';
-    tip.style.left = (x + 14) + 'px';
-    tip.style.top = (y - 10) + 'px';
-    tip.style.opacity = '1';
-    clearTimeout(tip._timer);
-    tip._timer = setTimeout(() => { tip.style.opacity = '0'; }, 1800);
-  }
-
-  function handleCoordCopy(e) {
-    if (board3DActive) return; // no coord copy in 3D mode
-    if (!e.shiftKey && e.type !== 'contextmenu') return;
-    e.preventDefault();
-    const i = getGridPos(e);
-    if (i < 0) return;
-    const [r, c] = pos(i, G.N || N);
-    const letters = 'ABCDEFGHJKLMNOPQRST';
-    const coord = letters[c] + (G.N - r);
-    navigator.clipboard.writeText(coord).catch(() => {});
-    showCoordTooltip(e.clientX, e.clientY, coord);
-  }
-
-  // Wait for canvas to exist
-  function attachCoordListeners() {
-    const cv = document.getElementById('go-board');
-    if (!cv) { setTimeout(attachCoordListeners, 500); return; }
-    cv.addEventListener('contextmenu', handleCoordCopy);
-    cv.addEventListener('click', (e) => { if (e.shiftKey) handleCoordCopy(e); });
-  }
-  attachCoordListeners();
-})();
-
-// ============================================================
-//  FEATURE 4: ENHANCED ANIMATED CAPTURE CASCADE
-// ============================================================
-// Pitched click sound for each landing stone
-function playLandingClick(pitch) {
-  if (!soundEnabled) return;
-  ensureAudio();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const filt = audioCtx.createBiquadFilter();
-  filt.type = 'bandpass'; filt.frequency.value = pitch; filt.Q.value = 8;
-  osc.connect(filt); filt.connect(gain); gain.connect(audioCtx.destination);
-  osc.frequency.value = pitch * 2;
-  osc.frequency.exponentialRampToValueAtTime(pitch, audioCtx.currentTime + 0.03);
-  gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
-  osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.12);
-}
-
-function animateCapturedStoneCascade(capturedIndices, capturedColor) {
-  if (!capturedIndices || capturedIndices.length === 0) return;
-  const wrapper = document.getElementById('board-wrapper');
-  if (!wrapper) return;
-  const wRect = wrapper.getBoundingClientRect();
-  const canRect = canvas.getBoundingClientRect();
-
-  capturedIndices.forEach((idx2, stoneI) => {
-    setTimeout(() => {
-      const [r, c] = pos(idx2, N);
-      const sx = boardOffsetX + c * CELL;
-      const sy = boardOffsetY + r * CELL;
-      // Canvas-relative coords
-      const startX = (sx / canvas.width) * canRect.width + (canRect.left - wRect.left);
-      const startY = (sy / canvas.height) * canRect.height + (canRect.top - wRect.top);
-      // Target: prisoner bowl area on right panel
-      const bowlEl = document.getElementById(capturedColor === 1 ? 'prisoner-black-icons' : 'prisoner-white-icons');
-      let targetX = wRect.width + 60, targetY = wRect.height / 2;
-      if (bowlEl) {
-        const bRect = bowlEl.getBoundingClientRect();
-        targetX = bRect.left - wRect.left + bRect.width/2;
-        targetY = bRect.top - wRect.top + bRect.height/2;
-      }
-      // Flying stone div
-      const stone = document.createElement('div');
-      const stoneSize = Math.max(12, CELL * 0.85);
-      stone.style.cssText = `
-        position:absolute;
-        width:${stoneSize}px;height:${stoneSize}px;
-        border-radius:50%;
-        left:${startX - stoneSize/2}px;
-        top:${startY - stoneSize/2}px;
-        pointer-events:none;
-        z-index:200;
-        ${capturedColor===1
-          ? 'background:radial-gradient(circle at 35% 35%,#555,#222,#050505);box-shadow:2px 2px 5px rgba(0,0,0,0.7);'
-          : 'background:radial-gradient(circle at 35% 35%,#fff,#e8e0d0,#c0b8a8);box-shadow:2px 2px 5px rgba(0,0,0,0.4);'}
-        transition:none;
-      `;
-      wrapper.appendChild(stone);
-
-      // Parabolic arc animation
-      const dx = targetX - (startX - stoneSize/2);
-      const dy = targetY - (startY - stoneSize/2);
-      const duration = 600 + stoneI * 40;
-      const arcHeight = -Math.min(120, Math.abs(dy) * 0.8);
-      const startTime = performance.now();
-      let landed = false;
-
-      function animStone(now) {
-        const t = Math.min((now - startTime) / duration, 1);
-        const eased = t < 0.5 ? 2*t*t : -1+(4-2*t)*t; // ease in-out quad
-        const parabolaY = arcHeight * 4 * t * (1 - t); // parabola peaks at t=0.5
-        const x = startX - stoneSize/2 + dx * eased;
-        const y = startY - stoneSize/2 + dy * eased + parabolaY;
-        const scale = 1 - t * 0.65;
-        const rotate = t * 720;
-        stone.style.left = x + 'px';
-        stone.style.top = y + 'px';
-        stone.style.transform = `scale(${scale}) rotate(${rotate}deg)`;
-        stone.style.opacity = t > 0.85 ? String(1 - (t-0.85)/0.15) : '1';
-        if (t < 1) {
-          requestAnimationFrame(animStone);
-        } else {
-          stone.remove();
-          // Landing click sound — higher pitch for each successive stone
-          if (!landed) {
-            landed = true;
-            playLandingClick(400 + stoneI * 60);
-          }
-        }
-      }
-      requestAnimationFrame(animStone);
-    }, stoneI * 80);
-  });
-}
-
-// Override animateCaptures to use cascade
-const _origAnimateCaptures = animateCaptures;
-animateCaptures = function(captured) {
-  if (captured && captured.length > 0) {
-    const capturedColor = G.turn === 1 ? 2 : 1;
-    animateCapturedStoneCascade(captured, capturedColor);
-  }
-  // Still do the flash effect
-  let flashCount = 0;
-  const flash = () => {
-    if (flashCount >= 3) return;
-    drawBoard();
-    if (ctx && captured) {
-      ctx.save();
-      for (const i of captured) {
-        const [r, c] = pos(i, N);
-        const x = boardOffsetX + c * CELL;
-        const y = boardOffsetY + r * CELL;
-        ctx.fillStyle = `rgba(255,200,0,${0.4 - flashCount * 0.1})`;
-        ctx.beginPath(); ctx.arc(x, y, CELL * 0.47, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.restore();
-    }
-    flashCount++;
-    setTimeout(flash, 55);
-  };
-  flash();
-};
-
 // ============================================================
 //  FEATURE 5: POSITIONAL COMPLEXITY METER
 // ============================================================
 let complexityEnabled = false;
-let complexityAnimId = null;
-let complexityNeedle = 0, complexityTarget = 0;
 
-function toggleComplexityMeter() {
+function toggleComplexity() {
   complexityEnabled = !complexityEnabled;
   document.getElementById('complexity-state').textContent = complexityEnabled ? 'ON' : 'OFF';
   document.getElementById('btn-complexity').classList.toggle('toggle-on', complexityEnabled);
-  const panel = document.getElementById('complexity-panel');
+  document.getElementById('complexity-panel').classList.toggle('visible', complexityEnabled);
   if (complexityEnabled) {
-    panel.style.display = 'block';
     updateComplexityMeter();
-    animateComplexityNeedle();
-  } else {
-    panel.style.display = 'none';
-    if (complexityAnimId) { cancelAnimationFrame(complexityAnimId); complexityAnimId = null; }
+    notify('🌋 Complexity meter ON');
   }
-  notify(complexityEnabled ? '🌋 Complexity meter ON' : 'Complexity meter OFF');
 }
 
 function computeComplexity() {
-  if (!G || !G.board) return { total: 0, atari: 0, ko: 0, unsettled: 0, captures: 0 };
+  if (!G || !G.board || G.board.length === 0) return { score: 0, atari: 0, ko: 0, groups: 0, caps: 0 };
   const board = G.board;
-  const visited = new Set();
-  let atariThreats = 0, unsettledGroups = 0;
+  let atariThreats = 0;
+  let unsettledGroups = 0;
 
-  for (let i = 0; i < N*N; i++) {
+  // Count atari groups (liberties === 1)
+  const visited = new Set();
+  for (let i = 0; i < N * N; i++) {
     if (board[i] === 0 || visited.has(i)) continue;
     const { stones, liberties } = getGroup(board, i, N);
-    stones.forEach(s => visited.add(s));
-    const libs = liberties.size;
-    if (libs === 1) atariThreats += 3;
-    else if (libs === 2) atariThreats += 1;
-    // Unsettled: small groups without 2 eyes (rough heuristic: liberties < 4 and size < 4)
-    if (libs < 4 && stones.length < 4) unsettledGroups++;
+    for (const s of stones) visited.add(s);
+    if (liberties.size === 1) atariThreats++;
+    if (liberties.size >= 1 && liberties.size <= 3) unsettledGroups++;
   }
 
-  const koScore = G.koPoint >= 0 ? 25 : 0;
-  const totalCaps = G.prisoners[0] + G.prisoners[1];
-  const captureScore = Math.min(totalCaps * 0.5, 20);
-  const total = Math.min(100, atariThreats * 1.5 + koScore + unsettledGroups * 0.8 + captureScore);
+  // Ko fights active
+  const koFights = G.koPoint >= 0 ? 1 : 0;
 
-  return {
-    total: Math.round(total),
-    atari: Math.round(atariThreats * 1.5),
-    ko: koScore,
-    unsettled: Math.round(unsettledGroups * 0.8),
-    captures: Math.round(captureScore)
-  };
-}
+  // Total captures
+  const totalCaps = (G.prisoners[0] || 0) + (G.prisoners[1] || 0);
 
-function getComplexityLabel(val) {
-  if (val < 15) return { label: 'Calm', color: '#4488ff' };
-  if (val < 30) return { label: 'Moderate', color: '#44cc66' };
-  if (val < 50) return { label: 'Active', color: '#cccc22' };
-  if (val < 70) return { label: 'Intense', color: '#ff8833' };
-  if (val < 88) return { label: 'Explosive', color: '#ff3333' };
-  return { label: 'Volcanic', color: '#cc44ff' };
+  // Compute raw score
+  const raw = atariThreats * 12 + koFights * 20 + unsettledGroups * 4 + Math.min(totalCaps, 30) * 0.5;
+  // Normalize to 0–100
+  const score = Math.min(100, raw);
+
+  return { score, atari: atariThreats, ko: koFights, groups: unsettledGroups, caps: totalCaps };
 }
 
 function updateComplexityMeter() {
-  const { total, atari, ko, unsettled, captures } = computeComplexity();
-  complexityTarget = total;
-  const breakdown = document.getElementById('complexity-breakdown');
-  if (breakdown) {
-    breakdown.innerHTML = `
-      <span>⚠ Atari threats: <b style="color:var(--accent)">${atari}</b></span>
-      <span>♻ Ko fights: <b style="color:#ff8c00">${ko}</b></span>
-      <span>❓ Unsettled: <b style="color:var(--accent)">${unsettled}</b></span>
-      <span>🪨 Captures: <b style="color:var(--accent)">${captures}</b></span>
-      <span style="margin-left:auto;color:var(--text)">Score: <b>${total}/100</b></span>
-    `;
-  }
-}
+  if (!complexityEnabled) return;
+  const { score, atari, ko, groups, caps } = computeComplexity();
+  document.getElementById('cx-atari').textContent = atari;
+  document.getElementById('cx-ko').textContent = ko;
+  document.getElementById('cx-groups').textContent = groups;
+  document.getElementById('cx-caps').textContent = caps;
 
-function animateComplexityNeedle() {
-  if (!complexityEnabled) { complexityAnimId = null; return; }
-  // Smooth needle
-  complexityNeedle += (complexityTarget - complexityNeedle) * 0.08;
-  drawComplexityGauge(complexityNeedle);
-  complexityAnimId = requestAnimationFrame(animateComplexityNeedle);
-}
+  // Draw gauge
+  drawComplexityGauge(score);
 
-function drawComplexityGauge(val) {
-  const cv = document.getElementById('complexity-canvas');
-  if (!cv) return;
-  const ct = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  ct.clearRect(0, 0, W, H);
-
-  const cx = W / 2, cy = H - 20, R = Math.min(W/2 - 30, H - 40);
-
-  // Background arc (semicircle)
-  ct.save();
-  ct.beginPath();
-  ct.arc(cx, cy, R, Math.PI, 0);
-  ct.lineWidth = 28;
-  ct.strokeStyle = 'rgba(255,255,255,0.06)';
-  ct.stroke();
-  ct.restore();
-
-  // Colored zones on arc
-  const zones = [
-    { start: 0, end: 15, color: '#4488ff' },
-    { start: 15, end: 30, color: '#44cc66' },
-    { start: 30, end: 50, color: '#cccc22' },
-    { start: 50, end: 70, color: '#ff8833' },
-    { start: 70, end: 88, color: '#ff3333' },
-    { start: 88, end: 100, color: '#cc44ff' },
+  // Label
+  const labels = [
+    [0, 'Calm', '#5B8AF0'],
+    [20, 'Quiet', '#4aaa60'],
+    [40, 'Active', '#e6c020'],
+    [60, 'Tense', '#e67e22'],
+    [80, 'Explosive', '#e74c3c'],
+    [95, 'Volcanic 🌋', '#9b59b6'],
   ];
-  zones.forEach(z => {
-    const a0 = Math.PI + (z.start / 100) * Math.PI;
-    const a1 = Math.PI + (z.end / 100) * Math.PI;
-    ct.save();
-    ct.beginPath();
-    ct.arc(cx, cy, R, a0, a1);
-    ct.lineWidth = 26;
-    ct.strokeStyle = z.color + '88';
-    ct.stroke();
-    ct.restore();
-  });
+  let label = labels[0];
+  for (const [threshold, name, col] of labels) {
+    if (score >= threshold) label = [threshold, name, col];
+  }
+  const labelEl = document.getElementById('complexity-label');
+  labelEl.textContent = label[1];
+  labelEl.style.color = label[2];
+}
+
+function drawComplexityGauge(score) {
+  const gaugeCanvas = document.getElementById('complexity-gauge');
+  if (!gaugeCanvas) return;
+  const gc = gaugeCanvas.getContext('2d');
+  const W = 180, H = 100;
+  gc.clearRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H - 14, R = 74, innerR = 48;
+  const startAngle = Math.PI;
+  const endAngle = 0;
+
+  // Background arc
+  gc.beginPath();
+  gc.arc(cx, cy, R, Math.PI, 0);
+  gc.lineWidth = 18;
+  gc.strokeStyle = 'rgba(255,255,255,0.06)';
+  gc.stroke();
+
+  // Colored gradient arc
+  const angleRange = Math.PI;
+  const fillAngle = startAngle + (score / 100) * angleRange;
+
+  // Draw color bands
+  const bands = [
+    [0, 0.2, '#5B8AF0'],
+    [0.2, 0.4, '#4aaa60'],
+    [0.4, 0.6, '#e6c020'],
+    [0.6, 0.8, '#e67e22'],
+    [0.8, 0.95, '#e74c3c'],
+    [0.95, 1.0, '#9b59b6'],
+  ];
+  for (const [s, e, col] of bands) {
+    const a0 = Math.PI + s * Math.PI;
+    const a1 = Math.PI + e * Math.PI;
+    gc.beginPath();
+    gc.arc(cx, cy, R, a0, a1);
+    gc.strokeStyle = col;
+    gc.lineWidth = 18;
+    gc.globalAlpha = 0.25;
+    gc.stroke();
+    gc.globalAlpha = 1;
+  }
 
   // Active fill
-  const angleEnd = Math.PI + (val / 100) * Math.PI;
-  const grad = ct.createLinearGradient(cx - R, cy, cx + R, cy);
-  grad.addColorStop(0, '#4488ff');
-  grad.addColorStop(0.3, '#44cc66');
-  grad.addColorStop(0.5, '#cccc22');
-  grad.addColorStop(0.7, '#ff8833');
-  grad.addColorStop(0.88, '#ff3333');
-  grad.addColorStop(1, '#cc44ff');
-  ct.save();
-  ct.beginPath();
-  ct.arc(cx, cy, R, Math.PI, angleEnd);
-  ct.lineWidth = 26;
-  ct.strokeStyle = grad;
-  ct.shadowColor = getComplexityLabel(val).color;
-  ct.shadowBlur = 12;
-  ct.stroke();
-  ct.restore();
+  if (score > 0) {
+    const pct = score / 100;
+    let remaining = pct;
+    for (const [s, e, col] of bands) {
+      if (remaining <= 0) break;
+      const bandFrac = e - s;
+      const fillFrac = Math.min(remaining, bandFrac) / bandFrac;
+      const a0 = Math.PI + s * Math.PI;
+      const a1 = Math.PI + Math.min(e, s + (e-s)*fillFrac) * Math.PI;
+      gc.beginPath();
+      gc.arc(cx, cy, R, a0, a1);
+      gc.strokeStyle = col;
+      gc.lineWidth = 18;
+      gc.lineCap = s === 0 ? 'round' : 'butt';
+      gc.stroke();
+      remaining -= bandFrac;
+    }
+  }
 
   // Needle
-  const needleAngle = Math.PI + (val / 100) * Math.PI;
-  const nx = cx + (R - 14) * Math.cos(needleAngle);
-  const ny = cy + (R - 14) * Math.sin(needleAngle);
-  ct.save();
-  ct.beginPath();
-  ct.moveTo(cx, cy);
-  ct.lineTo(nx, ny);
-  ct.lineWidth = 3;
-  ct.strokeStyle = '#fff';
-  ct.shadowColor = '#fff';
-  ct.shadowBlur = 8;
-  ct.stroke();
-  // Hub
-  ct.beginPath(); ct.arc(cx, cy, 8, 0, Math.PI*2);
-  ct.fillStyle = '#C49A50'; ct.fill();
-  ct.restore();
+  const needleAngle = Math.PI + (score / 100) * Math.PI;
+  const nx = cx + (R - 2) * Math.cos(needleAngle);
+  const ny = cy + (R - 2) * Math.sin(needleAngle);
+  gc.beginPath();
+  gc.moveTo(cx, cy);
+  gc.lineTo(nx, ny);
+  gc.strokeStyle = '#fff';
+  gc.lineWidth = 2.5;
+  gc.lineCap = 'round';
+  gc.shadowColor = 'rgba(255,255,255,0.6)';
+  gc.shadowBlur = 6;
+  gc.stroke();
+  gc.shadowBlur = 0;
 
-  // Labels
-  ct.font = 'bold 11px Share Tech Mono, monospace';
-  ct.textAlign = 'left'; ct.fillStyle = '#4488ff88';
-  ct.fillText('CALM', cx - R - 8, cy + 16);
-  ct.textAlign = 'right'; ct.fillStyle = '#cc44ff88';
-  ct.fillText('VOLCANIC', cx + R + 8, cy + 16);
+  // Center dot
+  gc.beginPath();
+  gc.arc(cx, cy, 5, 0, Math.PI * 2);
+  gc.fillStyle = '#fff';
+  gc.fill();
 
-  // Center value
-  const info = getComplexityLabel(val);
-  ct.textAlign = 'center'; ct.font = 'bold 28px Share Tech Mono, monospace';
-  ct.fillStyle = info.color; ct.shadowColor = info.color; ct.shadowBlur = 12;
-  ct.fillText(Math.round(val), cx, cy - R * 0.35);
-  ct.shadowBlur = 0;
-  ct.font = 'bold 14px Cinzel, serif'; ct.fillStyle = info.color;
-  ct.fillText(info.label, cx, cy - R * 0.35 + 24);
+  // Score text
+  gc.fillStyle = 'rgba(196,154,80,0.9)';
+  gc.font = 'bold 16px monospace';
+  gc.textAlign = 'center';
+  gc.fillText(Math.round(score), cx, cy - 24);
+  gc.font = '9px monospace';
+  gc.fillStyle = 'rgba(196,154,80,0.5)';
+  gc.fillText('COMPLEXITY', cx, cy - 10);
+
+  // Labels at ends
+  gc.font = '9px monospace';
+  gc.fillStyle = '#5B8AF0';
+  gc.textAlign = 'left';
+  gc.fillText('Calm', 2, cy + 14);
+  gc.fillStyle = '#9b59b6';
+  gc.textAlign = 'right';
+  gc.fillText('🌋', W - 2, cy + 14);
 }
 
-// Hook complexity update into placeStone
-const _origPlaceStone2 = placeStone;
-placeStone = function(i) {
-  const result = _origPlaceStone2(i);
-  if (result && complexityEnabled) {
-    setTimeout(updateComplexityMeter, 100);
-  }
-  return result;
+// Hook complexity update into drawBoard / updateUI
+const _origUpdateUI_cx = updateUI;
+updateUI = function() {
+  _origUpdateUI_cx.apply(this, arguments);
+  if (complexityEnabled) updateComplexityMeter();
 };
+
 
 
 </script>
