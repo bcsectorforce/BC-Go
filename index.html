@@ -1641,19 +1641,19 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <div class="diff-grid">
         <button class="diff-card active" data-group="diff" data-val="1" onclick="selectOpt(this,'diff')">
           <div class="diff-name">⚀ Wanderer</div>
-          <div class="diff-desc">Plays randomly. Great for learning.</div>
+          <div class="diff-desc">Plays randomly. Great for learning basic rules and how captures work.</div>
         </button>
         <button class="diff-card" data-group="diff" data-val="2" onclick="selectOpt(this,'diff')">
           <div class="diff-name">⚁ Apprentice</div>
-          <div class="diff-desc">Basic strategy: captures, eyes, territory.</div>
+          <div class="diff-desc">Heuristic strategy: captures, rescues groups, builds territory. A real challenge for new players.</div>
         </button>
         <button class="diff-card" data-group="diff" data-val="3" onclick="selectOpt(this,'diff')">
           <div class="diff-name">⚂ Master</div>
-          <div class="diff-desc">Advanced tactics with Monte Carlo search.</div>
+          <div class="diff-desc">Deep Monte Carlo search, biased rollouts, atari detection. Plays a serious, competitive game.</div>
         </button>
         <button class="diff-card" data-group="diff" data-val="4" onclick="selectOpt(this,'diff')">
           <div class="diff-name">⚃ Grandmaster</div>
-          <div class="diff-desc">Deep tree search, pattern matching, influence maps. World-class level.</div>
+          <div class="diff-desc">UCB1 MCTS, priority capture/rescue logic, deep strategic evaluation. Extremely difficult to beat.</div>
         </button>
       </div>
     </div>
@@ -1801,6 +1801,7 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="rules-tab" onclick="switchRulesTab('scoring',this)">Scoring</button>
       <button class="rules-tab" onclick="switchRulesTab('etiquette',this)">Etiquette</button>
       <button class="rules-tab" onclick="switchRulesTab('ranks',this)">Ranks & History</button>
+      <button class="rules-tab" onclick="switchRulesTab('thisgame',this)">This Game</button>
     </div>
 
     <!-- PAGE: BASICS -->
@@ -2060,6 +2061,250 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
           <li><strong>Miai:</strong> Two equivalent points such that if your opponent takes one, you take the other. Recognizing miai allows you to remain untroubled by apparent threats.</li>
         </ul>
       </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⚡</span> More Essential Techniques</div>
+        <div class="technique-grid">
+          <div class="technique-card">
+            <div class="t-icon">🎣</div>
+            <div class="t-name">Ladder (Shicho)</div>
+            <div class="t-jp">シチョウ</div>
+            <div class="t-desc">A chase that captures a stone in a staircase pattern toward the edge. Extends across the entire board — if a ladder-breaker stone exists, the ladder fails. Always read ladders before playing them.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🕸️</div>
+            <div class="t-name">Net (Geta)</div>
+            <div class="t-jp">ゲタ</div>
+            <div class="t-desc">A move that surrounds stones without filling their liberties directly. The trapped stones cannot escape even though they appear to have liberties. Deadlier than a ladder — no board-edge dependency.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🔒</div>
+            <div class="t-name">Snapback (Uttegaeshi)</div>
+            <div class="t-jp">打ち返し</div>
+            <div class="t-desc">Allow the opponent to capture your stone(s), then immediately recapture a larger group. A counterintuitive sequence that traps greedy opponents who take without reading ahead.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🌉</div>
+            <div class="t-name">Bamboo Joint</div>
+            <div class="t-jp">竹の節</div>
+            <div class="t-desc">Two stones with a single gap between them forming a flexible connection. Cannot be cut without allowing reconnection — one of the most efficient defensive shapes in Go.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">⬜</div>
+            <div class="t-name">Empty Triangle (Bad Shape)</div>
+            <div class="t-jp">空き三角</div>
+            <div class="t-desc">Three stones of the same color forming an L-shape, with the corner intersection empty. Inefficient — the same safety can be achieved with two stones. Avoid unless forced.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🏹</div>
+            <div class="t-name">Knight's Move (Keima)</div>
+            <div class="t-jp">ケイマ</div>
+            <div class="t-desc">A move one point diagonally and one point orthogonally away — like a chess knight's move. Fast extension that can be cut, but the cut is often locally bad for the cutter due to the resulting shape.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🔼</div>
+            <div class="t-name">Shoulder Hit</div>
+            <div class="t-jp">肩つき</div>
+            <div class="t-desc">A move placed diagonally adjacent to an opponent's lone stone, pressing it down. Reduces the opponent's territory and influence while building your own. Lee Sedol's "hand of God" (Move 78) was a shoulder hit.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">💣</div>
+            <div class="t-name">Peep (Nozoki)</div>
+            <div class="t-jp">のぞき</div>
+            <div class="t-desc">A stone placed to threaten a cut of the opponent's connection. Usually forces the opponent to connect, extracting a concession. A powerful kikashi if your opponent must respond.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🌊</div>
+            <div class="t-name">Flooding (Osae)</div>
+            <div class="t-jp">押さえ</div>
+            <div class="t-desc">Blocking or capping moves that prevent expansion. Osae restricts an opponent's group to low territory while building influence on the outside — the opposite of allowing them to expand.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🐍</div>
+            <div class="t-name">Squeeze (Shiboiri)</div>
+            <div class="t-jp">絞り</div>
+            <div class="t-desc">Force the opponent to capture your stones in a way that leaves their own group short of liberties. The captured stones become a gift that tightens the noose around the opponent's group.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🏰</div>
+            <div class="t-name">Thickness into Attack</div>
+            <div class="t-jp">厚みへの攻撃</div>
+            <div class="t-desc">After building a thick wall, use it to attack opponent stones by chasing them toward it. The opponent's fleeing stones gain nothing; your thick group constricts them. Direction of play is critical.</div>
+          </div>
+          <div class="technique-card">
+            <div class="t-icon">🎯</div>
+            <div class="t-name">Hanetsugi (Hane-connect)</div>
+            <div class="t-jp">ハネツギ</div>
+            <div class="t-desc">A hane (diagonal extension from a stone on the edge of a group) followed immediately by a connection. Often used to solidify a base or block the opponent's invasion at the same time.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🧠</span> Strategic Principles</div>
+        <ul class="rules-ul">
+          <li><strong>Fuseki (布石):</strong> The opening phase. Stones placed in the early game shape the entire contest. Focus on corners first (easiest to secure), then sides, then center.</li>
+          <li><strong>Joseki (定石):</strong> Established corner sequences where both players play optimally. Hundreds of joseki exist; learning a few key ones dramatically improves corner fights.</li>
+          <li><strong>Sente / Gote:</strong> Sente means "initiative" — your move forces the opponent to respond, keeping your momentum. Gote means you respond to them. In the endgame, sente moves are worth nearly double a gote move of the same size.</li>
+          <li><strong>Vital Point:</strong> The single most important intersection in a local fight — often the point that either kills the opponent's group or saves yours. Reading to find vital points is the core of tsumego training.</li>
+          <li><strong>Direction of Play:</strong> When attacking, drive the opponent toward your thickness and away from safety. When building territory, extend toward the open board. "Make your opponent run into walls."</li>
+          <li><strong>Count the Board:</strong> Periodically estimate the score. If ahead, play solidly and avoid unnecessary fights (reduce, don't invade). If behind, create chaos — ko fights, invasions, complex sequences where mistakes are possible.</li>
+          <li><strong>The Third Line vs. Fourth Line:</strong> The third line (3 intersections from the edge) builds secure territory. The fourth line builds influence. Strong players balance both throughout the game.</li>
+          <li><strong>Big Points vs. Local Urgency:</strong> The hardest judgment in Go — is the global big point more valuable than responding to a local threat? Recognizing true urgency separates dan players from kyu players.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PAGE: THIS GAME -->
+    <div class="rules-page" id="rpage-thisgame">
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎮</span> About This App</div>
+        <p class="rules-p">This is a full-featured Go client built entirely in the browser. It includes a living sky ambience system, AI-powered commentary, real-time analysis, famous game replays, tsumego puzzles, and much more. Here is a complete guide to every feature.</p>
+        <div class="rules-callout tip">
+          <div class="rules-callout-label">💡 Quick Start</div>
+          <p>Click <strong>Enter</strong> on the splash screen → choose your settings → click <strong>Begin the Game</strong>. Click any intersection on the board to place your stone. The board highlights valid moves as you hover.</p>
+        </div>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⚙️</span> Game Setup Options</div>
+        <ul class="rules-ul">
+          <li><strong>Mode:</strong> Play <em>vs Bot</em> (single player against AI) or <em>vs Human</em> (two players on the same screen, passing the device).</li>
+          <li><strong>Bot Difficulty:</strong> Four levels — Wanderer (random), Apprentice (heuristic), Master (Monte Carlo search), Grandmaster (UCB1 MCTS with deep rollouts). Grandmaster is genuinely very hard to beat.</li>
+          <li><strong>Your Color:</strong> Play as Black (goes first, disadvantage) or White (komi compensation).</li>
+          <li><strong>Board Size:</strong> 9×9 (quick, beginner-friendly), 13×13 (intermediate), 19×19 (full game, ~1–3 hours).</li>
+          <li><strong>Komi:</strong> White's compensation bonus. Standard is 6.5 (Japanese rules). Set to 0 for handicap games.</li>
+          <li><strong>Time Control:</strong> Optional move timer — 30s, 60s, or 2 minutes per move. Runs out → <strong>Byo-Yomi</strong> kicks in: 3 extra 30-second periods before time loss.</li>
+          <li><strong>Board Theme:</strong> Five visual themes: Classic Wood, Cyber Neon, Jade Imperial, Cherry Blossom, Obsidian. Each theme changes board, stone, and UI colors.</li>
+          <li><strong>Handicap Stones:</strong> Give Black a starting advantage of 2–9 pre-placed stones. Automatically positions stones on traditional star points.</li>
+          <li><strong>Bot Opening Book:</strong> When enabled (Level 3–4), the bot plays professional fuseki patterns for the first few moves rather than calculating from scratch.</li>
+          <li><strong>Load SGF:</strong> Import a .sgf game record file to review any game in the replay viewer.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎨</span> Board & Visual Features</div>
+        <ul class="rules-ul">
+          <li><strong>Coordinate Labels:</strong> Toggle A–T letter labels and 1–19 number labels along the board edges. Click <em>Coords</em> in the toolbar.</li>
+          <li><strong>Last Move Marker:</strong> A small circle appears on the most recently placed stone so you never lose track of where your opponent played.</li>
+          <li><strong>Ghost Stone Preview:</strong> As you hover over the board, a semi-transparent preview stone shows where you would play.</li>
+          <li><strong>Board Texture:</strong> Upload your own image as a board background (PNG/JPG/WebP), or choose from preset textures including light wood, dark rosewood, slate, and bamboo mat. Accessible via <em>Texture</em> button.</li>
+          <li><strong>Theme Switcher:</strong> The five dots in the right panel switch visual themes instantly, even mid-game.</li>
+          <li><strong>Stone Trail Particles:</strong> Each placed stone spawns particle effects that fade away — toggle with the <em>Trail</em> button.</li>
+          <li><strong>Capture Animation:</strong> Captured stones fly in a parabolic arc toward the prisoner bowl, with a pulsed flash on the board and pitched sound. The prisoner counter pulses when stones land.</li>
+          <li><strong>Ko Pulse:</strong> When a Ko fight is active, the relevant stone pulses visually on the board to draw your attention.</li>
+          <li><strong>Handicap Badge:</strong> A small dot on the board stones shows which are handicap stones.</li>
+          <li><strong>Annotation Mode:</strong> Toggle <em>Annotate</em> to draw symbols (circles, triangles, squares, X marks) on the board for analysis. Arrows can also be drawn. All annotations are cleared on new game.</li>
+          <li><strong>Territory Overlay:</strong> After both players pass, toggle <em>Territory</em> to see shaded regions showing estimated territory for each player.</li>
+          <li><strong>Dead Stone Marking:</strong> After game end, click <em>Mark Dead</em> then click stones to mark them as dead for scoring purposes. Click <em>Score</em> to finalize.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🤖</span> AI & Analysis Features</div>
+        <ul class="rules-ul">
+          <li><strong>AI Live Commentary:</strong> Toggle the <em>Commentary</em> button. After each move, a live AI commentator (powered by Claude) provides 2–3 sentences of authentic Go broadcast commentary, including move coordinates, phase, and captures. Falls back to template commentary if offline. Your moves' commentary stays visible for at least 4 seconds before the bot's commentary appears.</li>
+          <li><strong>Influence Heat Map:</strong> Toggle <em>Heat Map</em> to see a color overlay showing which intersections each player influences. Blue = Black's influence, Red = White's influence. Intensity reflects strength. Computed fresh each turn via BFS from every stone.</li>
+          <li><strong>AI Hint:</strong> Press <em>Hint</em> to ask the AI for a suggested move. The hint glows on the board for 8 seconds with an explanation (captures, atari relief, territory). Uses MCTS analysis at your current difficulty level.</li>
+          <li><strong>Move Explanation Box:</strong> Automatically shown after each bot move — explains what the bot played and why (captures, atari, territory building, etc.).</li>
+          <li><strong>Post-Game AI Analysis:</strong> After a game ends, click <em>🔍 AI Analysis</em> on the win screen. Claude analyzes your game and returns a letter grade, playing style assessment, 3 best moves, 3 key mistakes, the turning point, and a coaching tip — all as a structured card.</li>
+          <li><strong>Joseki Guide Overlay:</strong> Toggle <em>Joseki</em> in the right panel during the opening phase (first 12 moves). Golden stars highlight recommended 4-4 and 3-4 corner points; blue diamonds suggest star-point extensions once corners are claimed.</li>
+          <li><strong>Complexity Meter:</strong> Toggle <em>Complexity</em> to open a gauge showing the current position's tactical tension — accounting for groups in atari, active ko fights, unsettled groups, and total captures. Ranges from Calm to Volcanic 🌋.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">📚</span> Learning & Training Features</div>
+        <ul class="rules-ul">
+          <li><strong>Tsumego Puzzle Mode:</strong> Access via <em>Tsumego</em> button. A library of 20 life-and-death problems of varying difficulty (Easy/Medium/Hard), each with a hint system, star rating, and progress tracker. Click a point on the small board to attempt the solution.</li>
+          <li><strong>Daily Challenge:</strong> A new tsumego puzzle every day (determined by the calendar date). Includes a countdown timer to the next puzzle, a hint, and a local leaderboard to submit your solve time.</li>
+          <li><strong>Famous Games Viewer:</strong> Replay three legendary games move-by-move: the 1846 Inoue–Akaboshi game, AlphaGo vs. Lee Sedol Game 4 (2016), and the Atomic Bomb Game (Hiroshima, 1945). Each game includes expert commentary on key moves. Use ⏮ ◀ ▶ ⏭ to step through moves or Auto for automatic playback.</li>
+          <li><strong>Opening Library:</strong> Save any current game's opening moves with a custom name. Reload any saved opening to replay it on the board (same board size required). Saved locally — persists between sessions.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🔬</span> Review & Analysis Tools</div>
+        <ul class="rules-ul">
+          <li><strong>Game Review Mode:</strong> After a game ends (or from the win screen), click <em>▶ Review</em>. Step through every move of the game with ◀ ▶ buttons, jump to any move by number, and see the board state at each point. Exit with <em>Exit Review</em>.</li>
+          <li><strong>SGF Export:</strong> Click <em>💾 Save SGF</em> to download your game as a standard .sgf file, readable by any Go software (Sabaki, GoReviewPartner, KataGo, etc.).</li>
+          <li><strong>SGF Import:</strong> In the Setup screen, use <em>📂 Load SGF</em> to load any .sgf file for review in the built-in viewer.</li>
+          <li><strong>Move Tree:</strong> Click <em>Move Tree</em> to visualize all moves as a network of stone nodes. Click any node to jump directly to that position in review mode. Rebuilds dynamically.</li>
+          <li><strong>Board Snapshots:</strong> Click <em>📷 Snapshot</em> at any point to save the current board state with a timestamp label. Up to 12 snapshots per game. Restore any snapshot instantly or delete individual saves. Access the gallery via the same button.</li>
+          <li><strong>Live Score Graph:</strong> Toggle <em>Score Graph</em> to see a real-time chart plotting estimated Black and White scores over the course of the game. Useful for identifying when the game shifted.</li>
+          <li><strong>Video Export:</strong> On the win screen, click <em>🎬 Export Video</em> to render the entire game as an animated video file you can save. Shows each move with timing and effects.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🌙</span> Ambience System</div>
+        <p class="rules-p">Toggle <em>Ambience</em> to activate the cinematic time-of-day sky system, which reads your device's local clock and renders an accurate sky with the correct sun/moon position, stars, and atmospheric particles.</p>
+        <ul class="rules-ul">
+          <li><strong>Dawn (5–7am):</strong> Purple horizon fading to orange-pink. Sun rises from the east with warm atmospheric glow.</li>
+          <li><strong>Morning (7–10am):</strong> Bright blue sky, sun climbing, warm dust motes drifting.</li>
+          <li><strong>Noon (10am–2pm):</strong> Peak bright blue, sun near zenith, strongest board lighting.</li>
+          <li><strong>Afternoon (2–5pm):</strong> Slightly softer blue, sun descending west.</li>
+          <li><strong>Sunset (5–7pm):</strong> Deep orange-red horizon, sun disk with color shift, horizon glow.</li>
+          <li><strong>Dusk (7–9pm):</strong> Deep purple sky, fireflies appear near the horizon.</li>
+          <li><strong>Night (9pm–5am):</strong> Near-black deep navy sky, full star field with twinkling, realistic moon (with craters and phase shadow) rising from east to west across its arc. At 10pm you will see stars and the moon — not sunrise colors.</li>
+          <li><strong>Theme Particles:</strong> Cherry Blossom theme → falling petals; Cyber theme → electric sparks; Jade theme → floating leaves; Obsidian theme → rising embers.</li>
+          <li><strong>Board Lighting:</strong> The board receives a directional light effect matching the sun/moon position — warm gold at noon, orange at sunset, cool silver-blue moonlight at night.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🎵</span> Sound System</div>
+        <ul class="rules-ul">
+          <li><strong>Stone Sounds:</strong> Black and white stones produce different pitched clicks on placement — generated with the Web Audio API to mimic the ceramic/slate sound of real stones.</li>
+          <li><strong>Capture Sounds:</strong> Capturing multiple stones produces pitched sounds that cascade with each stone removed — one sound per captured stone.</li>
+          <li><strong>Pass / Illegal Move Sounds:</strong> Distinct audio cues for passing and attempting illegal moves.</li>
+          <li><strong>Win Sound:</strong> A celebratory multi-note flourish plays on game end.</li>
+          <li><strong>Toggle:</strong> All sounds can be turned off with the <em>Sound</em> toggle button. Preference is remembered for the session.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">📊</span> Statistics & Records</div>
+        <ul class="rules-ul">
+          <li><strong>Stats Dashboard:</strong> Access via <em>Stats</em> button. Shows total games played, wins/losses, win rate, average game length, most common board size, and more.</li>
+          <li><strong>Win/Loss Streak Visualization:</strong> A row of colored pips showing your recent game results at a glance.</li>
+          <li><strong>Score History Chart:</strong> A line graph of your score across all recorded games.</li>
+          <li><strong>Full Game History Table:</strong> Every recorded game with date, mode, board size, result, move count, and duration.</li>
+          <li><strong>Export CSV:</strong> Download your complete game history as a .csv file for analysis in a spreadsheet.</li>
+          <li><strong>Clear Stats:</strong> Permanently delete all stored statistics (with confirmation).</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">⌨️</span> Controls & Gameplay Mechanics</div>
+        <ul class="rules-ul">
+          <li><strong>Place Stone:</strong> Click any empty intersection. A ghost preview follows your cursor.</li>
+          <li><strong>Pass:</strong> Click the <em>Pass</em> button (each player gets exactly one pass per game). When both players have passed, the game ends and scoring begins.</li>
+          <li><strong>Resign:</strong> Click <em>Resign</em> to concede — the opponent wins immediately.</li>
+          <li><strong>Undo:</strong> Click <em>Undo</em> to take back your last move (and the bot's response in PvE mode). Up to 10 undos stored per game.</li>
+          <li><strong>New Game / Setup:</strong> Access via <em>New Setup</em> button or after a game ends on the win screen. Returns to the full setup menu.</li>
+          <li><strong>Ko Rule:</strong> Enforced automatically — if a move would recreate a recent board position, it is marked illegal. A notification appears explaining the ko violation.</li>
+          <li><strong>Byo-Yomi Timer:</strong> Three pip indicators below the score show remaining byo-yomi periods. They dim as periods are consumed. The timer bar turns red when urgently low.</li>
+        </ul>
+      </div>
+
+      <div class="rules-section">
+        <div class="rules-h2"><span class="icon">🤖</span> Bot Difficulty — Technical Details</div>
+        <p class="rules-p">The four bots use progressively more sophisticated algorithms. All bots run entirely in your browser — no server required.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Wanderer (Lv.1)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:8%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Pure random legal moves from all empty intersections. Zero strategy. Use to practice captures and basic patterns.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Apprentice (Lv.2)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:30%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Weighted heuristics: prioritizes captures, rescues atari groups, avoids first-line moves early, targets star points. No forward search — pure pattern scoring.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Master (Lv.3)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:65%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Monte Carlo Tree Search (1.8s budget). Pre-filters top 28 candidates by heuristic score, then runs biased rollouts for each. Rollouts favor captures and atari, top-6 selection. Plays a strong, competitive game.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Grandmaster (Lv.4)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:95%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">UCB1-based MCTS (3s budget, up to 6,000 simulations). Top 30 candidates. During rollouts, explicitly checks for captures first, then atari rescues, then strong scored moves. Final move selection by pure win rate. Significantly harder than Master — it reads captures, escapes, and territory systematically.</p>
+        <div class="rules-callout warning">
+          <div class="rules-callout-label">⚠️ Performance Note</div>
+          <p>The Grandmaster bot runs up to 6,000 game simulations per move entirely in your browser. On slower devices it may cause the page to pause briefly while thinking (3 seconds). This is normal — all animations wait for the computation to finish before starting. If you experience lag, try Master (Lv.3) which is significantly lighter while still being very strong.</p>
+        </div>
+      </div>
+
     </div>
 
     <!-- PAGE: SCORING -->
@@ -2188,15 +2433,15 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 
       <div class="rules-section">
         <div class="rules-h2"><span class="icon">🎮</span> About This Game's Bot</div>
-        <p class="rules-p">This game features four AI difficulty levels, each using progressively more sophisticated algorithms:</p>
-        <div class="diff-bar"><div class="diff-bar-label">Wanderer (Lv.1)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:10%"></div></div></div>
+        <p class="rules-p">This game features four AI difficulty levels, each using progressively more sophisticated algorithms. See the <em>This Game</em> tab for complete details.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Wanderer (Lv.1)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:8%"></div></div></div>
         <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Pure random legal moves. No strategy. Good for learning basic rules and captures.</p>
-        <div class="diff-bar"><div class="diff-bar-label">Apprentice (Lv.2)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:35%"></div></div></div>
-        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Heuristic AI: captures when possible, rescues atari groups, avoids edges early, plays toward star points.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Apprentice (Lv.2)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:30%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Heuristic AI: captures when possible, rescues atari groups, plays star points. A real challenge for beginners.</p>
         <div class="diff-bar"><div class="diff-bar-label">Master (Lv.3)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:65%"></div></div></div>
-        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Monte Carlo Tree Search with 1.2-second budget. Runs hundreds of random game simulations to evaluate moves.</p>
-        <div class="diff-bar"><div class="diff-bar-label">Grandmaster (Lv.4)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:90%"></div></div></div>
-        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Deep MCTS with 2-second budget, biased rollouts, opening book, candidate pre-filtering. Plays a serious, challenging game.</p>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">Monte Carlo Tree Search with 1.8-second budget, biased rollouts favoring captures and atari, 28-candidate pre-filtering.</p>
+        <div class="diff-bar"><div class="diff-bar-label">Grandmaster (Lv.4)</div><div class="diff-bar-track"><div class="diff-bar-fill" style="width:95%"></div></div></div>
+        <p class="rules-p" style="font-size:12px;margin-top:4px;color:var(--text-dim)">UCB1 MCTS, 3-second budget, up to 6,000 simulations, priority capture/rescue rollout logic, 30 candidates. Extremely difficult.</p>
       </div>
     </div>
 
@@ -3328,6 +3573,12 @@ function placeStone(i) {
   const _color2 = color;
   const _captureCount2 = captureCount;
   const _moveCount2 = G.moveCount;
+  // For player moves in PvE, record the time so bot's commentary waits
+  const playerColor = SETUP.color === 'black' ? 1 : 2;
+  const isPlayerMove = SETUP.mode === 'pve' && color === playerColor;
+  if (isPlayerMove) {
+    window._playerCommentaryTime = Date.now();
+  }
   setTimeout(() => triggerCommentary(_moveName2, _color2, _captureCount2, _moveCount2), 200);
 
   // FEATURE 4: Stone Trail
@@ -3832,8 +4083,9 @@ let botThinkTimeout = null;
 
 function scheduleBotMove() {
   if (G.gameOver) return;
-  // Visual delay so it doesn't feel instant — but actual compute happens inside getBotMCTS budget
-  const delay = SETUP.diff <= 2 ? 500 : 300;
+  // Delay before thinking: allow animations (capture, stone placement) to complete first
+  // Higher levels get more delay since their computation is heavier
+  const delay = SETUP.diff <= 2 ? 550 : SETUP.diff === 3 ? 500 : 600;
   setBotStatus('Thinking...');
   botThinkTimeout = setTimeout(() => {
     // Check if bot should pass (no legal moves and hasn't passed yet)
@@ -3853,12 +4105,10 @@ function scheduleBotMove() {
     }
     const move = getBotMove();
     if (move === -1) {
-      // getBotMove returned -1 means no candidates; pass if allowed
       if (!G.hasPassed[G.turn]) {
         setBotStatus('Passes');
         passMove();
       } else {
-        // Bot already passed and has no legal moves — game should end via player passing too
         setBotStatus('Waiting...');
       }
     } else {
@@ -3882,13 +4132,11 @@ function setBotStatus(msg) {
 }
 
 function getBotMove() {
-  // Bot should only pass if it truly has no good moves AND hasn't passed yet
-  // Never pass twice — if bot already passed, it must play a stone
   switch(SETUP.diff) {
     case 1: return getBotRandom();
     case 2: return getBotBasic();
-    case 3: return getBotMCTS(1200);   // 1.2 second budget
-    case 4: return getBotMCTS(2000);   // 2 second budget — fast thanks to candidate filtering
+    case 3: return getBotMCTS(1800);   // 1.8 second budget — noticeably stronger than before
+    case 4: return getBotGrandmaster(3000); // 3 second budget — deep, strategic play
   }
 }
 
@@ -3965,17 +4213,16 @@ function getBotBasic() {
   return pool[Math.floor(Math.random() * pool.length)].i;
 }
 
-// MCTS for difficulty 3 & 4 — time-budgeted, fast candidate pre-filtering
+// MCTS for difficulty 3 — time-budgeted, improved candidate pre-filtering
 function getBotMCTS(timeBudgetMs) {
   const color = G.turn;
   const koPoint = G.koPoint || -1;
 
   // Pre-score all legal moves cheaply, then only run MCTS on the top N candidates
-  // This is the core speedup: 19x19=361 cells -> top 25 candidates only
   const allLegal = getLegalMoves(G.board, color, N, koPoint);
   if (allLegal.length === 0) return -1;
 
-  const maxCandidates = SETUP.diff === 4 ? 25 : 20;
+  const maxCandidates = 28;
   const prescored = allLegal.map(i => ({ i, h: getMoveHeuristic(i, color) }));
   prescored.sort((a, b) => b.h - a.h);
   const candidates = prescored.slice(0, maxCandidates).map(x => x.i);
@@ -3984,14 +4231,13 @@ function getBotMCTS(timeBudgetMs) {
   const plays = new Map();
   for (const c of candidates) { wins.set(c, 0); plays.set(c, 0); }
 
-  // Short rollouts — quality comes from breadth not depth on 9x9/13x13/19x19
-  const rolloutDepth = SETUP.diff === 4 ? 30 : 20;
+  const rolloutDepth = 35;
   const deadline = performance.now() + timeBudgetMs;
   let totalSims = 0;
   let ci = 0;
 
   // Round-robin across candidates until time budget exhausted
-  while (performance.now() < deadline && totalSims < 2000) {
+  while (performance.now() < deadline && totalSims < 4000) {
     const move = candidates[ci % candidates.length];
     ci++;
     const result = tryPlace(G.board, move, color, N, koPoint);
@@ -4008,7 +4254,7 @@ function getBotMCTS(timeBudgetMs) {
     const p = plays.get(move) || 1;
     const w = wins.get(move) || 0;
     const winRate = w / p;
-    const heur = getMoveHeuristic(move, color) * 0.08;
+    const heur = getMoveHeuristic(move, color) * 0.06;
     const score = winRate + heur;
     if (score > bestScore) { bestScore = score; best = move; }
   }
@@ -4034,25 +4280,19 @@ function rollout(board, turn, depth, myColor) {
   let b = [...board];
   let t = turn;
   let passes = 0;
-  const tempHistory = [];
+  const opp = 3 - t;
 
   for (let d = 0; d < depth; d++) {
     if (passes >= 2) break;
-    // Get moves with heuristic weighting for diff 4
     const legal = getQuickLegal(b, t, N);
     if (legal.length === 0) { passes++; t = 3-t; continue; }
 
     let move;
-    if (SETUP.diff === 4) {
-      // Biased rollout: favor captures and good moves
-      const scored = legal.map(i => ({ i, s: quickScore(b, i, t, N) }));
-      scored.sort((a,b) => b.s - a.s);
-      // Temperature-based selection
-      const topK = Math.min(5, scored.length);
-      move = scored[Math.floor(Math.random() * topK)].i;
-    } else {
-      move = legal[Math.floor(Math.random() * legal.length)];
-    }
+    // Biased rollout: favor captures and atari threats
+    const scored = legal.map(i => ({ i, s: quickScore(b, i, t, N) }));
+    scored.sort((a,b2) => b2.s - a.s);
+    const topK = Math.min(6, scored.length);
+    move = scored[Math.floor(Math.random() * topK)].i;
 
     const result = tryPlace(b, move, t, N, -1);
     if (!result) { t = 3-t; passes = 0; continue; }
@@ -4061,7 +4301,6 @@ function rollout(board, turn, depth, myColor) {
     t = 3-t;
   }
 
-  // Score the result
   return evaluateBoard(b, myColor);
 }
 
@@ -4078,11 +4317,21 @@ function getQuickLegal(board, color, N) {
 function quickScore(board, i, color, N) {
   const result = tryPlace(board, i, color, N, -1);
   if (!result) return -999;
-  let s = result.captured.length * 5;
+  let s = result.captured.length * 6;
   const [r, c] = pos(i, N);
   const minEdge = Math.min(r, c, N-1-r, N-1-c);
-  if (minEdge >= 3) s += 1;
-  s += Math.random();
+  if (minEdge === 3) s += 1.5;
+  else if (minEdge === 2) s += 0.6;
+  else if (minEdge <= 0) s -= 1.5;
+  // Putting opponent in atari
+  const opp = 3 - color;
+  for (const nb of getNeighbors(result.board, i, N)) {
+    if (result.board[nb] === opp) {
+      const { liberties } = getGroup(result.board, nb, N);
+      if (liberties.size === 1) s += 5;
+    }
+  }
+  s += Math.random() * 0.5;
   return s;
 }
 
@@ -4090,16 +4339,231 @@ function getMoveHeuristic(i, color) {
   let score = 0;
   const result = tryPlace(G.board, i, color, N, G.koPoint || -1);
   if (!result) return -999;
-  score += result.captured.length * 3;
+  const opp = 3 - color;
+
+  // Captures are critical
+  score += result.captured.length * 8;
+
+  // Large captures are especially good
+  if (result.captured.length >= 3) score += result.captured.length * 4;
+
   const [r, c] = pos(i, N);
   const minEdge = Math.min(r, c, N-1-r, N-1-c);
-  if (minEdge === 3) score += 1.5;
-  else if (minEdge === 2) score += 0.5;
-  // Influence map bonus
+
+  // Line preference: 3rd-4th line is ideal, 1st line is weak
+  if (minEdge === 3) score += 2.5;
+  else if (minEdge === 4) score += 2.0;
+  else if (minEdge === 2) score += 0.8;
+  else if (minEdge === 1) score -= 1.5;
+  else if (minEdge === 0) score -= 3.0;
+
+  // Adjacency to own stones — building connectivity
+  let ownNbs = 0, oppNbs = 0;
   for (const nb of getNeighbors(i, N)) {
-    if (G.board[nb] === color) score += 0.3;
+    if (G.board[nb] === color) ownNbs++;
+    else if (G.board[nb] === opp) oppNbs++;
   }
+  if (ownNbs === 1) score += 0.8; // extend
+  if (ownNbs === 2) score += 0.4; // connect
+  if (ownNbs >= 3) score -= 0.5;  // cramped
+
+  // Saving own group in atari
+  for (const nb of getNeighbors(i, N)) {
+    if (G.board[nb] === color) {
+      const { liberties } = getGroup(G.board, nb, N);
+      if (liberties.size === 1) score += 12; // urgent rescue
+      else if (liberties.size === 2) score += 4;
+    }
+  }
+
+  // Putting opponent in atari
+  for (const nb of getNeighbors(result.board, i, N)) {
+    if (result.board[nb] === opp) {
+      const { liberties } = getGroup(result.board, nb, N);
+      if (liberties.size === 1) score += 10; // puts opponent in atari
+      else if (liberties.size === 2) score += 3;
+    }
+  }
+
+  // Influence — adjacent to own stones in wider area
+  const [ir, ic] = pos(i, N);
+  for (let dr = -2; dr <= 2; dr++) {
+    for (let dc = -2; dc <= 2; dc++) {
+      const nr = ir + dr, nc = ic + dc;
+      if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+      const ni = idx(nr, nc, N);
+      if (G.board[ni] === color) score += 0.2 / (Math.abs(dr) + Math.abs(dc) + 1);
+    }
+  }
+
+  // Center bonus in early game
+  const centerDist = Math.max(Math.abs(r - Math.floor(N/2)), Math.abs(c - Math.floor(N/2)));
+  if (G.moveCount < 20 && centerDist < N/3) score += 0.5;
+
   return score;
+}
+
+// Advanced eye detection for grandmaster
+function isEyeForColor(board, i, color, N) {
+  if (board[i] !== 0) return false;
+  const nbs = getNeighbors(i, N);
+  // All orthogonal neighbors must be own color
+  for (const nb of nbs) {
+    if (board[nb] !== color) return false;
+  }
+  return true;
+}
+
+// Check if placing here creates an eye for our group
+function createsEye(board, i, color, N) {
+  const result = tryPlace(board, i, color, N, -1);
+  if (!result) return false;
+  // After placing, check if any empty cell adjacent to i is now an eye
+  for (const nb of getNeighbors(i, N)) {
+    if (result.board[nb] === 0 && isEyeForColor(result.board, nb, color, N)) return true;
+  }
+  return false;
+}
+
+// Grandmaster: UCB1-based MCTS with much stronger rollouts and deeper search
+function getBotGrandmaster(timeBudgetMs) {
+  const color = G.turn;
+  const koPoint = G.koPoint || -1;
+
+  const allLegal = getLegalMoves(G.board, color, N, koPoint);
+  if (allLegal.length === 0) return -1;
+
+  // Pre-score with strong heuristics, take top 30 candidates
+  const maxCandidates = Math.min(30, allLegal.length);
+  const prescored = allLegal.map(i => ({ i, h: getMoveHeuristic(i, color) }));
+  prescored.sort((a, b) => b.h - a.h);
+  const candidates = prescored.slice(0, maxCandidates).map(x => x.i);
+
+  // UCB1 MCTS
+  const wins = new Map();
+  const plays = new Map();
+  const totalVisits = { v: 0 };
+  for (const c of candidates) { wins.set(c, 0); plays.set(c, 0); }
+
+  const rolloutDepth = 45; // deeper rollouts for grandmaster
+  const deadline = performance.now() + timeBudgetMs;
+  let totalSims = 0;
+
+  while (performance.now() < deadline && totalSims < 6000) {
+    // UCB1 selection: balance exploration vs exploitation
+    let bestMove = candidates[0];
+    let bestUCB = -Infinity;
+    const logTotal = Math.log(Math.max(1, totalVisits.v));
+    for (const move of candidates) {
+      const p = plays.get(move) || 0;
+      const w = wins.get(move) || 0;
+      const exploitation = p > 0 ? w / p : 0;
+      const exploration = p > 0 ? Math.sqrt(2 * logTotal / p) : 2.0; // high exploration for unvisited
+      const heurBonus = getMoveHeuristic(move, color) * 0.05;
+      const ucb = exploitation + exploration + heurBonus;
+      if (ucb > bestUCB) { bestUCB = ucb; bestMove = move; }
+    }
+
+    const result = tryPlace(G.board, bestMove, color, N, koPoint);
+    if (!result) { plays.set(bestMove, (plays.get(bestMove)||0)+1); totalVisits.v++; continue; }
+
+    const outcome = rolloutGrandmaster(result.board, 3 - color, rolloutDepth, color);
+    wins.set(bestMove, (wins.get(bestMove) || 0) + outcome);
+    plays.set(bestMove, (plays.get(bestMove) || 0) + 1);
+    totalVisits.v++;
+    totalSims++;
+  }
+
+  // Select best move by win rate (not UCB — pure exploitation at end)
+  let best = -1;
+  let bestWR = -Infinity;
+  for (const move of candidates) {
+    const p = plays.get(move) || 1;
+    const w = wins.get(move) || 0;
+    const winRate = w / p;
+    // Break ties with heuristic
+    const tieBreak = getMoveHeuristic(move, color) * 0.02;
+    const score = winRate + tieBreak;
+    if (score > bestWR) { bestWR = score; best = move; }
+  }
+
+  return best;
+}
+
+// Grandmaster rollout: much stronger biased simulation
+function rolloutGrandmaster(board, turn, depth, myColor) {
+  let b = [...board];
+  let t = turn;
+  let passes = 0;
+
+  for (let d = 0; d < depth; d++) {
+    if (passes >= 2) break;
+    const legal = getQuickLegal(b, t, N);
+    if (legal.length === 0) { passes++; t = 3-t; continue; }
+
+    // Strong biased rollout: heavily prefer captures, atari, and good shape
+    const opp = 3 - t;
+    let move;
+
+    // Priority 1: Capture any group
+    const captureMove = legal.find(i => {
+      const r = tryPlace(b, i, t, N, -1);
+      return r && r.captured.length > 0;
+    });
+    if (captureMove !== undefined) {
+      move = captureMove;
+    } else {
+      // Priority 2: Rescue own group in atari
+      const rescueMove = legal.find(i => {
+        for (const nb of getNeighbors(i, N)) {
+          if (b[nb] === t) {
+            const { liberties } = getGroup(b, nb, N);
+            if (liberties.size === 1) return true;
+          }
+        }
+        return false;
+      });
+      if (rescueMove !== undefined) {
+        move = rescueMove;
+      } else {
+        // Priority 3: Biased random from top scored moves
+        const scored = legal.map(i => ({ i, s: quickScoreGM(b, i, t, N) }));
+        scored.sort((a, b2) => b2.s - a.s);
+        const topK = Math.min(8, scored.length);
+        // Weighted random among top moves
+        move = scored[Math.floor(Math.random() * topK)].i;
+      }
+    }
+
+    const result = tryPlace(b, move, t, N, -1);
+    if (!result) { t = 3-t; passes = 0; continue; }
+    b = result.board;
+    passes = 0;
+    t = 3-t;
+  }
+
+  return evaluateBoard(b, myColor);
+}
+
+function quickScoreGM(board, i, color, N) {
+  const result = tryPlace(board, i, color, N, -1);
+  if (!result) return -999;
+  let s = result.captured.length * 8;
+  const [r, c] = pos(i, N);
+  const minEdge = Math.min(r, c, N-1-r, N-1-c);
+  if (minEdge === 3) s += 2;
+  else if (minEdge === 2) s += 0.8;
+  else if (minEdge <= 0) s -= 2;
+  // Putting opponent in atari
+  const opp = 3 - color;
+  for (const nb of getNeighbors(result.board, i, N)) {
+    if (result.board[nb] === opp) {
+      const { liberties } = getGroup(result.board, nb, N);
+      if (liberties.size === 1) s += 7;
+    }
+  }
+  s += Math.random() * 0.3;
+  return s;
 }
 
 function evaluateBoard(board, myColor) {
@@ -5887,6 +6351,19 @@ function showCommentaryText(text, colorSide) {
 
 async function triggerCommentary(moveName, color, captureCount, moveNum) {
   if (!commentaryEnabled) return;
+
+  // If this is a bot move and the player just commented, wait so player's comment is visible longer
+  const playerColor = SETUP.color === 'black' ? 1 : 2;
+  const isBotMove = SETUP.mode === 'pve' && color !== playerColor;
+  if (isBotMove && window._playerCommentaryTime) {
+    const elapsed = Date.now() - window._playerCommentaryTime;
+    const MIN_PLAYER_DISPLAY = 4500; // player comment shows for at least 4.5 seconds
+    if (elapsed < MIN_PLAYER_DISPLAY) {
+      await new Promise(r => setTimeout(r, MIN_PLAYER_DISPLAY - elapsed));
+    }
+    window._playerCommentaryTime = 0;
+  }
+  if (!commentaryEnabled) return; // check again after possible wait
   const colorName = color === 1 ? 'Black' : 'White';
   const opponent = color === 1 ? 'White' : 'Black';
   const phase = moveNum < 40 ? 'opening' : moveNum < 120 ? 'middle game' : 'endgame';
@@ -6817,16 +7294,28 @@ function getSkyColors(phase) {
   // 0.75 6pm: sunset orange
   // 0.83 8pm: dusk purple
   // 1.0  midnight
+  // Hours mapped to phase (0=midnight, 0.25=6am, 0.5=noon, 0.75=6pm, 1.0=midnight)
+  // Accurate sky colors: night=deep navy/black, dawn=purple-orange, day=blue, dusk=orange-red, evening=deep purple, late night=near-black
   const stops = [
-    { p: 0.00, top: [8,10,40],    bot: [12,15,60] },
-    { p: 0.17, top: [4,6,28],     bot: [8,10,45] },
-    { p: 0.25, top: [60,30,80],   bot: [220,100,60] },
-    { p: 0.33, top: [30,80,160],  bot: [190,140,90] },
-    { p: 0.50, top: [60,130,220], bot: [130,190,255] },
-    { p: 0.67, top: [45,110,200], bot: [120,175,240] },
-    { p: 0.75, top: [200,80,40],  bot: [240,160,60] },
-    { p: 0.83, top: [80,30,100],  bot: [180,80,80] },
-    { p: 1.00, top: [8,10,40],    bot: [12,15,60] },
+    { p: 0.000, top: [3,4,22],     bot: [6,8,38] },   // midnight — near-black deep navy
+    { p: 0.083, top: [2,3,18],     bot: [4,6,30] },   // 2am — darkest point
+    { p: 0.167, top: [3,4,22],     bot: [6,8,38] },   // 4am — still night
+    { p: 0.208, top: [18,10,55],   bot: [60,30,80] },  // 5am — pre-dawn purple
+    { p: 0.250, top: [70,35,95],   bot: [200,90,55] }, // 6am — dawn orange-pink
+    { p: 0.292, top: [40,80,150],  bot: [180,120,80] },// 7am — sunrise blue-orange
+    { p: 0.333, top: [30,85,170],  bot: [160,130,90] },// 8am — morning blue
+    { p: 0.417, top: [50,115,210], bot: [120,175,240] },// 10am — day blue
+    { p: 0.500, top: [60,135,225], bot: [110,185,255] },// noon — bright blue sky
+    { p: 0.583, top: [50,120,215], bot: [115,180,250] },// 2pm — afternoon blue
+    { p: 0.667, top: [42,105,195], bot: [120,168,235] },// 4pm — late afternoon
+    { p: 0.708, top: [120,65,50],  bot: [220,140,55] }, // 5pm — pre-sunset
+    { p: 0.750, top: [190,72,28],  bot: [240,145,45] }, // 6pm — sunset orange-red
+    { p: 0.792, top: [100,35,80],  bot: [175,70,65] },  // 7pm — dusk purple-red
+    { p: 0.833, top: [40,18,75],   bot: [90,35,80] },   // 8pm — dusk purple
+    { p: 0.875, top: [12,8,52],    bot: [22,14,65] },   // 9pm — early night
+    { p: 0.917, top: [5,5,32],     bot: [9,10,48] },    // 10pm — night (dark)
+    { p: 0.958, top: [3,4,24],     bot: [6,7,36] },     // 11pm — deep night
+    { p: 1.000, top: [3,4,22],     bot: [6,8,38] },     // midnight
   ];
   let a = stops[0], b = stops[1];
   for (let i = 0; i < stops.length - 1; i++) {
@@ -6846,24 +7335,23 @@ function getAmbientBoardLight(phase) {
     // Bright noon — warm golden-white, strong
     const t = 1 - Math.abs(hour - 12) / 2;
     return { r: 255, g: 248, b: 200, alpha: 0.28 * t + 0.12 };
-  } else if (hour >= 6 && hour < 10) {
+  } else if (hour >= 7 && hour < 10) {
     // Morning — soft warm orange
-    const t = (hour - 6) / 4;
+    const t = (hour - 7) / 3;
     return { r: 255, g: 200, b: 140, alpha: 0.15 * t + 0.04 };
-  } else if (hour > 14 && hour <= 18) {
+  } else if (hour > 14 && hour <= 17) {
     // Afternoon fading
-    const t = 1 - (hour - 14) / 4;
+    const t = 1 - (hour - 14) / 3;
     return { r: 255, g: 220, b: 160, alpha: 0.2 * t + 0.05 };
-  } else if (hour > 18 && hour < 20) {
+  } else if (hour > 17 && hour < 19.5) {
     // Sunset glow on board
-    const t = 1 - (hour - 18) / 2;
+    const t = 1 - (hour - 17) / 2.5;
     return { r: 255, g: 120, b: 60, alpha: 0.18 * t };
-  } else if (hour >= 0 && hour < 5 || hour >= 21) {
-    // Moonlight — cool silver-blue
-    const moonPhase = getMoonAltitude(hour);
-    return { r: 180, g: 200, b: 255, alpha: 0.08 * moonPhase };
+  } else {
+    // Night / moonlight (covers 6am-7am pre-dawn and 7:30pm onward)
+    const moonAlt = getMoonAltitude(hour);
+    return { r: 160, g: 180, b: 255, alpha: 0.07 * moonAlt };
   }
-  return { r: 200, g: 200, b: 255, alpha: 0.03 };
 }
 
 function getMoonAltitude(hour) {
@@ -6978,9 +7466,9 @@ function drawHorizonGlow(ct, W, H, phase) {
                         : Math.min(1,(hour-17)/2) * (1 - Math.min(1,(hour-19)/1));
     const hgGrad = ct.createLinearGradient(0, horizonY - H*0.1, 0, horizonY + H*0.05);
     const isdawn = hour < 12;
-    hgGrad.addColorStop(0, `rgba(255,${isdown?120:80},0,0)`);
-    hgGrad.addColorStop(0.5, `rgba(255,${isdown?160:100},40,${0.35 * t})`);
-    hgGrad.addColorStop(1, `rgba(255,${isdown?180:60},20,0)`);
+    hgGrad.addColorStop(0, `rgba(255,${isdawn?120:80},0,0)`);
+    hgGrad.addColorStop(0.5, `rgba(255,${isdawn?160:100},40,${0.35 * t})`);
+    hgGrad.addColorStop(1, `rgba(255,${isdawn?180:60},20,0)`);
     ct.fillStyle = hgGrad;
     ct.fillRect(0, horizonY - H*0.1, W, H*0.15);
   }
@@ -7027,11 +7515,12 @@ function drawBoardLightShaft(phase) {
 
 function drawStarsField(ct, W, H, phase, t) {
   const hour = phase * 24;
-  // Stars visible roughly 7:30pm to 5:30am
+  // Stars visible from 7:30pm to 6am
   let starAlpha = 0;
-  if (hour >= 20 || hour <= 5) starAlpha = 1;
-  else if (hour > 19 && hour < 20) starAlpha = (hour - 19);
+  if (hour >= 19.5 && hour < 20) starAlpha = (hour - 19.5) * 2; // fade in 7:30-8pm
+  else if (hour >= 20 || hour <= 5) starAlpha = 1;
   else if (hour > 5 && hour < 6) starAlpha = 1 - (hour - 5);
+  else starAlpha = 0;
   if (starAlpha <= 0) return;
 
   // Use seeded positions for stable stars
