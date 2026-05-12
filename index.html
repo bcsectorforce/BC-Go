@@ -1589,6 +1589,235 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
   letter-spacing: 0.15em;
 }
 
+/* ===== FEATURE NEW-1: PLAYING STYLE DNA ===== */
+#dna-modal {
+  position: fixed; inset: 0; z-index: 960;
+  background: rgba(0,0,0,0.97);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+  padding: 20px;
+}
+#dna-modal.visible { opacity: 1; pointer-events: all; }
+.dna-box {
+  background: #0d0d12;
+  border: 1px solid var(--ui-border);
+  padding: 36px;
+  width: min(640px, 96vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.dna-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 0.25em;
+  margin-bottom: 4px;
+}
+.dna-subtitle {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.dna-bar-row {
+  margin-bottom: 20px;
+}
+.dna-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.dna-bar-track {
+  height: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--ui-border);
+  position: relative;
+  overflow: hidden;
+}
+.dna-bar-fill {
+  height: 100%;
+  transition: width 1.2s cubic-bezier(0.22,1,0.36,1);
+  position: relative;
+}
+.dna-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  animation: dna-shimmer 2s ease infinite;
+}
+@keyframes dna-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.dna-bar-marker {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: rgba(255,255,255,0.3);
+  left: 50%;
+}
+.dna-history-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ui-border);
+}
+.dna-history-chip {
+  padding: 4px 10px;
+  border: 1px solid var(--ui-border);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dna-history-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(196,154,80,0.1);
+}
+
+/* ===== FEATURE NEW-2: STONE RIPPLE PHYSICS ===== */
+#ripple-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 35;
+}
+
+/* ===== FEATURE NEW-3: MOVE HAIKU ===== */
+#haiku-display {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 650;
+  pointer-events: none;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+#haiku-display.visible { opacity: 1; }
+.haiku-card {
+  background: rgba(8,8,14,0.95);
+  border: 1px solid rgba(196,154,80,0.4);
+  border-top: 2px solid var(--accent);
+  padding: 18px 28px 14px;
+  backdrop-filter: blur(10px);
+  min-width: 280px;
+  max-width: 400px;
+}
+.haiku-label {
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.haiku-line {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  line-height: 2.0;
+  color: var(--text);
+  font-style: italic;
+}
+.haiku-line.bold { color: var(--accent); font-weight: 700; }
+.haiku-attribution {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-top: 8px;
+  text-align: right;
+}
+@keyframes haiku-float {
+  0% { transform: translateX(-50%) translateY(10px); opacity: 0; }
+  15% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  80% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-8px); opacity: 0; }
+}
+
+/* ===== FEATURE NEW-4: TERRITORY TIME-LAPSE ===== */
+#timelapse-modal {
+  position: fixed; inset: 0; z-index: 955;
+  background: rgba(0,0,0,0.98);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+  padding: 20px;
+}
+#timelapse-modal.visible { opacity: 1; pointer-events: all; }
+.timelapse-box {
+  width: min(700px, 96vw);
+  position: relative;
+}
+.timelapse-header {
+  text-align: center;
+  padding: 0 0 24px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.timelapse-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 0.3em;
+}
+#timelapse-canvas {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  border: 1px solid var(--ui-border);
+}
+.timelapse-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#timelapse-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--ui-border);
+  margin: 10px 0 4px;
+  position: relative;
+}
+#timelapse-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.05s linear;
+}
+.timelapse-move-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* ===== FEATURE NEW-5: INFLUENCE PARTICLES ===== */
+#particle-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 38;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+#particle-canvas.visible { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -1774,6 +2003,10 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="act-btn" style="flex:1" onclick="showSetup()">⚙ New Setup</button>
       <button class="act-btn primary" style="flex:1" onclick="requestPostGameAnalysis()">🔍 AI Analysis</button>
       <button class="video-export-btn" id="video-export-btn" onclick="exportGameVideo()">🎬 Export Video</button>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="act-btn" style="flex:1" onclick="showDNA()">🧬 Style DNA</button>
+      <button class="act-btn" style="flex:1" onclick="showTimelapse()">🗺️ Territory Lapse</button>
     </div>
     <div id="video-progress-bar"><div id="video-progress-fill"></div></div>
     <!-- AI Analysis result panel -->
@@ -2730,6 +2963,8 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <canvas id="webgl-canvas"></canvas>
       <div id="threed-badge">🎲 3D MODE ACTIVE — drag to rotate</div>
       <canvas id="trail-canvas"></canvas>
+      <canvas id="ripple-canvas"></canvas>
+      <canvas id="particle-canvas"></canvas>
       <div id="heatmap-legend">
         <div class="hm-row"><div class="hm-swatch" style="background:rgba(60,100,255,0.7)"></div> Black influence</div>
         <div class="hm-row"><div class="hm-swatch" style="background:rgba(220,60,60,0.7)"></div> White influence</div>
@@ -2928,6 +3163,7 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="act-btn" id="btn-heatmap" style="font-size:10px;padding:7px 6px;text-align:center" onclick="toggleHeatMap()">🌡 Heat Map: <span id="heatmap-state">OFF</span></button>
       <button class="act-btn" id="btn-complexity" style="font-size:10px;padding:7px 6px;text-align:center" onclick="toggleComplexity()">🌋 Complexity: <span id="complexity-state">OFF</span></button>
       <button class="act-btn" id="btn-score-graph" style="font-size:10px;padding:7px 6px;text-align:center;grid-column:1/-1" onclick="toggleScoreGraph()">📈 Score Graph</button>
+      <button class="act-btn" id="btn-particles" style="font-size:10px;padding:7px 6px;text-align:center;grid-column:1/-1" onclick="toggleInfluenceParticles()">🌊 Influence Particles: <span id="particles-state">OFF</span></button>
     </div>
 
     <!-- FEATURES section -->
@@ -3005,10 +3241,59 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
   </div>
 </div>
 
+<!-- FEATURE NEW-3: MOVE HAIKU -->
+<div id="haiku-display">
+  <div class="haiku-card">
+    <div class="haiku-label">⛩ Move Haiku</div>
+    <div id="haiku-lines"></div>
+    <div class="haiku-attribution" id="haiku-attribution">— The Board Speaks</div>
+  </div>
+</div>
+
+<!-- FEATURE NEW-1: PLAYING STYLE DNA MODAL -->
+<div id="dna-modal">
+  <div class="dna-box">
+    <button onclick="hideDNA()" style="position:absolute;top:16px;right:20px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.2em;padding:7px 16px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)';this.style.color='var(--text-dim)'">✕ Close</button>
+    <div class="dna-title">🧬 Playing Style DNA</div>
+    <div class="dna-subtitle">Your strategic genome — generated from game analysis</div>
+    <div id="dna-bars"></div>
+    <div id="dna-summary" style="font-size:12px;line-height:1.8;color:var(--text-dim);padding:14px;border:1px solid var(--ui-border);background:rgba(196,154,80,0.04);margin-top:16px"></div>
+    <div id="dna-history-section" style="display:none">
+      <div style="font-size:10px;letter-spacing:0.3em;color:var(--text-dim);text-transform:uppercase;margin-top:20px;margin-bottom:8px">Game History — click to compare</div>
+      <div class="dna-history-row" id="dna-history-chips"></div>
+      <canvas id="dna-evolution-canvas" width="560" height="120" style="display:none;width:100%;margin-top:16px;border:1px solid var(--ui-border);background:rgba(0,0,0,0.3)"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE NEW-4: TERRITORY TIME-LAPSE MODAL -->
+<div id="timelapse-modal">
+  <div class="timelapse-box">
+    <button onclick="hideTimelapse()" style="position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:960" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)';this.style.color='var(--text-dim)'">✕ Close</button>
+    <div class="timelapse-header">
+      <div class="timelapse-title">🗺️ Territory Time-Lapse</div>
+      <div style="font-size:10px;color:var(--text-dim);letter-spacing:0.3em;text-transform:uppercase;margin-top:6px">Blue = Black Territory · Red = White Territory</div>
+    </div>
+    <canvas id="timelapse-canvas"></canvas>
+    <div id="timelapse-progress"><div id="timelapse-progress-fill"></div></div>
+    <div class="timelapse-move-label" id="timelapse-move-label">Move 0 / 0</div>
+    <div class="timelapse-controls">
+      <button class="act-btn" onclick="timelapseStep(-10)">⏪</button>
+      <button class="act-btn" onclick="timelapseStep(-1)">◀</button>
+      <button class="act-btn primary" id="timelapse-play-btn" onclick="toggleTimelapse()">▶ Play</button>
+      <button class="act-btn" onclick="timelapseStep(1)">▶</button>
+      <button class="act-btn" onclick="timelapseStep(10)">⏩</button>
+      <select id="timelapse-speed" style="background:rgba(0,0,0,0.8);border:1px solid var(--ui-border);color:var(--text);padding:7px 10px;font-size:11px;font-family:'Noto Serif JP',serif;cursor:pointer">
+        <option value="300">Slow</option>
+        <option value="120" selected>Normal</option>
+        <option value="50">Fast</option>
+        <option value="16">Turbo</option>
+      </select>
+    </div>
+  </div>
+</div>
+
 <script>
-// ============================================================
-//  AUDIO ENGINE
-// ============================================================
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 let soundEnabled = true;
@@ -9168,12 +9453,894 @@ function drawComplexityGauge(score) {
   gc.fillText('🌋', W - 2, cy + 14);
 }
 
-// Hook complexity update into drawBoard / updateUI
-const _origUpdateUI_cx = updateUI;
-updateUI = function() {
-  _origUpdateUI_cx.apply(this, arguments);
-  if (complexityEnabled) updateComplexityMeter();
+// ============================================================
+//  FEATURE NEW-1: PLAYING STYLE DNA
+// ============================================================
+const dnaHistory = JSON.parse(localStorage.getItem('go_dna_history') || '[]');
+
+function analyzeDNA(fullMoveRecord, N, prisoners, komi) {
+  if (!fullMoveRecord || fullMoveRecord.length < 5) return null;
+  const moves = fullMoveRecord.filter(m => m.move >= 0);
+  if (moves.length < 5) return null;
+
+  const size = N;
+  let cornerMoves = 0, centerMoves = 0, edgeMoves = 0;
+  let captures = 0, earlyCaptures = 0;
+  let invasions = 0, defenses = 0;
+  let blackMoves = 0, whiteMoves = 0;
+  let totalMoves = moves.length;
+  const CORNER_DIST = Math.floor(size * 0.22);
+  const CENTER_DIST = Math.floor(size * 0.3);
+
+  for (let mi = 0; mi < moves.length; mi++) {
+    const m = moves[mi];
+    const r = Math.floor(m.move / size);
+    const c = m.move % size;
+    const dr = Math.min(r, size-1-r);
+    const dc = Math.min(c, size-1-c);
+    const distFromEdge = Math.min(dr, dc);
+    const distFromCenter = Math.max(Math.abs(r - (size-1)/2), Math.abs(c - (size-1)/2));
+
+    if (m.color === 1) blackMoves++; else whiteMoves++;
+
+    if (distFromEdge <= CORNER_DIST && (dr <= CORNER_DIST) && (dc <= CORNER_DIST)) {
+      cornerMoves++;
+    } else if (distFromCenter <= CENTER_DIST) {
+      centerMoves++;
+    } else {
+      edgeMoves++;
+    }
+
+    // Capture-heavy?
+    if (m.prisoners && m.prisoners.length > 0) {
+      const prevPrisoners = mi > 0 ? (moves[mi-1].prisoners || [0,0]) : [0,0];
+      const cap = (m.prisoners[0] + m.prisoners[1]) - (prevPrisoners[0] + prevPrisoners[1]);
+      if (cap > 0) {
+        captures++;
+        if (mi < totalMoves * 0.4) earlyCaptures++;
+      }
+    }
+  }
+
+  // Compute dimensions [0-1] where 0.5 = balanced
+  const cornerVsCenter = cornerMoves / Math.max(1, cornerMoves + centerMoves);  // high = corner
+  const capVsPositional = captures / Math.max(1, totalMoves * 0.3);  // high = capture-heavy
+  const aggressive = Math.min(1, (earlyCaptures / Math.max(1, captures)) * 1.5 + capVsPositional * 0.3);
+  const territorial = 1 - aggressive * 0.6;
+  const invasive = Math.min(1, (edgeMoves + centerMoves) / Math.max(1, totalMoves) * 1.4);
+
+  return {
+    cornerFocus: Math.max(0.05, Math.min(0.95, cornerVsCenter)),
+    captureHeavy: Math.max(0.05, Math.min(0.95, Math.min(1, capVsPositional))),
+    aggressive: Math.max(0.05, Math.min(0.95, aggressive)),
+    invasive: Math.max(0.05, Math.min(0.95, invasive)),
+    centerFocus: Math.max(0.05, Math.min(0.95, centerMoves / Math.max(1, totalMoves) * 2)),
+    moveCount: totalMoves,
+    timestamp: Date.now(),
+  };
+}
+
+function showDNA() {
+  const dna = analyzeDNA(G.fullMoveRecord, N, G.prisoners, SETUP.komi);
+  if (!dna) {
+    notify('Not enough moves for DNA analysis (need 5+)');
+    return;
+  }
+  // Save to history
+  dnaHistory.unshift({ ...dna, gameId: Date.now() });
+  if (dnaHistory.length > 10) dnaHistory.pop();
+  try { localStorage.setItem('go_dna_history', JSON.stringify(dnaHistory)); } catch(e){}
+
+  renderDNA(dna);
+  document.getElementById('dna-modal').classList.add('visible');
+}
+
+function renderDNA(dna) {
+  const bars = document.getElementById('dna-bars');
+  bars.innerHTML = '';
+  const dims = [
+    { key: 'aggressive', leftLabel: 'Territorial', rightLabel: 'Aggressive', color: '#e74c3c' },
+    { key: 'invasive', leftLabel: 'Defensive', rightLabel: 'Invasive', color: '#e67e22' },
+    { key: 'cornerFocus', leftLabel: 'Center-Focused', rightLabel: 'Corner-Focused', color: '#3498db' },
+    { key: 'captureHeavy', leftLabel: 'Positional', rightLabel: 'Capture-Heavy', color: '#9b59b6' },
+    { key: 'centerFocus', leftLabel: 'Edge-Oriented', rightLabel: 'Center-Oriented', color: '#27ae60' },
+  ];
+
+  dims.forEach(d => {
+    const val = dna[d.key];
+    const pct = Math.round(val * 100);
+    const row = document.createElement('div');
+    row.className = 'dna-bar-row';
+    row.innerHTML = `
+      <div class="dna-bar-label">
+        <span>${d.leftLabel}</span>
+        <span style="color:var(--accent);font-family:'Share Tech Mono',monospace">${pct}%</span>
+        <span>${d.rightLabel}</span>
+      </div>
+      <div class="dna-bar-track">
+        <div class="dna-bar-marker"></div>
+        <div class="dna-bar-fill" style="width:0%;background:linear-gradient(90deg,${d.color}88,${d.color});left:0" data-target="${pct}"></div>
+      </div>
+    `;
+    bars.appendChild(row);
+  });
+
+  // Animate bars
+  setTimeout(() => {
+    bars.querySelectorAll('.dna-bar-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 80);
+
+  // Build summary
+  const aggStr = dna.aggressive > 0.65 ? 'aggressive' : dna.aggressive < 0.35 ? 'solid and territorial' : 'balanced';
+  const locStr = dna.cornerFocus > 0.6 ? 'corner-focused' : dna.centerFocus > 0.5 ? 'center-oriented' : 'side-playing';
+  const capStr = dna.captureHeavy > 0.6 ? 'capture-hungry' : 'positional';
+  const invStr = dna.invasive > 0.6 ? 'invasive' : 'defensive';
+  document.getElementById('dna-summary').innerHTML = `
+    <strong style="color:var(--accent);font-family:'Cinzel',serif;letter-spacing:0.15em">Style Profile</strong><br>
+    Your playing style is <strong>${aggStr}</strong>, <strong>${locStr}</strong>, and tends toward <strong>${capStr}</strong> play.
+    You appear <strong>${invStr}</strong> — ${dna.invasive > 0.6 ? 'often entering opponent territory' : 'preferring to build from strength'}.
+    <br><br>
+    <span style="font-size:10px;color:var(--text-dim)">Analysis based on ${dna.moveCount} moves · ${new Date(dna.timestamp).toLocaleDateString()}</span>
+  `;
+
+  // History chips
+  const histSection = document.getElementById('dna-history-section');
+  const histChips = document.getElementById('dna-history-chips');
+  if (dnaHistory.length > 1) {
+    histSection.style.display = 'block';
+    histChips.innerHTML = '';
+    dnaHistory.forEach((h, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'dna-history-chip' + (i === 0 ? ' active' : '');
+      chip.textContent = `Game ${dnaHistory.length - i} · ${new Date(h.timestamp).toLocaleDateString()}`;
+      chip.onclick = () => {
+        histChips.querySelectorAll('.dna-history-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        renderDNA(h);
+        if (dnaHistory.length > 1) drawDNAEvolution();
+      };
+      histChips.appendChild(chip);
+    });
+    if (dnaHistory.length > 1) drawDNAEvolution();
+  } else {
+    histSection.style.display = 'none';
+  }
+}
+
+function drawDNAEvolution() {
+  const cv = document.getElementById('dna-evolution-canvas');
+  cv.style.display = 'block';
+  const ctx2 = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx2.clearRect(0, 0, W, H);
+  ctx2.fillStyle = 'rgba(0,0,0,0)';
+  const dims = ['aggressive','invasive','cornerFocus','captureHeavy','centerFocus'];
+  const colors = ['#e74c3c','#e67e22','#3498db','#9b59b6','#27ae60'];
+  const labels = ['Aggr.','Inv.','Corner','Capt.','Center'];
+  const data = [...dnaHistory].reverse();
+
+  dims.forEach((key, di) => {
+    ctx2.beginPath();
+    ctx2.strokeStyle = colors[di];
+    ctx2.lineWidth = 1.5;
+    data.forEach((d, i) => {
+      const x = 40 + i * ((W - 60) / Math.max(1, data.length - 1));
+      const y = H - 20 - d[key] * (H - 40);
+      if (i === 0) ctx2.moveTo(x, y); else ctx2.lineTo(x, y);
+    });
+    ctx2.stroke();
+    // Label
+    ctx2.fillStyle = colors[di];
+    ctx2.font = '9px monospace';
+    ctx2.textAlign = 'left';
+    ctx2.fillText(labels[di], 2, 16 + di * 20);
+    ctx2.fillRect(32, 9 + di * 20, 12, 2);
+  });
+  // Axes
+  ctx2.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx2.lineWidth = 1;
+  ctx2.beginPath(); ctx2.moveTo(40, 10); ctx2.lineTo(40, H-20); ctx2.stroke();
+  ctx2.beginPath(); ctx2.moveTo(40, H-20); ctx2.lineTo(W-4, H-20); ctx2.stroke();
+  data.forEach((d, i) => {
+    const x = 40 + i * ((W - 60) / Math.max(1, data.length - 1));
+    ctx2.fillStyle = 'rgba(196,154,80,0.5)';
+    ctx2.font = '8px monospace';
+    ctx2.textAlign = 'center';
+    ctx2.fillText(`G${i+1}`, x, H - 4);
+  });
+}
+
+function hideDNA() {
+  document.getElementById('dna-modal').classList.remove('visible');
+}
+
+// ============================================================
+//  FEATURE NEW-2: STONE RIPPLE PHYSICS
+// ============================================================
+let rippleCtx = null;
+const activeRipples = [];  // { x, y, r, maxR, opacity, type }
+
+function setupRippleCanvas() {
+  const rc = document.getElementById('ripple-canvas');
+  if (!rc || !canvas) return;
+  rc.width = canvas.width;
+  rc.height = canvas.height;
+  rc.style.width = canvas.style.width;
+  rc.style.height = canvas.style.height;
+  rippleCtx = rc.getContext('2d');
+}
+
+function triggerStoneRipple(stoneIdx, isCapture) {
+  if (!rippleCtx) return;
+  const [r, c] = pos(stoneIdx, N);
+  const x = boardOffsetX + c * CELL;
+  const y = boardOffsetY + r * CELL;
+  if (isCapture) {
+    // Large shockwave
+    activeRipples.push({ x, y, r: 0, maxR: CELL * 4.5, opacity: 0.7, grow: 4.2, color: '255,140,0', type: 'capture' });
+    activeRipples.push({ x, y, r: 0, maxR: CELL * 3, opacity: 0.4, grow: 3, color: '255,60,60', type: 'capture2' });
+    // Wobble neighbours
+    const nbs = getNeighbors(stoneIdx, N);
+    nbs.forEach((nb, i) => {
+      if (G.board[nb] !== 0) {
+        setTimeout(() => triggerWobble(nb, 0.6), i * 35);
+      }
+    });
+  } else {
+    // Normal placement ripple
+    activeRipples.push({ x, y, r: CELL * 0.5, maxR: CELL * 1.8, opacity: 0.6, grow: 2.5, color: '255,255,255', type: 'place' });
+    // Wobble adjacent stones with dampening
+    const nbs = getNeighbors(stoneIdx, N);
+    nbs.forEach((nb, i) => {
+      if (G.board[nb] !== 0) {
+        setTimeout(() => triggerWobble(nb, 0.4), i * 25 + 30);
+        const nbs2 = getNeighbors(nb, N);
+        nbs2.forEach((nb2, j) => {
+          if (nb2 !== stoneIdx && G.board[nb2] !== 0) {
+            setTimeout(() => triggerWobble(nb2, 0.2), i * 25 + j * 20 + 80);
+          }
+        });
+      }
+    });
+  }
+}
+
+const wobbleStones = new Map();  // idx -> { phase, amplitude, startTime }
+
+function triggerWobble(stoneIdx, amplitude) {
+  wobbleStones.set(stoneIdx, { phase: 0, amplitude, startTime: performance.now() });
+}
+
+function getWobbleOffset(stoneIdx) {
+  const wb = wobbleStones.get(stoneIdx);
+  if (!wb) return { dx: 0, dy: 0 };
+  const elapsed = (performance.now() - wb.startTime) / 1000;
+  if (elapsed > 0.8) { wobbleStones.delete(stoneIdx); return { dx: 0, dy: 0 }; }
+  const decay = Math.exp(-elapsed * 6);
+  const wave = Math.sin(elapsed * 28) * wb.amplitude * decay * CELL * 0.12;
+  return { dx: wave * 0.6, dy: wave };
+}
+
+function animateRipples() {
+  if (!rippleCtx) return;
+  rippleCtx.clearRect(0, 0, rippleCtx.canvas.width, rippleCtx.canvas.height);
+
+  for (let i = activeRipples.length - 1; i >= 0; i--) {
+    const rp = activeRipples[i];
+    rp.r += rp.grow;
+    rp.opacity -= rp.type === 'capture' ? 0.018 : 0.025;
+    if (rp.opacity <= 0 || rp.r > rp.maxR) {
+      activeRipples.splice(i, 1);
+      continue;
+    }
+    rippleCtx.save();
+    rippleCtx.strokeStyle = `rgba(${rp.color},${rp.opacity.toFixed(3)})`;
+    rippleCtx.lineWidth = rp.type === 'capture' ? 3 : 1.5;
+    rippleCtx.beginPath();
+    rippleCtx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+    rippleCtx.stroke();
+    rippleCtx.restore();
+  }
+
+  // Wobble overlay: if any wobbles active, we need to redraw stones
+  if (wobbleStones.size > 0) {
+    rippleCtx.save();
+    for (const [idx, wb] of wobbleStones) {
+      const elapsed = (performance.now() - wb.startTime) / 1000;
+      if (elapsed > 0.8) { wobbleStones.delete(idx); continue; }
+      const { dx, dy } = getWobbleOffset(idx);
+      if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) continue;
+      const [r, c] = pos(idx, N);
+      const x = boardOffsetX + c * CELL + dx;
+      const y = boardOffsetY + r * CELL + dy;
+      const R = CELL * 0.47;
+      drawStone(rippleCtx, x, y, R, G.board[idx], SETUP.theme);
+    }
+    rippleCtx.restore();
+  }
+
+  if (activeRipples.length > 0 || wobbleStones.size > 0) {
+    requestAnimationFrame(animateRipples);
+  }
+}
+
+// Hook into placeStone aftereffects
+const _ripplePlaceStone = placeStone;
+placeStone = function(i) {
+  const result = _ripplePlaceStone.call(this, i);
+  if (result) {
+    setupRippleCanvas();
+    const hasCaptures = G.fullMoveRecord.length > 0 &&
+      G.fullMoveRecord[G.fullMoveRecord.length - 1].prisoners &&
+      G.fullMoveRecord.length > 1 &&
+      (G.fullMoveRecord[G.fullMoveRecord.length-1].prisoners[0] + G.fullMoveRecord[G.fullMoveRecord.length-1].prisoners[1]) >
+      (G.fullMoveRecord[G.fullMoveRecord.length-2].prisoners[0] + G.fullMoveRecord[G.fullMoveRecord.length-2].prisoners[1]);
+    triggerStoneRipple(i, false);
+    if (activeRipples.length > 0 || wobbleStones.size > 0) {
+      requestAnimationFrame(animateRipples);
+    }
+  }
+  return result;
 };
+
+// Also hook capture animation to fire shockwave
+const _prevAnimCaptures = animateCaptures;
+animateCaptures = function(captured) {
+  _prevAnimCaptures.call(this, captured);
+  if (captured && captured.length > 0) {
+    setupRippleCanvas();
+    captured.forEach((idx, i) => {
+      setTimeout(() => {
+        triggerStoneRipple(idx, true);
+        requestAnimationFrame(animateRipples);
+      }, i * 80);
+    });
+  }
+};
+
+// ============================================================
+//  FEATURE NEW-3: MOVE HAIKU GENERATOR
+// ============================================================
+const HAIKU_TEMPLATES = {
+  bigCapture: [
+    ["{{n}} stones taken", "The {{color}} dragon falls silent", "Winter ends the game"],
+    ["Stones swept away", "The board exhales and shifts", "Silence where they stood"],
+    ["Too many, too fast", "Swallowed by the hungry dark", "Their liberties: none"],
+    ["The group collapses", "Like autumn leaves in still wind", "Only points remain"],
+    ["{{n}} soldiers fall", "The border shifts like water", "War without mercy"],
+  ],
+  koFight: [
+    ["The point changes hands", "Back and forth like the tide turns", "Neither one lets go"],
+    ["Ko — ancient duel", "Each stone a hostage offered", "Who blinks first shall lose"],
+    ["One intersection", "Two players, one obsession", "The board holds its breath"],
+    ["Give and take and give", "The eternal ko cycle", "Heaven and earth locked"],
+  ],
+  gameEnd: [
+    ["The last stone is placed", "Two territories remain", "Count what you have built"],
+    ["Both players stand still", "The board has spoken its truth", "The stones do not lie"],
+    ["Final boundary", "The river finds its own course", "Neither wins the sky"],
+    ["{{winner}} prevails", "By {{margin}} careful points won", "The stones remember"],
+  ],
+  atariLarge: [
+    ["Surrounded on all", "One breath of air remaining", "Run or stand and die"],
+    ["The noose draws tighter", "Five liberties, now just one", "Escape while you can"],
+    ["A group in atari", "Like a candle in the wind", "One puff ends it all"],
+  ],
+  earlyGame: [
+    ["The board is empty", "Two players, infinite space", "First stone breaks the void"],
+    ["Corner, side, center", "The opening moves like breath", "All is possible"],
+  ],
+};
+
+function getHaikuForMoment(moveCount, captureCount, isKo, isGameEnd, winner, margin, playerColor) {
+  let templates, extra = {};
+  const colorName = playerColor === 1 ? 'black' : 'white';
+  const oppName = playerColor === 1 ? 'white' : 'black';
+
+  if (isGameEnd && moveCount > 20) {
+    templates = HAIKU_TEMPLATES.gameEnd;
+    extra = { winner: winner || 'Neither', margin: margin ? Math.abs(margin).toFixed(1) : '?' };
+  } else if (isKo) {
+    templates = HAIKU_TEMPLATES.koFight;
+  } else if (captureCount >= 5) {
+    templates = HAIKU_TEMPLATES.bigCapture;
+    extra = { n: captureCount, color: oppName };
+  } else if (captureCount >= 3) {
+    templates = HAIKU_TEMPLATES.atariLarge;
+  } else if (moveCount <= 4) {
+    templates = HAIKU_TEMPLATES.earlyGame;
+  } else {
+    return null;  // Not a significant moment
+  }
+
+  const template = templates[Math.floor(Math.random() * templates.length)];
+  return template.map(line => {
+    return line.replace(/\{\{(\w+)\}\}/g, (_, key) => extra[key] !== undefined ? extra[key] : key);
+  });
+}
+
+let haikuTimeout = null;
+
+function showHaiku(lines, attribution) {
+  if (haikuTimeout) clearTimeout(haikuTimeout);
+  const el = document.getElementById('haiku-display');
+  const linesEl = document.getElementById('haiku-lines');
+  const attrEl = document.getElementById('haiku-attribution');
+  if (!el || !lines) return;
+
+  linesEl.innerHTML = lines.map((l, i) =>
+    `<div class="haiku-line${i === 0 ? ' bold' : ''}">${l}</div>`
+  ).join('');
+  attrEl.textContent = attribution || '— The Board Speaks';
+  el.style.animation = 'none';
+  el.style.opacity = '0';
+  el.offsetHeight; // reflow
+  el.style.animation = 'haiku-float 5.5s ease forwards';
+  el.classList.add('visible');
+  haikuTimeout = setTimeout(() => {
+    el.classList.remove('visible');
+    el.style.animation = '';
+  }, 5500);
+}
+
+function triggerHaikuCheck(moveName, color, captureCount, moveCount) {
+  const isKo = G.koPoint >= 0;
+  const lines = getHaikuForMoment(moveCount, captureCount, isKo, false, null, null, color);
+  if (lines) {
+    const colorLabel = color === 1 ? '⚫ Black' : '⚪ White';
+    setTimeout(() => showHaiku(lines, `— ${colorLabel} at ${moveName}`), 300);
+  }
+}
+
+// Hook into move placement
+const _origUpdateUI_haiku = updateUI;
+updateUI = function() {
+  _origUpdateUI_haiku.apply(this, arguments);
+};
+
+// Hook endGame to show haiku
+const _origEndGame = endGame;
+endGame = function() {
+  _origEndGame.apply(this, arguments);
+  const { bScore, wScore } = computeScore();
+  const winner = bScore > wScore ? 'Black' : 'White';
+  const margin = Math.abs(bScore - wScore);
+  const lines = getHaikuForMoment(G.moveCount, 0, false, true, winner, margin, G.turn);
+  if (lines) setTimeout(() => showHaiku(lines, '— Game Over'), 1400);
+};
+
+// Hook placeStone to trigger haiku checks (after the ripple hook)
+const _haikuPlaceStone = placeStone;
+placeStone = function(i) {
+  const before_captures = G.prisoners ? [...G.prisoners] : [0,0];
+  const result = _haikuPlaceStone.call(this, i);
+  if (result && G.fullMoveRecord.length > 0) {
+    const rec = G.fullMoveRecord[G.fullMoveRecord.length - 1];
+    const capCount = rec && rec.prisoners ?
+      (rec.prisoners[0] + rec.prisoners[1] - before_captures[0] - before_captures[1]) : 0;
+    const letters = 'ABCDEFGHJKLMNOPQRST';
+    const [r, c] = pos(i, N);
+    const mname = letters[c] + (N - r);
+    triggerHaikuCheck(mname, rec ? rec.color : G.turn, capCount, G.moveCount);
+  }
+  return result;
+};
+
+// ============================================================
+//  FEATURE NEW-4: TERRITORY TIME-LAPSE
+// ============================================================
+let timelapseInterval = null;
+let timelapseFrame = 0;
+let timelapseData = null;  // array of territory frames
+let timelapseIsPlaying = false;
+
+function buildTimelapseData() {
+  if (!G.fullMoveRecord || G.fullMoveRecord.length === 0) return [];
+  const frames = [];
+  const step = Math.max(1, Math.floor(G.fullMoveRecord.length / 200));
+  for (let i = 0; i < G.fullMoveRecord.length; i += step) {
+    const rec = G.fullMoveRecord[i];
+    const territory = computeTerritory(rec.board, N);
+    const prisoners = rec.prisoners || [0, 0];
+    let bt = 0, wt = 0;
+    for (const t of territory) { if (t === 1) bt++; else if (t === 2) wt++; }
+    frames.push({ board: rec.board, territory, bt, wt, move: i + 1, prisoners });
+  }
+  // Always include final
+  const last = G.fullMoveRecord[G.fullMoveRecord.length - 1];
+  const t = computeTerritory(last.board, N);
+  let bt = 0, wt = 0;
+  for (const v of t) { if (v === 1) bt++; else if (v === 2) wt++; }
+  frames.push({ board: last.board, territory: t, bt, wt, move: G.fullMoveRecord.length, prisoners: last.prisoners || [0,0] });
+  return frames;
+}
+
+function showTimelapse() {
+  if (!G.fullMoveRecord || G.fullMoveRecord.length < 3) {
+    notify('Need at least 3 moves for territory lapse');
+    return;
+  }
+  timelapseData = buildTimelapseData();
+  timelapseFrame = 0;
+  timelapseIsPlaying = false;
+  document.getElementById('timelapse-play-btn').textContent = '▶ Play';
+
+  // Setup canvas
+  const tlCanvas = document.getElementById('timelapse-canvas');
+  const tlSize = Math.min(480, window.innerWidth - 80);
+  const tlCell = Math.floor(tlSize / (N + 1));
+  const tlPad = tlCell * 0.8;
+  tlCanvas.width = tlCell * (N - 1) + tlPad * 2;
+  tlCanvas.height = tlCell * (N - 1) + tlPad * 2;
+  tlCanvas.style.width = Math.min(tlCanvas.width, window.innerWidth - 60) + 'px';
+
+  drawTimelapseFrame(0);
+  document.getElementById('timelapse-modal').classList.add('visible');
+}
+
+function drawTimelapseFrame(idx) {
+  if (!timelapseData || idx < 0 || idx >= timelapseData.length) return;
+  const frame = timelapseData[idx];
+  const tlCanvas = document.getElementById('timelapse-canvas');
+  const tc = tlCanvas.getContext('2d');
+  const W = tlCanvas.width, H = tlCanvas.height;
+  const tlCell = Math.floor((W - 40) / (N));
+  const tlPad = tlCell * 0.8;
+
+  tc.clearRect(0, 0, W, H);
+
+  // Board bg
+  tc.fillStyle = '#2a1a08';
+  tc.fillRect(0, 0, W, H);
+
+  // Territory overlay first
+  for (let i = 0; i < N * N; i++) {
+    const [r, c] = [Math.floor(i / N), i % N];
+    const x = tlPad + c * tlCell;
+    const y = tlPad + r * tlCell;
+    const t = frame.territory[i];
+    if (t === 1) {
+      tc.fillStyle = `rgba(40,80,220,0.55)`;
+      tc.fillRect(x - tlCell * 0.45, y - tlCell * 0.45, tlCell * 0.9, tlCell * 0.9);
+    } else if (t === 2) {
+      tc.fillStyle = `rgba(210,50,50,0.55)`;
+      tc.fillRect(x - tlCell * 0.45, y - tlCell * 0.45, tlCell * 0.9, tlCell * 0.9);
+    }
+  }
+
+  // Grid
+  tc.strokeStyle = 'rgba(160,100,30,0.5)';
+  tc.lineWidth = 0.8;
+  for (let i = 0; i < N; i++) {
+    tc.beginPath();
+    tc.moveTo(tlPad, tlPad + i * tlCell);
+    tc.lineTo(tlPad + (N-1) * tlCell, tlPad + i * tlCell);
+    tc.stroke();
+    tc.beginPath();
+    tc.moveTo(tlPad + i * tlCell, tlPad);
+    tc.lineTo(tlPad + i * tlCell, tlPad + (N-1) * tlCell);
+    tc.stroke();
+  }
+
+  // Stones
+  for (let i = 0; i < N * N; i++) {
+    if (frame.board[i] === 0) continue;
+    const [r, c] = [Math.floor(i / N), i % N];
+    const x = tlPad + c * tlCell;
+    const y = tlPad + r * tlCell;
+    const R = tlCell * 0.42;
+    if (frame.board[i] === 1) {
+      tc.fillStyle = '#1a1a1a';
+      tc.shadowColor = 'rgba(0,0,0,0.5)';
+      tc.shadowBlur = 3;
+    } else {
+      tc.fillStyle = '#f0e8d8';
+      tc.shadowColor = 'rgba(0,0,0,0.3)';
+      tc.shadowBlur = 2;
+    }
+    tc.beginPath();
+    tc.arc(x, y, R, 0, Math.PI * 2);
+    tc.fill();
+    tc.shadowBlur = 0;
+  }
+
+  // HUD
+  tc.fillStyle = 'rgba(0,0,0,0.65)';
+  tc.fillRect(0, H - 36, W, 36);
+  tc.font = `bold 11px 'Share Tech Mono', monospace`;
+  tc.fillStyle = '#5B8AF0';
+  tc.textAlign = 'left';
+  tc.fillText(`⬛ ${frame.bt}`, 10, H - 14);
+  tc.fillStyle = '#e74c3c';
+  tc.textAlign = 'center';
+  tc.fillText(`Move ${frame.move}`, W/2, H - 14);
+  tc.fillStyle = '#e0d0b0';
+  tc.textAlign = 'right';
+  tc.fillText(`⬜ ${frame.wt}`, W - 10, H - 14);
+
+  // Update progress
+  const pct = ((idx + 1) / timelapseData.length * 100).toFixed(1);
+  document.getElementById('timelapse-progress-fill').style.width = pct + '%';
+  document.getElementById('timelapse-move-label').textContent = `Move ${frame.move} / ${timelapseData[timelapseData.length-1].move} · B:${frame.bt} W:${frame.wt}`;
+  timelapseFrame = idx;
+}
+
+function toggleTimelapse() {
+  if (timelapseIsPlaying) {
+    clearInterval(timelapseInterval);
+    timelapseIsPlaying = false;
+    document.getElementById('timelapse-play-btn').textContent = '▶ Play';
+  } else {
+    if (timelapseFrame >= timelapseData.length - 1) timelapseFrame = 0;
+    timelapseIsPlaying = true;
+    document.getElementById('timelapse-play-btn').textContent = '⏸ Pause';
+    const speed = parseInt(document.getElementById('timelapse-speed').value) || 120;
+    timelapseInterval = setInterval(() => {
+      if (timelapseFrame >= timelapseData.length - 1) {
+        clearInterval(timelapseInterval);
+        timelapseIsPlaying = false;
+        document.getElementById('timelapse-play-btn').textContent = '▶ Play';
+        return;
+      }
+      drawTimelapseFrame(timelapseFrame + 1);
+    }, speed);
+  }
+}
+
+function timelapseStep(delta) {
+  if (timelapseIsPlaying) {
+    clearInterval(timelapseInterval);
+    timelapseIsPlaying = false;
+    document.getElementById('timelapse-play-btn').textContent = '▶ Play';
+  }
+  const newFrame = Math.max(0, Math.min((timelapseData?.length || 1) - 1, timelapseFrame + delta));
+  drawTimelapseFrame(newFrame);
+}
+
+function hideTimelapse() {
+  if (timelapseInterval) clearInterval(timelapseInterval);
+  timelapseIsPlaying = false;
+  document.getElementById('timelapse-modal').classList.remove('visible');
+}
+
+// ============================================================
+//  FEATURE NEW-5: INFLUENCE PARTICLE SYSTEM
+// ============================================================
+let particleEnabled = false;
+let particleAnimId = null;
+const influenceParticles = [];
+
+function toggleInfluenceParticles() {
+  particleEnabled = !particleEnabled;
+  document.getElementById('particles-state').textContent = particleEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-particles').classList.toggle('toggle-on', particleEnabled);
+
+  const pc = document.getElementById('particle-canvas');
+  if (!pc) return;
+
+  if (particleEnabled) {
+    setupParticleCanvas();
+    pc.classList.add('visible');
+    spawnInfluenceParticles();
+    runParticleLoop();
+    notify('🌊 Weakness particles ON — blue = Black at risk · red = White at risk');
+  } else {
+    pc.classList.remove('visible');
+    if (particleAnimId) cancelAnimationFrame(particleAnimId);
+    particleAnimId = null;
+    influenceParticles.length = 0;
+    if (pc.getContext) pc.getContext('2d').clearRect(0, 0, pc.width, pc.height);
+  }
+}
+
+function setupParticleCanvas() {
+  const pc = document.getElementById('particle-canvas');
+  if (!pc || !canvas) return;
+  pc.width = canvas.width;
+  pc.height = canvas.height;
+  pc.style.width = canvas.style.width;
+  pc.style.height = canvas.style.height;
+}
+
+function computeInfluenceGrid() {
+  // Returns array where positive = black influence, negative = white influence.
+  // Magnitude = how strongly one player dominates that cell.
+  if (!G || !G.board || G.board.length === 0) return new Float32Array(N * N);
+  const influence = new Float32Array(N * N);
+  const board = G.board;
+  const radius = Math.min(N, 6);
+
+  for (let si = 0; si < N * N; si++) {
+    if (board[si] === 0) continue;
+    const sign = board[si] === 1 ? 1 : -1;
+    const [sr, sc] = pos(si, N);
+    for (let r2 = Math.max(0, sr - radius); r2 <= Math.min(N-1, sr + radius); r2++) {
+      for (let c2 = Math.max(0, sc - radius); c2 <= Math.min(N-1, sc + radius); c2++) {
+        const dist = Math.sqrt((r2-sr)**2 + (c2-sc)**2);
+        if (dist > radius) continue;
+        influence[r2 * N + c2] += sign * Math.exp(-dist * 0.65);
+      }
+    }
+  }
+  return influence;
+}
+
+function spawnInfluenceParticles() {
+  // WEAKNESS MAP:
+  // A cell is "weak for Black"  when Black has stones nearby but White's influence
+  // is closing in — i.e. Black influence is positive but thin, or contested.
+  // A cell is "weak for White" vice versa.
+  // Concretely: for each cell that has a stone of color X, if the net influence
+  // at that cell is low (opponent pushing in) → that stone's group is under pressure.
+  // We also show particles on empty contested cells (influence near zero but both
+  // players have some presence).
+  //
+  // Color key:
+  //   Blue particles  = Black is WEAK / at risk there
+  //   Red  particles  = White is WEAK / at risk there
+  //   More particles / darker = greater weakness
+
+  if (!particleEnabled) return;
+  const influence = computeInfluenceGrid();
+  influenceParticles.length = 0;
+
+  const board = G.board;
+  const maxParticles = Math.min(400, N * N * 0.5);
+
+  // Build weakness score per cell
+  const weaknessCells = [];  // { i, weakFor, score }
+
+  for (let i = 0; i < N * N; i++) {
+    const v = influence[i];  // positive=black strong, negative=white strong
+    const stone = board[i];
+
+    let weakFor = 0;  // 1=black weak, 2=white weak
+    let score = 0;
+
+    if (stone === 1) {
+      // Black stone: weak if white influence is encroaching (low positive or negative)
+      if (v < 1.2) {
+        weakFor = 1;  // black is weak here
+        score = Math.max(0, 1.2 - v) / 1.2;  // 0..1
+      }
+    } else if (stone === 2) {
+      // White stone: weak if black influence is encroaching (low negative or positive)
+      if (v > -1.2) {
+        weakFor = 2;  // white is weak here
+        score = Math.max(0, v + 1.2) / 1.2;
+      }
+    } else {
+      // Empty cell: show if genuinely contested (both players have some influence,
+      // neither dominates strongly)
+      const absV = Math.abs(v);
+      if (absV < 0.6 && absV > 0.05) {
+        // Contested — show for whichever side is slightly behind here
+        weakFor = v > 0 ? 2 : 1;  // white weaker in black-leaning contested, vice versa
+        score = (0.6 - absV) / 0.6 * 0.5;  // max 0.5 for empty cells
+      }
+    }
+
+    if (weakFor > 0 && score > 0.08) {
+      weaknessCells.push({ i, weakFor, score });
+    }
+  }
+
+  // Sort by score descending, cap total particles
+  weaknessCells.sort((a, b) => b.score - a.score);
+
+  let spawnedTotal = 0;
+  for (const cell of weaknessCells) {
+    if (spawnedTotal >= maxParticles) break;
+    const { i, weakFor, score } = cell;
+    const [r, c] = pos(i, N);
+    const baseX = boardOffsetX + c * CELL;
+    const baseY = boardOffsetY + r * CELL;
+
+    // More particles = weaker area
+    const particlesHere = Math.max(1, Math.round(score * 4));
+    for (let p = 0; p < particlesHere && spawnedTotal < maxParticles; p++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.08 + Math.random() * 0.18;
+      influenceParticles.push({
+        x: baseX + (Math.random() - 0.5) * CELL * 0.8,
+        y: baseY + (Math.random() - 0.5) * CELL * 0.8,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        baseX, baseY,
+        life: Math.random(),
+        maxLife: 1.0 + Math.random() * 0.6,
+        // Darker / larger = weaker (higher score)
+        size: 1.0 + score * 2.2,
+        weakFor,  // 1=black weak (blue), 2=white weak (red)
+        score,
+        cellIdx: i,
+        angle,
+      });
+      spawnedTotal++;
+    }
+  }
+}
+
+function runParticleLoop() {
+  if (!particleEnabled) return;
+  const pc = document.getElementById('particle-canvas');
+  if (!pc) return;
+  const pctx = pc.getContext('2d');
+  pctx.clearRect(0, 0, pc.width, pc.height);
+
+  const now = performance.now() * 0.001;
+
+  for (let i = influenceParticles.length - 1; i >= 0; i--) {
+    const p = influenceParticles[i];
+    p.life += 0.006 + Math.random() * 0.003;
+
+    if (p.life >= p.maxLife) {
+      // Respawn at same cell
+      p.x = p.baseX + (Math.random() - 0.5) * CELL * 0.8;
+      p.y = p.baseY + (Math.random() - 0.5) * CELL * 0.8;
+      p.life = 0;
+      p.angle = Math.random() * Math.PI * 2;
+      const speed = 0.08 + Math.random() * 0.15;
+      p.vx = Math.cos(p.angle) * speed;
+      p.vy = Math.sin(p.angle) * speed;
+    }
+
+    // Slow drift + gentle swirl
+    const swirl = now * 0.5 + p.cellIdx * 0.08;
+    p.vx += Math.cos(swirl) * 0.004;
+    p.vy += Math.sin(swirl) * 0.004;
+    p.vx *= 0.97;
+    p.vy *= 0.97;
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Alpha: fade in/out over lifetime; darker = weaker (higher score)
+    const lifeFrac = p.life / p.maxLife;
+    const baseAlpha = Math.sin(lifeFrac * Math.PI);
+    // Stronger weakness = higher alpha (darker appearance)
+    const alpha = baseAlpha * (0.35 + p.score * 0.55);
+    if (alpha <= 0.02) continue;
+
+    pctx.save();
+    if (p.weakFor === 1) {
+      // Black is weak here → blue particles
+      pctx.fillStyle = `rgba(70,130,255,${alpha.toFixed(3)})`;
+      pctx.shadowColor = 'rgba(70,130,255,0.5)';
+    } else {
+      // White is weak here → red/orange particles
+      pctx.fillStyle = `rgba(255,80,50,${alpha.toFixed(3)})`;
+      pctx.shadowColor = 'rgba(255,80,50,0.5)';
+    }
+    pctx.shadowBlur = p.score * 5;
+    pctx.beginPath();
+    pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    pctx.fill();
+    pctx.restore();
+  }
+
+  particleAnimId = requestAnimationFrame(runParticleLoop);
+}
+
+// Respawn particles after each move
+const _origUpdateUI_particles = updateUI;
+updateUI = function() {
+  _origUpdateUI_particles.apply(this, arguments);
+  if (particleEnabled) {
+    setTimeout(spawnInfluenceParticles, 100);
+  }
+};
+
+// Resize particle canvas when board resizes
+const _origSetupCanvas = setupCanvas;
+setupCanvas = function() {
+  _origSetupCanvas.apply(this, arguments);
+  setupParticleCanvas();
+  setupRippleCanvas();
+};
+
+
 
 
 
