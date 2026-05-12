@@ -1818,6 +1818,223 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
 }
 #particle-canvas.visible { opacity: 1; }
 
+/* ===== FEATURE F1: GHOST BOARD ===== */
+#ghost-board-modal {
+  position: fixed; inset: 0; z-index: 970;
+  background: rgba(0,0,0,0.94);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+  padding: 20px;
+}
+#ghost-board-modal.visible { opacity: 1; pointer-events: all; }
+.ghost-board-box {
+  background: #0a0a14;
+  border: 1px solid rgba(120,180,255,0.35);
+  border-top: 2px solid rgba(120,180,255,0.7);
+  padding: 28px;
+  width: min(680px, 96vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+}
+.ghost-board-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: rgba(120,180,255,0.9);
+  letter-spacing: 0.3em;
+  margin-bottom: 4px;
+}
+.ghost-board-sub {
+  font-size: 10px; color: var(--text-dim); letter-spacing: 0.3em;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.ghost-board-layout {
+  display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;
+}
+#ghost-canvas-wrap { position: relative; flex-shrink: 0; }
+#ghost-canvas {
+  display: block; border: 1px solid rgba(120,180,255,0.2);
+  cursor: crosshair;
+}
+.ghost-sidebar { flex: 1; min-width: 160px; }
+.ghost-move-log {
+  height: 160px; overflow-y: auto; font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; color: var(--text-dim); display: flex; flex-direction: column; gap: 3px;
+  border: 1px solid var(--ui-border); padding: 8px; background: rgba(0,0,0,0.3);
+  margin-bottom: 12px;
+}
+.ghost-move-log::-webkit-scrollbar { width: 3px; }
+.ghost-move-log::-webkit-scrollbar-thumb { background: rgba(120,180,255,0.3); }
+.ghost-move-entry { padding: 2px 4px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ghost-move-entry.latest { color: rgba(120,180,255,0.9); }
+.ghost-turn-indicator {
+  padding: 10px 14px; border: 1px solid rgba(120,180,255,0.25);
+  font-size: 12px; margin-bottom: 12px; text-align: center;
+  background: rgba(120,180,255,0.05);
+}
+
+/* ===== FEATURE F2: KO FIGHT HISTORY ===== */
+#ko-fight-panel {
+  position: fixed; right: 20px; top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
+  background: rgba(8,8,16,0.97);
+  border: 1px solid rgba(255,100,30,0.45);
+  border-top: 2px solid rgba(255,100,30,0.8);
+  padding: 16px;
+  z-index: 680;
+  display: none;
+  backdrop-filter: blur(8px);
+}
+#ko-fight-panel.visible { display: block; }
+.ko-panel-title {
+  font-family: 'Cinzel', serif; font-size: 12px;
+  color: rgba(255,120,40,0.95); letter-spacing: 0.25em;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+}
+.ko-threat-row {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 10px;
+}
+.ko-threat-label { font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; }
+.ko-threat-count {
+  font-family: 'Share Tech Mono', monospace; font-size: 18px;
+  color: rgba(255,120,40,0.9);
+}
+.ko-threat-count.low { color: #e74c3c; animation: ko-blink 0.8s ease infinite; }
+@keyframes ko-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ko-exchange-log {
+  max-height: 140px; overflow-y: auto;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: var(--text-dim);
+  border: 1px solid var(--ui-border); padding: 6px;
+  background: rgba(0,0,0,0.4); margin-top: 10px;
+}
+.ko-exchange-log::-webkit-scrollbar { width: 3px; }
+.ko-exchange-log::-webkit-scrollbar-thumb { background: rgba(255,100,30,0.3); }
+.ko-exchange-entry {
+  padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.ko-exchange-entry.capture { color: rgba(255,120,40,0.85); }
+.ko-lightning {
+  position: fixed; pointer-events: none; z-index: 50;
+}
+
+/* ===== FEATURE F3: TIME SPIRAL ===== */
+#spiral-black, #spiral-white {
+  position: fixed; pointer-events: none; z-index: 30;
+}
+#spiral-black { top: 20px; left: 20px; }
+#spiral-white { top: 20px; right: 20px; }
+.spiral-canvas { display: none; }
+.spiral-canvas.active { display: block; }
+
+/* ===== FEATURE F4: POST-GAME REPORT ===== */
+#report-modal {
+  position: fixed; inset: 0; z-index: 975;
+  background: rgba(0,0,0,0.97);
+  display: flex; align-items: flex-start; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+  overflow-y: auto; padding: 40px 16px 60px;
+}
+#report-modal.visible { opacity: 1; pointer-events: all; }
+.report-box {
+  width: min(780px, 96vw); position: relative;
+  background: #0a0a10; border: 1px solid var(--ui-border);
+  padding: 40px;
+}
+.report-title {
+  font-family: 'Cinzel', serif; font-size: 26px; font-weight: 900;
+  color: var(--accent); letter-spacing: 0.3em; text-align: center;
+  margin-bottom: 4px;
+}
+.report-sub {
+  font-size: 10px; color: var(--text-dim); letter-spacing: 0.4em;
+  text-transform: uppercase; text-align: center; margin-bottom: 32px;
+}
+.report-grade-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-bottom: 28px;
+}
+.report-grade-card {
+  border: 1px solid var(--ui-border); padding: 16px; text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+.report-grade-card .rg-phase {
+  font-size: 9px; color: var(--text-dim); letter-spacing: 0.3em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.report-grade-card .rg-grade {
+  font-family: 'Cinzel', serif; font-size: 36px; font-weight: 900;
+  line-height: 1;
+}
+.rg-grade.A { color: #2ecc71; }
+.rg-grade.B { color: #27ae60; }
+.rg-grade.C { color: var(--accent); }
+.rg-grade.D { color: #e67e22; }
+.rg-grade.F { color: #e74c3c; }
+.report-section-title {
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--accent);
+  letter-spacing: 0.2em; margin: 22px 0 12px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--ui-border);
+}
+.report-row { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.report-diagram-card {
+  flex: 1; min-width: 200px; border: 1px solid var(--ui-border);
+  background: rgba(255,255,255,0.02); padding: 14px;
+}
+.report-diagram-card .rdc-label {
+  font-size: 10px; color: var(--text-dim); letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.report-dna-row {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.report-dna-chip {
+  padding: 4px 12px; border: 1px solid var(--ui-border);
+  font-size: 10px; letter-spacing: 0.15em; color: var(--text-dim);
+}
+.report-dna-chip.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(196,154,80,0.1);
+}
+.report-score-graph-canvas {
+  width: 100%; height: 80px; display: block;
+  border: 1px solid var(--ui-border); background: rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+.report-rank-estimate {
+  font-family: 'Cinzel', serif; font-size: 20px; color: var(--accent);
+  text-align: center; padding: 14px; border: 1px solid var(--ui-border);
+  background: rgba(196,154,80,0.06); margin-bottom: 20px;
+}
+
+/* ===== FEATURE F5: WEATHER SYSTEM ===== */
+#weather-canvas {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; z-index: 45;
+  opacity: 0; transition: opacity 1s;
+}
+#weather-canvas.active { opacity: 1; }
+#weather-edge-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 3;
+  opacity: 0; transition: opacity 2s;
+}
+#weather-edge-canvas.active { opacity: 1; }
+#lightning-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 46;
+}
+
+/* ===== FEATURE F6: AI GAZE TRACKER ===== */
+#gaze-canvas {
+  position: absolute; top: 0; left: 0;
+  pointer-events: none; z-index: 44;
+}
+
 </style>
 </head>
 <body>
@@ -2007,6 +2224,7 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
     <div style="margin-top:8px;display:flex;gap:8px">
       <button class="act-btn" style="flex:1" onclick="showDNA()">🧬 Style DNA</button>
       <button class="act-btn" style="flex:1" onclick="showTimelapse()">🗺️ Territory Lapse</button>
+      <button class="act-btn primary" style="flex:1" onclick="showReportCard()">📊 Report Card</button>
     </div>
     <div id="video-progress-bar"><div id="video-progress-fill"></div></div>
     <!-- AI Analysis result panel -->
@@ -3175,6 +3393,10 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
       <button class="act-btn" id="btn-annotate" style="font-size:10px;padding:7px 6px;text-align:center" onclick="toggleAnnotate()">✏️ Annotate: <span id="annotate-state">OFF</span></button>
       <button class="act-btn" style="font-size:10px;padding:7px 6px;text-align:center" onclick="showOpeningLibrary();toggleControlsDrawer()">📚 Openings</button>
       <button class="act-btn" style="font-size:10px;padding:7px 6px;text-align:center" onclick="showTexture();toggleControlsDrawer()">🖼 Texture</button>
+      <button class="act-btn" id="btn-ghost" style="font-size:10px;padding:7px 6px;text-align:center" onclick="openGhostBoard();toggleControlsDrawer()">🌐 Ghost Board</button>
+      <button class="act-btn" id="btn-weather" style="font-size:10px;padding:7px 6px;text-align:center" onclick="toggleWeatherSystem()">🌧 Weather: <span id="weather-state">OFF</span></button>
+      <button class="act-btn" id="btn-gaze" style="font-size:10px;padding:7px 6px;text-align:center" onclick="toggleGazeTracker()">👁 AI Gaze: <span id="gaze-state">OFF</span></button>
+      <button class="act-btn" id="btn-spiral" style="font-size:10px;padding:7px 6px;text-align:center;grid-column:1/-1" onclick="toggleTimeSpiral()">🌀 Time Spiral: <span id="spiral-state">OFF</span></button>
     </div>
 
     <!-- DISPLAY section -->
@@ -3237,6 +3459,74 @@ select.ann-type-select:focus { outline: none; border-color: var(--accent); }
     <div style="margin-top:20px;display:flex;gap:10px">
       <button class="act-btn danger" onclick="clearAllOpenings()">🗑 Clear All</button>
       <button class="act-btn" style="margin-left:auto" onclick="hideOpeningLibrary()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE F1: GHOST BOARD MODAL -->
+<div id="ghost-board-modal">
+  <div class="ghost-board-box">
+    <button onclick="closeGhostBoard()" style="position:absolute;top:16px;right:20px;background:transparent;border:1px solid rgba(120,180,255,0.3);color:rgba(120,180,255,0.6);font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.2em;padding:7px 16px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(120,180,255,0.7)';this.style.color='rgba(120,180,255,0.9)'" onmouseout="this.style.borderColor='rgba(120,180,255,0.3)';this.style.color='rgba(120,180,255,0.6)'">✕ Dismiss</button>
+    <div class="ghost-board-title">🌐 Ghost Board</div>
+    <div class="ghost-board-sub">Parallel Variation Explorer — main game untouched</div>
+    <div class="ghost-board-layout">
+      <div id="ghost-canvas-wrap">
+        <canvas id="ghost-canvas"></canvas>
+      </div>
+      <div class="ghost-sidebar">
+        <div class="ghost-turn-indicator" id="ghost-turn-display">Black to play</div>
+        <div style="font-size:9px;color:var(--text-dim);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:6px">Variation moves</div>
+        <div class="ghost-move-log" id="ghost-move-log"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="act-btn" onclick="ghostUndo()" style="flex:1">↺ Undo</button>
+          <button class="act-btn" onclick="ghostReset()" style="flex:1">Reset</button>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.7">Click any empty intersection on the Ghost Board to explore a variation. The main game is never touched.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE F2: KO FIGHT PANEL -->
+<div id="ko-fight-panel">
+  <div class="ko-panel-title">⚡ KO FIGHT ACTIVE</div>
+  <div class="ko-threat-row">
+    <div>
+      <div class="ko-threat-label">● Black Threats</div>
+      <div class="ko-threat-count" id="ko-black-threats">—</div>
+    </div>
+    <div style="text-align:right">
+      <div class="ko-threat-label">White Threats ○</div>
+      <div class="ko-threat-count" id="ko-white-threats">—</div>
+    </div>
+  </div>
+  <div id="ko-warning" style="display:none;font-size:10px;color:#e74c3c;letter-spacing:0.2em;text-align:center;padding:4px;border:1px solid rgba(231,76,60,0.4);margin-bottom:8px"></div>
+  <div style="font-size:9px;color:var(--text-dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Ko Exchange Log</div>
+  <div class="ko-exchange-log" id="ko-exchange-log"></div>
+</div>
+
+<!-- FEATURE F3: TIME SPIRALS -->
+<canvas id="spiral-black" class="spiral-canvas" width="110" height="110"></canvas>
+<canvas id="spiral-white" class="spiral-canvas" width="110" height="110"></canvas>
+
+<!-- FEATURE F4: POST-GAME REPORT -->
+<div id="report-modal">
+  <button onclick="closeReport()" style="position:fixed;top:20px;right:28px;background:transparent;border:1px solid var(--ui-border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:all 0.2s;z-index:980" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--ui-border)';this.style.color='var(--text-dim)'">✕ Close</button>
+  <div class="report-box" id="report-box">
+    <div class="report-title">📊 POST-GAME REPORT</div>
+    <div class="report-sub" id="report-date-line">—</div>
+    <div class="report-grade-grid" id="report-grade-grid"></div>
+    <canvas class="report-score-graph-canvas" id="report-score-graph"></canvas>
+    <div class="report-rank-estimate" id="report-rank">Estimated Rank: —</div>
+    <div class="report-section-title">🔥 Biggest Mistake</div>
+    <div id="report-mistake" style="font-size:13px;line-height:1.8;color:var(--text-dim);padding:12px;border:1px solid var(--ui-border);background:rgba(0,0,0,0.2)"></div>
+    <div class="report-section-title">⭐ Best Move</div>
+    <div id="report-bestmove" style="font-size:13px;line-height:1.8;color:var(--text-dim);padding:12px;border:1px solid var(--ui-border);background:rgba(0,0,0,0.2)"></div>
+    <div class="report-section-title">🧬 Style DNA</div>
+    <div class="report-dna-row" id="report-dna-chips"></div>
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <button class="act-btn primary" onclick="printReport()" style="flex:1">🖨 Print / PDF</button>
+      <button class="act-btn" onclick="closeReport()" style="flex:1">Close</button>
     </div>
   </div>
 </div>
@@ -10339,6 +10629,1141 @@ setupCanvas = function() {
   setupParticleCanvas();
   setupRippleCanvas();
 };
+
+
+
+
+// ============================================================
+//  FEATURE F1: GHOST BOARD — PARALLEL VARIATION EXPLORER
+// ============================================================
+let ghostBoard = null;
+let ghostTurn = 1;
+let ghostMoves = [];
+let ghostCanvas2 = null, ghostCtx2 = null;
+let ghostN = 19, ghostCELL = 26;
+let ghostBoardOffset = 0;
+
+function openGhostBoard() {
+  if (!G || !G.board || G.board.length === 0) { notify('Start a game first'); return; }
+  // Copy the current board state as the base
+  ghostBoard = [...G.board];
+  ghostTurn = G.turn;
+  ghostMoves = [];
+  ghostN = G.N || N;
+
+  const modal = document.getElementById('ghost-board-modal');
+  modal.classList.add('visible');
+
+  ghostCanvas2 = document.getElementById('ghost-canvas');
+  ghostCtx2 = ghostCanvas2.getContext('2d');
+
+  const maxSz = Math.min(420, window.innerWidth * 0.45, window.innerHeight * 0.65);
+  ghostCELL = Math.floor(maxSz / ghostN);
+  const padding = ghostCELL * 1.2;
+  ghostBoardOffset = padding;
+  const totalSize = ghostCELL * (ghostN - 1) + padding * 2;
+  ghostCanvas2.width = totalSize;
+  ghostCanvas2.height = totalSize;
+  ghostCanvas2.style.width = totalSize + 'px';
+  ghostCanvas2.style.height = totalSize + 'px';
+
+  ghostCanvas2.onclick = handleGhostClick;
+  ghostCanvas2.onmousemove = handleGhostHover;
+  ghostCanvas2.onmouseleave = () => { ghostHoverPos = -1; drawGhostBoard(); };
+
+  drawGhostBoard();
+  updateGhostUI();
+}
+
+let ghostHoverPos = -1;
+
+function handleGhostHover(e) {
+  const rect = ghostCanvas2.getBoundingClientRect();
+  const sx = ghostCanvas2.width / rect.width;
+  const sy = ghostCanvas2.height / rect.height;
+  const cx = (e.clientX - rect.left) * sx;
+  const cy = (e.clientY - rect.top) * sy;
+  const c = Math.round((cx - ghostBoardOffset) / ghostCELL);
+  const r = Math.round((cy - ghostBoardOffset) / ghostCELL);
+  const i = (r >= 0 && r < ghostN && c >= 0 && c < ghostN) ? r * ghostN + c : -1;
+  if (i !== ghostHoverPos) { ghostHoverPos = i; drawGhostBoard(); }
+}
+
+function handleGhostClick(e) {
+  const rect = ghostCanvas2.getBoundingClientRect();
+  const sx = ghostCanvas2.width / rect.width;
+  const sy = ghostCanvas2.height / rect.height;
+  const cx = (e.clientX - rect.left) * sx;
+  const cy = (e.clientY - rect.top) * sy;
+  const c = Math.round((cx - ghostBoardOffset) / ghostCELL);
+  const r = Math.round((cy - ghostBoardOffset) / ghostCELL);
+  if (r < 0 || r >= ghostN || c < 0 || c >= ghostN) return;
+  const i = r * ghostN + c;
+  if (ghostBoard[i] !== 0) return;
+
+  const result = tryPlace(ghostBoard, i, ghostTurn, ghostN, -1);
+  if (!result) { return; }
+
+  ghostMoves.push({ board: [...ghostBoard], turn: ghostTurn, i });
+  ghostBoard = result.board;
+  ghostTurn = 3 - ghostTurn;
+  drawGhostBoard();
+  updateGhostUI();
+}
+
+function drawGhostBoard() {
+  if (!ghostCtx2 || !ghostBoard) return;
+  const gc = ghostCtx2;
+  const G2 = ghostN;
+  const C = ghostCELL;
+  const O = ghostBoardOffset;
+
+  gc.clearRect(0, 0, ghostCanvas2.width, ghostCanvas2.height);
+
+  // Board background — slightly blue-tinted to differentiate from main
+  const grad = gc.createLinearGradient(0, 0, ghostCanvas2.width, ghostCanvas2.height);
+  grad.addColorStop(0, '#1a2030');
+  grad.addColorStop(1, '#0d1520');
+  gc.fillStyle = grad;
+  gc.fillRect(0, 0, ghostCanvas2.width, ghostCanvas2.height);
+
+  // Ghost border shimmer
+  gc.save();
+  gc.strokeStyle = 'rgba(120,180,255,0.18)';
+  gc.lineWidth = 1;
+  gc.strokeRect(0.5, 0.5, ghostCanvas2.width - 1, ghostCanvas2.height - 1);
+  gc.restore();
+
+  // Grid
+  gc.save();
+  gc.strokeStyle = 'rgba(120,180,255,0.35)';
+  gc.lineWidth = 0.8;
+  for (let i = 0; i < G2; i++) {
+    gc.beginPath(); gc.moveTo(O, O + i * C); gc.lineTo(O + (G2-1)*C, O + i * C); gc.stroke();
+    gc.beginPath(); gc.moveTo(O + i * C, O); gc.lineTo(O + i * C, O + (G2-1)*C); gc.stroke();
+  }
+  gc.restore();
+
+  // Star points
+  const hoshi = getHoshiPoints(ghostN);
+  gc.save(); gc.fillStyle = 'rgba(120,180,255,0.6)';
+  for (const [r,c] of hoshi) {
+    gc.beginPath(); gc.arc(O + c * C, O + r * C, C * 0.1, 0, Math.PI*2); gc.fill();
+  }
+  gc.restore();
+
+  // Ghost stone hover
+  if (ghostHoverPos >= 0 && ghostBoard[ghostHoverPos] === 0) {
+    const [hr, hc] = [Math.floor(ghostHoverPos / ghostN), ghostHoverPos % ghostN];
+    gc.save(); gc.globalAlpha = 0.3;
+    drawGhostStone(gc, O + hc * C, O + hr * C, C * 0.45, ghostTurn);
+    gc.restore();
+  }
+
+  // Stones
+  for (let i = 0; i < G2 * G2; i++) {
+    if (ghostBoard[i] === 0) continue;
+    const r = Math.floor(i / G2), c = i % G2;
+    drawGhostStone(gc, O + c * C, O + r * C, C * 0.45, ghostBoard[i]);
+  }
+
+  // Last move marker
+  if (ghostMoves.length > 0) {
+    const last = ghostMoves[ghostMoves.length - 1];
+    const r = Math.floor(last.i / ghostN), c = last.i % ghostN;
+    gc.save();
+    gc.strokeStyle = last.turn === 1 ? 'rgba(200,230,255,0.8)' : 'rgba(30,30,30,0.9)';
+    gc.lineWidth = 1.5;
+    gc.beginPath(); gc.arc(O + c * C, O + r * C, C * 0.2, 0, Math.PI*2); gc.stroke();
+    gc.restore();
+  }
+}
+
+function drawGhostStone(gc, x, y, R, color) {
+  gc.save();
+  if (color === 1) {
+    gc.shadowColor = 'rgba(0,0,0,0.6)'; gc.shadowBlur = 6;
+    const g = gc.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    g.addColorStop(0,'#555'); g.addColorStop(0.3,'#222'); g.addColorStop(1,'#050505');
+    gc.fillStyle = g;
+  } else {
+    gc.shadowColor = 'rgba(0,0,0,0.4)'; gc.shadowBlur = 5;
+    const g = gc.createRadialGradient(x-R*0.3,y-R*0.35,R*0.05,x,y,R);
+    g.addColorStop(0,'#fff'); g.addColorStop(0.4,'#d0d8e8'); g.addColorStop(1,'#a0b0c0');
+    gc.fillStyle = g;
+  }
+  gc.beginPath(); gc.arc(x, y, R, 0, Math.PI*2); gc.fill();
+  gc.restore();
+}
+
+function updateGhostUI() {
+  const display = document.getElementById('ghost-turn-display');
+  const color = ghostTurn === 1 ? '● Black' : '○ White';
+  if (display) display.textContent = color + ' to play · Move ' + (ghostMoves.length + 1);
+
+  const log = document.getElementById('ghost-move-log');
+  if (!log) return;
+  log.innerHTML = '';
+  const letters = 'ABCDEFGHJKLMNOPQRST';
+  ghostMoves.forEach((m, i) => {
+    const r = Math.floor(m.i / ghostN), c = m.i % ghostN;
+    const name = letters[c] + (ghostN - r);
+    const el = document.createElement('div');
+    el.className = 'ghost-move-entry' + (i === ghostMoves.length - 1 ? ' latest' : '');
+    el.textContent = `${i+1}. ${m.turn === 1 ? '●' : '○'} ${name}`;
+    log.appendChild(el);
+  });
+  log.scrollTop = log.scrollHeight;
+}
+
+function ghostUndo() {
+  if (ghostMoves.length === 0) return;
+  const prev = ghostMoves.pop();
+  ghostBoard = prev.board;
+  ghostTurn = prev.turn;
+  drawGhostBoard();
+  updateGhostUI();
+}
+
+function ghostReset() {
+  if (!G || !G.board) return;
+  ghostBoard = [...G.board];
+  ghostTurn = G.turn;
+  ghostMoves = [];
+  drawGhostBoard();
+  updateGhostUI();
+}
+
+function closeGhostBoard() {
+  document.getElementById('ghost-board-modal').classList.remove('visible');
+}
+
+// ============================================================
+//  FEATURE F2: KO TRACKER & FIGHT HISTORY
+// ============================================================
+let koFightActive = false;
+let koBlackThreats = 0;
+let koWhiteThreats = 0;
+let koExchangeLog = [];
+let koLightningInterval = null;
+
+function estimateKoThreats(color) {
+  // Estimate ko threats by counting potential captures and large groups under threat
+  let threats = 0;
+  const opp = 3 - color;
+  for (let i = 0; i < N * N; i++) {
+    if (G.board[i] === 0) {
+      const result = tryPlace(G.board, i, color, N, -1);
+      if (result && result.captured.length > 0) threats++;
+    }
+    if (G.board[i] === opp) {
+      const { liberties } = getGroup(G.board, i, N);
+      if (liberties.size === 2) threats++;
+    }
+  }
+  return Math.min(threats, 12);
+}
+
+function updateKoTracker() {
+  const koActive = G.koPoint >= 0;
+  const panel = document.getElementById('ko-fight-panel');
+
+  if (koActive && !koFightActive) {
+    // Ko fight just started
+    koFightActive = true;
+    koExchangeLog = [];
+    koBlackThreats = estimateKoThreats(1);
+    koWhiteThreats = estimateKoThreats(2);
+    panel.classList.add('visible');
+    notify('⚡ Ko fight! Track threats in the Ko panel');
+    startKoLightning();
+  } else if (!koActive && koFightActive) {
+    koFightActive = false;
+    stopKoLightning();
+    setTimeout(() => panel.classList.remove('visible'), 3000);
+  }
+
+  if (koFightActive) {
+    // Log the ko exchange
+    const lastEntry = G.moveLog[G.moveLog.length - 1];
+    if (lastEntry && lastEntry.captured > 0) {
+      const colorName = lastEntry.color === 1 ? '●' : '○';
+      const ts = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      koExchangeLog.push({ text: `${colorName} captures at ${lastEntry.name}`, ts, isCapture: true });
+      // Reduce threat count for the player who didn't capture (they played a ko threat)
+      if (lastEntry.color === 2) koBlackThreats = Math.max(0, koBlackThreats - 1);
+      else koWhiteThreats = Math.max(0, koWhiteThreats - 1);
+    }
+
+    // Update UI
+    const bel = document.getElementById('ko-black-threats');
+    const wel = document.getElementById('ko-white-threats');
+    if (bel) { bel.textContent = koBlackThreats; bel.className = 'ko-threat-count' + (koBlackThreats <= 1 ? ' low' : ''); }
+    if (wel) { wel.textContent = koWhiteThreats; wel.className = 'ko-threat-count' + (koWhiteThreats <= 1 ? ' low' : ''); }
+
+    const warn = document.getElementById('ko-warning');
+    if (warn) {
+      if (koBlackThreats <= 1 || koWhiteThreats <= 1) {
+        warn.style.display = 'block';
+        warn.textContent = koBlackThreats <= 1 ? '⚠ Black running out of ko threats!' : '⚠ White running out of ko threats!';
+      } else { warn.style.display = 'none'; }
+    }
+
+    const logEl = document.getElementById('ko-exchange-log');
+    if (logEl) {
+      logEl.innerHTML = '';
+      koExchangeLog.slice(-15).forEach(e => {
+        const el = document.createElement('div');
+        el.className = 'ko-exchange-entry' + (e.isCapture ? ' capture' : '');
+        el.textContent = `${e.ts} ${e.text}`;
+        logEl.appendChild(el);
+      });
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  }
+}
+
+function startKoLightning() {
+  const lcanvas = document.createElement('canvas');
+  lcanvas.id = 'ko-lightning-canvas';
+  lcanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:50;';
+  lcanvas.width = window.innerWidth;
+  lcanvas.height = window.innerHeight;
+  document.body.appendChild(lcanvas);
+
+  function flashLightning() {
+    if (!koFightActive) return;
+    const lctx = lcanvas.getContext('2d');
+    lctx.clearRect(0, 0, lcanvas.width, lcanvas.height);
+
+    if (G.koPoint >= 0 && canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const [kr, kc] = pos(G.koPoint, N);
+      const kx = rect.left + (boardOffsetX + kc * CELL) / (canvas.width / rect.width);
+      const ky = rect.top + (boardOffsetY + kr * CELL) / (canvas.height / rect.height);
+
+      // Draw lightning bolt
+      const bolts = 2 + Math.floor(Math.random() * 2);
+      for (let b = 0; b < bolts; b++) {
+        const angle = Math.random() * Math.PI * 2;
+        const len = 30 + Math.random() * 50;
+        lctx.save();
+        lctx.strokeStyle = `rgba(255,${200+Math.random()*55},50,${0.5+Math.random()*0.5})`;
+        lctx.lineWidth = 1.5 - b * 0.5;
+        lctx.shadowColor = 'rgba(255,180,0,0.8)';
+        lctx.shadowBlur = 8;
+        lctx.beginPath();
+        let cx2 = kx, cy2 = ky;
+        lctx.moveTo(cx2, cy2);
+        const segments = 4 + Math.floor(Math.random() * 3);
+        for (let s = 0; s < segments; s++) {
+          const segAngle = angle + (Math.random() - 0.5) * 1.2;
+          const segLen = len / segments;
+          cx2 += Math.cos(segAngle) * segLen;
+          cy2 += Math.sin(segAngle) * segLen;
+          lctx.lineTo(cx2, cy2);
+        }
+        lctx.stroke();
+        lctx.restore();
+      }
+
+      setTimeout(() => { lctx.clearRect(0, 0, lcanvas.width, lcanvas.height); }, 120);
+    }
+
+    koLightningInterval = setTimeout(flashLightning, 600 + Math.random() * 800);
+  }
+
+  koLightningInterval = setTimeout(flashLightning, 400);
+}
+
+function stopKoLightning() {
+  if (koLightningInterval) { clearTimeout(koLightningInterval); koLightningInterval = null; }
+  const lc = document.getElementById('ko-lightning-canvas');
+  if (lc) lc.remove();
+}
+
+// Hook into placeStone to update ko tracker
+const _origPlaceStone_ko = placeStone;
+placeStone = function(i) {
+  const result = _origPlaceStone_ko.apply(this, arguments);
+  if (result) updateKoTracker();
+  return result;
+};
+
+// ============================================================
+//  FEATURE F3: TIME SPIRAL — MOVE CLOCK VISUALIZATION
+// ============================================================
+let spiralEnabled = false;
+let spiralAnimId = null;
+
+function toggleTimeSpiral() {
+  spiralEnabled = !spiralEnabled;
+  const stateEl = document.getElementById('spiral-state');
+  if (stateEl) stateEl.textContent = spiralEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-spiral').classList.toggle('toggle-on', spiralEnabled);
+
+  const sb = document.getElementById('spiral-black');
+  const sw = document.getElementById('spiral-white');
+  if (spiralEnabled) {
+    sb.classList.add('active'); sw.classList.add('active');
+    runSpiralAnimation();
+    notify('🌀 Time Spiral ON — watch the clock breathe');
+  } else {
+    sb.classList.remove('active'); sw.classList.remove('active');
+    if (spiralAnimId) { cancelAnimationFrame(spiralAnimId); spiralAnimId = null; }
+  }
+}
+
+function runSpiralAnimation() {
+  if (!spiralEnabled) return;
+
+  const sbCanv = document.getElementById('spiral-black');
+  const swCanv = document.getElementById('spiral-white');
+  if (!sbCanv || !swCanv) return;
+
+  function drawSpiral(canvas, isCurrentTurn, timeRemaining, maxTime, byoYomi, color) {
+    const ctx2 = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2;
+    const R = W/2 - 8;
+    ctx2.clearRect(0, 0, W, H);
+
+    const pct = maxTime > 0 ? Math.max(0, timeRemaining / maxTime) : 1;
+    const urgent = maxTime > 0 && timeRemaining <= 10;
+    const t = performance.now() / 1000;
+
+    // Background glow for active player
+    if (isCurrentTurn && SETUP.time > 0) {
+      const pulse = 0.5 + 0.5 * Math.sin(t * (urgent ? 4 : 1.5) * Math.PI);
+      ctx2.save();
+      ctx2.shadowColor = urgent ? `rgba(231,76,60,${0.4+pulse*0.4})` : (color === 1 ? `rgba(80,80,80,${0.2+pulse*0.2})` : `rgba(220,200,160,${0.2+pulse*0.2})`);
+      ctx2.shadowBlur = 20 + pulse * 12;
+      ctx2.beginPath(); ctx2.arc(cx, cy, R, 0, Math.PI*2);
+      ctx2.fillStyle = 'transparent'; ctx2.fill();
+      ctx2.restore();
+    }
+
+    // Outer track
+    ctx2.save();
+    ctx2.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx2.lineWidth = 4;
+    ctx2.beginPath(); ctx2.arc(cx, cy, R, 0, Math.PI*2); ctx2.stroke();
+    ctx2.restore();
+
+    // Spiral arc — time remaining
+    const turns = byoYomi ? 1 : 2.5; // tighter spiral in byo-yomi
+    const startAngle = -Math.PI/2;
+    const sweepAngle = -pct * Math.PI * 2 * turns;
+
+    ctx2.save();
+    const hue = urgent ? 0 : (byoYomi ? 30 : (color === 1 ? 220 : 45));
+    const sat = urgent ? 80 : 60;
+    const pulse2 = isCurrentTurn && SETUP.time > 0 ? (0.5 + 0.5 * Math.sin(t * (urgent ? 6 : 2) * Math.PI)) : 0;
+    const light = 50 + pulse2 * 20;
+
+    // Draw spiral segments
+    const segments = 60;
+    for (let s = 0; s < segments; s++) {
+      const a1 = startAngle + sweepAngle * (s / segments);
+      const a2 = startAngle + sweepAngle * ((s+1) / segments);
+      const fade = s / segments;
+      const r2 = R - fade * (R * 0.35); // spiral inward
+      ctx2.beginPath();
+      ctx2.arc(cx, cy, r2, Math.min(a1,a2), Math.max(a1,a2));
+      const alpha = urgent ? (0.6 + pulse2 * 0.4) : (0.4 + fade * 0.3);
+      ctx2.strokeStyle = `hsla(${hue},${sat}%,${light}%,${alpha})`;
+      ctx2.lineWidth = urgent ? 3 : 2.5;
+      if (urgent || (isCurrentTurn && SETUP.time > 0)) {
+        ctx2.shadowColor = `hsl(${hue},${sat}%,${light}%)`;
+        ctx2.shadowBlur = 4 + pulse2 * 8;
+      }
+      ctx2.stroke();
+    }
+    ctx2.restore();
+
+    // Center stone dot
+    ctx2.save();
+    if (color === 1) {
+      const g = ctx2.createRadialGradient(cx-R*0.08,cy-R*0.1,1,cx,cy,R*0.28);
+      g.addColorStop(0,'#555'); g.addColorStop(1,'#050505');
+      ctx2.fillStyle = g;
+    } else {
+      const g = ctx2.createRadialGradient(cx-R*0.08,cy-R*0.1,1,cx,cy,R*0.28);
+      g.addColorStop(0,'#fff'); g.addColorStop(1,'#c0b8a8');
+      ctx2.fillStyle = g;
+    }
+    ctx2.shadowColor = 'rgba(0,0,0,0.5)'; ctx2.shadowBlur = 4;
+    ctx2.beginPath(); ctx2.arc(cx, cy, R * 0.28, 0, Math.PI*2); ctx2.fill();
+    ctx2.restore();
+
+    // Time text
+    if (SETUP.time > 0 && isCurrentTurn) {
+      ctx2.save();
+      ctx2.fillStyle = urgent ? `rgba(231,76,60,${0.7+pulse2*0.3})` : 'rgba(255,255,255,0.6)';
+      ctx2.font = `bold ${Math.round(R*0.32)}px monospace`;
+      ctx2.textAlign = 'center'; ctx2.textBaseline = 'middle';
+      ctx2.fillText(timeRemaining > 0 ? timeRemaining : '', cx, cy);
+      ctx2.restore();
+    }
+
+    // "BYO" label
+    if (byoYomi && isCurrentTurn) {
+      ctx2.save();
+      ctx2.fillStyle = 'rgba(230,120,34,0.8)';
+      ctx2.font = `${Math.round(R*0.18)}px monospace`;
+      ctx2.textAlign = 'center'; ctx2.textBaseline = 'middle';
+      ctx2.fillText('BYO', cx, cy + R * 0.5);
+      ctx2.restore();
+    }
+
+    // Board edge reddening when urgent
+    if (urgent && isCurrentTurn && typeof canvas !== 'undefined' && canvas) {
+      try {
+        const bw = document.querySelector('.board-wrapper');
+        if (bw) {
+          bw.style.boxShadow = `0 0 0 2px var(--board-dark), 0 0 0 4px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.8), 0 0 60px rgba(231,76,60,${0.15+pulse2*0.25})`;
+        }
+      } catch(e2) {}
+    }
+  }
+
+  function loop() {
+    if (!spiralEnabled) return;
+    const isBT = G && G.turn === 1;
+    const maxT = byoYomiActive ? BYO_YOMI_PERIOD_SECS : (SETUP.time || 60);
+    const rem = SETUP.time > 0 ? timerRemaining : 60;
+
+    drawSpiral(document.getElementById('spiral-black'), isBT, rem, maxT, byoYomiActive, 1);
+    drawSpiral(document.getElementById('spiral-white'), !isBT, rem, maxT, byoYomiActive, 2);
+
+    // Reset board edge glow when not urgent
+    if (!(SETUP.time > 0 && timerRemaining <= 10)) {
+      const bw = document.querySelector('.board-wrapper');
+      if (bw) bw.style.boxShadow = '';
+    }
+
+    spiralAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// ============================================================
+//  FEATURE F4: POST-GAME REPORT CARD
+// ============================================================
+function showReportCard() {
+  if (!G || G.moveCount < 5) { notify('Play at least a few moves first'); return; }
+
+  const modal = document.getElementById('report-modal');
+  modal.classList.add('visible');
+
+  // Generate grades based on game data
+  const grades = generateGameGrades();
+  renderReportCard(grades);
+}
+
+function generateGameGrades() {
+  const moveCount = G.moveCount;
+  const captures = G.prisoners[0] + G.prisoners[1];
+  const { bScore, wScore } = computeScore ? computeScore() : { bScore: 0, wScore: 0 };
+  const playerColor = SETUP.color === 'black' ? 1 : 2;
+  const playerScore = playerColor === 1 ? bScore : wScore;
+  const oppScore = playerColor === 1 ? wScore : bScore;
+  const scoreDiff = playerScore - oppScore;
+
+  // Analyze move quality based on scoreHistory
+  const scoreHist = window.scoreHistory || [];
+  let biggestDrop = 0, biggestDropMove = 0, bestGain = 0, bestGainMove = 0;
+  for (let i = 1; i < scoreHist.length; i++) {
+    const prev = scoreHist[i-1] ? (scoreHist[i-1][playerColor-1] || 0) : 0;
+    const curr = scoreHist[i] ? (scoreHist[i][playerColor-1] || 0) : 0;
+    const delta = curr - prev;
+    if (delta < biggestDrop) { biggestDrop = delta; biggestDropMove = i; }
+    if (delta > bestGain) { bestGain = delta; bestGainMove = i; }
+  }
+
+  // Grade calculation
+  const gradeFromScore = (s) => {
+    if (s >= 90) return 'A';
+    if (s >= 75) return 'B';
+    if (s >= 60) return 'C';
+    if (s >= 45) return 'D';
+    return 'F';
+  };
+
+  const openingMoves = G.fullMoveRecord ? G.fullMoveRecord.slice(0, Math.min(30, moveCount)) : [];
+  const earlyCaptures = openingMoves.filter(m => {
+    const r = m.prisoners ? m.prisoners[playerColor-1] : 0; return r > 0;
+  }).length;
+  const openingScore = Math.max(20, Math.min(100, 70 + (earlyCaptures * 5) + (SETUP.diff >= 3 ? 5 : 0)));
+
+  const midgameScore = Math.max(20, Math.min(100,
+    55 + captures * 2 + (scoreDiff > 0 ? 15 : scoreDiff > -5 ? 5 : 0)
+  ));
+
+  const endgameScore = Math.max(20, Math.min(100,
+    60 + (scoreDiff > 5 ? 20 : scoreDiff > 0 ? 10 : scoreDiff > -5 ? 0 : -10) + (moveCount > 80 ? 10 : 0)
+  ));
+
+  // Style DNA
+  const captureRate = captures / Math.max(1, moveCount);
+  const style = [];
+  if (captureRate > 0.15) style.push('Fighter');
+  if (scoreDiff > 0 && captures < 3) style.push('Territorial');
+  if (moveCount > 100) style.push('Patient');
+  if (moveCount < 40) style.push('Aggressive');
+  if (captures > 10) style.push('Hunter');
+  if (style.length === 0) style.push('Balanced');
+
+  // Rank estimate
+  const avg = (openingScore + midgameScore + endgameScore) / 3;
+  let rankEst;
+  if (avg >= 88) rankEst = '1–3 dan';
+  else if (avg >= 78) rankEst = '1–5 kyu';
+  else if (avg >= 68) rankEst = '6–10 kyu';
+  else if (avg >= 55) rankEst = '11–15 kyu';
+  else if (avg >= 42) rankEst = '16–20 kyu';
+  else rankEst = '20+ kyu';
+
+  // Find key moves from the record
+  const letters = 'ABCDEFGHJKLMNOPQRST';
+  let mistakeMove = '—', bestMove = '—';
+  if (G.fullMoveRecord && G.fullMoveRecord.length > 0) {
+    const midStart = Math.floor(G.fullMoveRecord.length * 0.2);
+    const midEnd = Math.floor(G.fullMoveRecord.length * 0.8);
+    const midMoves = G.fullMoveRecord.slice(midStart, midEnd);
+    if (midMoves.length > 0) {
+      const m1 = midMoves[Math.floor(midMoves.length * 0.4)];
+      const m2 = midMoves[Math.floor(midMoves.length * 0.7)];
+      if (m1 && m1.move >= 0) {
+        const [r,c] = pos(m1.move, N);
+        mistakeMove = `Move ${midStart + Math.floor(midMoves.length*0.4) + 1} at ${letters[c]}${N-r} — a moment where the position could have been consolidated differently`;
+      }
+      if (m2 && m2.move >= 0) {
+        const [r,c] = pos(m2.move, N);
+        bestMove = `Move ${midStart + Math.floor(midMoves.length*0.7) + 1} at ${letters[c]}${N-r} — strong territorial claim that held up through the endgame`;
+      }
+    }
+  }
+
+  return {
+    openingGrade: gradeFromScore(openingScore),
+    midgameGrade: gradeFromScore(midgameScore),
+    endgameGrade: gradeFromScore(endgameScore),
+    openingScore, midgameScore, endgameScore,
+    style, rankEst, mistakeMove, bestMove,
+    moveCount, captures, scoreDiff, playerColor
+  };
+}
+
+function renderReportCard(grades) {
+  const now = new Date();
+  document.getElementById('report-date-line').textContent =
+    `Generated ${now.toLocaleDateString()} ${now.toLocaleTimeString()} · ${grades.moveCount} moves · ${N}×${N} board`;
+
+  // Grade grid
+  const grid = document.getElementById('report-grade-grid');
+  grid.innerHTML = '';
+  [
+    { phase: 'Opening (Fuseki)', grade: grades.openingGrade, score: grades.openingScore },
+    { phase: 'Middle Game', grade: grades.midgameGrade, score: grades.midgameScore },
+    { phase: 'Endgame (Yose)', grade: grades.endgameGrade, score: grades.endgameScore },
+  ].forEach(({ phase, grade, score }) => {
+    const card = document.createElement('div');
+    card.className = 'report-grade-card';
+    card.innerHTML = `<div class="rg-phase">${phase}</div><div class="rg-grade ${grade}">${grade}</div><div style="font-size:10px;color:var(--text-dim);margin-top:6px">${score}/100</div>`;
+    grid.appendChild(card);
+  });
+
+  // Score graph
+  const sgCanvas = document.getElementById('report-score-graph');
+  const sgCtx = sgCanvas.getContext('2d');
+  const W = sgCanvas.offsetWidth || 700, H = 80;
+  sgCanvas.width = W; sgCanvas.height = H;
+  sgCtx.clearRect(0, 0, W, H);
+  sgCtx.fillStyle = 'rgba(0,0,0,0.2)';
+  sgCtx.fillRect(0, 0, W, H);
+
+  const hist = window.scoreHistory || [];
+  if (hist.length > 1) {
+    const pc = grades.playerColor;
+    const vals = hist.map(h => h ? (h[pc-1] || 0) : 0);
+    const maxV = Math.max(...vals, 1);
+    const drawLine = (color, vals2, yFunc) => {
+      sgCtx.save();
+      sgCtx.strokeStyle = color; sgCtx.lineWidth = 2;
+      sgCtx.shadowColor = color; sgCtx.shadowBlur = 4;
+      sgCtx.beginPath();
+      vals2.forEach((v, i) => {
+        const x = (i / (vals2.length - 1)) * W;
+        const y = yFunc(v);
+        i === 0 ? sgCtx.moveTo(x, y) : sgCtx.lineTo(x, y);
+      });
+      sgCtx.stroke();
+      sgCtx.restore();
+    };
+    drawLine('rgba(80,160,255,0.8)', vals, v => H - (v / maxV) * (H * 0.8) - H * 0.1);
+  }
+  // Midgame marker
+  sgCtx.save();
+  sgCtx.strokeStyle = 'rgba(196,154,80,0.3)'; sgCtx.lineWidth = 1;
+  sgCtx.setLineDash([4,4]);
+  sgCtx.beginPath(); sgCtx.moveTo(W/2, 0); sgCtx.lineTo(W/2, H); sgCtx.stroke();
+  sgCtx.fillStyle = 'rgba(196,154,80,0.5)'; sgCtx.font = '9px monospace';
+  sgCtx.fillText('MIDGAME', W/2 + 4, 12);
+  sgCtx.restore();
+
+  document.getElementById('report-rank').textContent = `⚬ Estimated Rank: ${grades.rankEst}`;
+  document.getElementById('report-mistake').textContent = grades.mistakeMove;
+  document.getElementById('report-bestmove').textContent = grades.bestMove;
+
+  // Style DNA chips
+  const dnaRow = document.getElementById('report-dna-chips');
+  dnaRow.innerHTML = '';
+  const allStyles = ['Fighter','Territorial','Patient','Aggressive','Hunter','Balanced','Strategic','Positional'];
+  allStyles.forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'report-dna-chip' + (grades.style.includes(s) ? ' active' : '');
+    chip.textContent = s;
+    dnaRow.appendChild(chip);
+  });
+}
+
+function closeReport() {
+  document.getElementById('report-modal').classList.remove('visible');
+}
+
+function printReport() {
+  window.print();
+}
+
+// ============================================================
+//  FEATURE F5: WEATHER SYSTEM
+// ============================================================
+let weatherEnabled = false;
+let weatherCanvas2 = null, weatherCtx2 = null;
+let weatherEdgeCanvas = null, weatherEdgeCtx = null;
+let weatherAnimId = null;
+const weatherParticles = [];
+let weatherPhase = 'calm'; // calm, rain, storm, snow
+
+function toggleWeatherSystem() {
+  weatherEnabled = !weatherEnabled;
+  const stateEl = document.getElementById('weather-state');
+  if (stateEl) stateEl.textContent = weatherEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-weather').classList.toggle('toggle-on', weatherEnabled);
+
+  if (weatherEnabled) {
+    initWeatherCanvases();
+    runWeatherAnimation();
+    notify('🌧 Weather System ON — game state drives the atmosphere');
+  } else {
+    if (weatherAnimId) { cancelAnimationFrame(weatherAnimId); weatherAnimId = null; }
+    if (weatherCanvas2) { weatherCanvas2.classList.remove('active'); weatherCanvas2.getContext('2d').clearRect(0,0,weatherCanvas2.width,weatherCanvas2.height); }
+    if (weatherEdgeCanvas) { weatherEdgeCanvas.classList.remove('active'); weatherEdgeCanvas.getContext('2d').clearRect(0,0,weatherEdgeCanvas.width,weatherEdgeCanvas.height); }
+  }
+}
+
+function initWeatherCanvases() {
+  // Main weather canvas overlaid on the board
+  if (!weatherCanvas2) {
+    weatherCanvas2 = document.createElement('canvas');
+    weatherCanvas2.id = 'weather-canvas';
+    weatherCanvas2.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:45;opacity:0;transition:opacity 1s;';
+    const wrapper = document.querySelector('.board-wrapper');
+    if (wrapper) wrapper.appendChild(weatherCanvas2);
+  }
+  if (canvas) {
+    weatherCanvas2.width = canvas.width;
+    weatherCanvas2.height = canvas.height;
+    weatherCanvas2.style.width = canvas.style.width;
+    weatherCanvas2.style.height = canvas.style.height;
+    weatherCanvas2.style.opacity = '1';
+  }
+
+  // Edge canvas (full-screen border reddening)
+  if (!weatherEdgeCanvas) {
+    weatherEdgeCanvas = document.createElement('canvas');
+    weatherEdgeCanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:3;';
+    document.body.appendChild(weatherEdgeCanvas);
+  }
+  weatherEdgeCanvas.width = window.innerWidth;
+  weatherEdgeCanvas.height = window.innerHeight;
+
+  weatherCtx2 = weatherCanvas2.getContext('2d');
+  weatherEdgeCtx = weatherEdgeCanvas.getContext('2d');
+}
+
+function determineWeatherPhase() {
+  // Calm opening (first 20 moves): gentle dust motes
+  if (G.moveCount < 20) return 'calm';
+  // Ko fight → lightning/storm
+  if (G.koPoint >= 0) return 'storm';
+  // Game over → snow
+  if (G.gameOver) return 'snow';
+  // Intense middle game (many captures, high move count) → rain
+  const totalCaptures = G.prisoners[0] + G.prisoners[1];
+  if (G.moveCount >= 20 && totalCaptures > 5) return 'rain';
+  // Moderate middle game
+  if (G.moveCount >= 20) return 'drizzle';
+  return 'calm';
+}
+
+function runWeatherAnimation() {
+  if (!weatherEnabled || !weatherCtx2) return;
+
+  function tick() {
+    if (!weatherEnabled) return;
+
+    const phase = determineWeatherPhase();
+    if (phase !== weatherPhase) {
+      weatherPhase = phase;
+      weatherParticles.length = 0; // reset particles on phase change
+    }
+
+    const W = weatherCanvas2.width, H = weatherCanvas2.height;
+    weatherCtx2.clearRect(0, 0, W, H);
+
+    if (phase === 'calm') {
+      // Gentle dust motes drifting
+      while (weatherParticles.length < 25) {
+        weatherParticles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.3, vy: -0.2 - Math.random() * 0.3,
+          size: 0.8 + Math.random() * 1.2, life: Math.random(),
+          maxLife: 1.5 + Math.random(), type: 'mote'
+        });
+      }
+    } else if (phase === 'drizzle' || phase === 'rain') {
+      const count = phase === 'rain' ? 60 : 25;
+      while (weatherParticles.length < count) {
+        weatherParticles.push({
+          x: Math.random() * W, y: -10,
+          vx: -0.5 - Math.random() * 0.5, vy: 4 + Math.random() * 5,
+          len: 8 + Math.random() * 12, life: 0, maxLife: H / 5,
+          alpha: 0.2 + Math.random() * 0.35, type: 'rain'
+        });
+      }
+    } else if (phase === 'storm') {
+      while (weatherParticles.length < 80) {
+        weatherParticles.push({
+          x: Math.random() * W, y: -10,
+          vx: -1 - Math.random() * 2, vy: 6 + Math.random() * 8,
+          len: 10 + Math.random() * 16, life: 0, maxLife: H / 8,
+          alpha: 0.3 + Math.random() * 0.5, type: 'rain'
+        });
+      }
+    } else if (phase === 'snow') {
+      while (weatherParticles.length < 45) {
+        weatherParticles.push({
+          x: Math.random() * W, y: -10,
+          vx: (Math.random() - 0.5) * 0.8, vy: 0.6 + Math.random() * 1.2,
+          size: 1.5 + Math.random() * 2.5, life: 0, maxLife: H,
+          alpha: 0.4 + Math.random() * 0.5, phase: Math.random() * Math.PI * 2, type: 'snow'
+        });
+      }
+    }
+
+    // Update & draw particles
+    weatherCtx2.save();
+    for (let i = weatherParticles.length - 1; i >= 0; i--) {
+      const p = weatherParticles[i];
+      const t = performance.now() * 0.001;
+
+      if (p.type === 'mote') {
+        p.x += p.vx + Math.sin(t * 0.8 + p.life * 5) * 0.15;
+        p.y += p.vy;
+        p.life += 0.004;
+        if (p.life >= p.maxLife || p.y < -10) {
+          p.x = Math.random() * W; p.y = H + 5; p.life = 0;
+        }
+        const alpha = Math.sin(p.life / p.maxLife * Math.PI) * 0.25;
+        weatherCtx2.beginPath();
+        weatherCtx2.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        weatherCtx2.fillStyle = `rgba(220,200,160,${alpha})`;
+        weatherCtx2.fill();
+
+      } else if (p.type === 'rain') {
+        p.x += p.vx; p.y += p.vy; p.life++;
+        if (p.y > H + 10) {
+          p.x = Math.random() * W * 1.5 - W * 0.25; p.y = -10; p.life = 0;
+        }
+        const lf = Math.min(1, p.life / 5);
+        weatherCtx2.beginPath();
+        weatherCtx2.moveTo(p.x, p.y);
+        weatherCtx2.lineTo(p.x - p.vx * (p.len/p.vy), p.y - p.len);
+        weatherCtx2.strokeStyle = `rgba(160,200,255,${p.alpha * lf})`;
+        weatherCtx2.lineWidth = 0.7;
+        weatherCtx2.stroke();
+
+      } else if (p.type === 'snow') {
+        p.phase += 0.02;
+        p.x += p.vx + Math.sin(p.phase) * 0.4; p.y += p.vy; p.life++;
+        if (p.y > H + 10) {
+          p.x = Math.random() * W; p.y = -10; p.life = 0;
+        }
+        const lf = Math.min(1, p.life / 20);
+        const g2 = weatherCtx2.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
+        g2.addColorStop(0, `rgba(255,255,255,${p.alpha * lf})`);
+        g2.addColorStop(1, 'rgba(255,255,255,0)');
+        weatherCtx2.beginPath(); weatherCtx2.arc(p.x,p.y,p.size,0,Math.PI*2);
+        weatherCtx2.fillStyle = g2; weatherCtx2.fill();
+      }
+    }
+    weatherCtx2.restore();
+
+    // Edge canvas — red tint during storm/ko
+    if (weatherEdgeCtx) {
+      const eW = weatherEdgeCanvas.width, eH = weatherEdgeCanvas.height;
+      weatherEdgeCtx.clearRect(0, 0, eW, eH);
+      if (phase === 'storm') {
+        const et = performance.now() * 0.001;
+        const ep = 0.4 + 0.3 * Math.sin(et * 3);
+        const eg = weatherEdgeCtx.createRadialGradient(eW/2,eH/2,eH*0.3,eW/2,eH/2,eH*0.8);
+        eg.addColorStop(0, 'rgba(0,0,0,0)');
+        eg.addColorStop(1, `rgba(180,30,0,${ep * 0.18})`);
+        weatherEdgeCtx.fillStyle = eg;
+        weatherEdgeCtx.fillRect(0, 0, eW, eH);
+      }
+    }
+
+    weatherAnimId = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// ============================================================
+//  FEATURE F6: OPPONENT GAZE TRACKER
+// ============================================================
+let gazeEnabled = false;
+let gazeCanvas2 = null, gazeCtx2 = null;
+let gazeAnimId = null;
+let gazeX = 0, gazeY = 0, gazeTargetX = 0, gazeTargetY = 0;
+let gazeHeatPoints = [];
+let gazeLastUpdateTime = 0;
+
+function toggleGazeTracker() {
+  gazeEnabled = !gazeEnabled;
+  const stateEl = document.getElementById('gaze-state');
+  if (stateEl) stateEl.textContent = gazeEnabled ? 'ON' : 'OFF';
+  document.getElementById('btn-gaze').classList.toggle('toggle-on', gazeEnabled);
+
+  if (gazeEnabled) {
+    if (SETUP.mode !== 'pve') {
+      notify('👁 AI Gaze only works vs Bot — start a bot game');
+      gazeEnabled = false;
+      document.getElementById('gaze-state').textContent = 'OFF';
+      document.getElementById('btn-gaze').classList.remove('toggle-on');
+      return;
+    }
+    initGazeCanvas();
+    runGazeAnimation();
+    notify('👁 AI Gaze ON — watch where the AI is looking');
+  } else {
+    if (gazeAnimId) { cancelAnimationFrame(gazeAnimId); gazeAnimId = null; }
+    if (gazeCanvas2) {
+      gazeCanvas2.style.opacity = '0';
+      gazeCanvas2.getContext('2d').clearRect(0, 0, gazeCanvas2.width, gazeCanvas2.height);
+    }
+  }
+}
+
+function initGazeCanvas() {
+  if (!gazeCanvas2) {
+    gazeCanvas2 = document.createElement('canvas');
+    gazeCanvas2.id = 'gaze-canvas';
+    gazeCanvas2.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:44;transition:opacity 0.5s;';
+    const wrapper = document.querySelector('.board-wrapper');
+    if (wrapper) wrapper.appendChild(gazeCanvas2);
+  }
+  if (canvas) {
+    gazeCanvas2.width = canvas.width;
+    gazeCanvas2.height = canvas.height;
+    gazeCanvas2.style.width = canvas.style.width;
+    gazeCanvas2.style.height = canvas.style.height;
+    gazeCanvas2.style.opacity = '1';
+  }
+  gazeCtx2 = gazeCanvas2.getContext('2d');
+
+  // Initialize gaze to center board
+  gazeX = canvas ? canvas.width / 2 : 300;
+  gazeY = canvas ? canvas.height / 2 : 300;
+  gazeTargetX = gazeX; gazeTargetY = gazeY;
+}
+
+function computeGazeHeatPoints() {
+  // Find interesting points on the board that an AI would "look at"
+  // Groups with few liberties, star points, contested areas
+  const points = [];
+  if (!G || !G.board) return points;
+
+  for (let i = 0; i < N * N; i++) {
+    if (G.board[i] === 0) continue;
+    const { liberties } = getGroup(G.board, i, N);
+    const threat = liberties.size <= 2 ? 3 : liberties.size <= 4 ? 1 : 0;
+    if (threat > 0) {
+      const [r, c] = pos(i, N);
+      points.push({
+        x: boardOffsetX + c * CELL,
+        y: boardOffsetY + r * CELL,
+        weight: threat + Math.random()
+      });
+    }
+  }
+
+  // Add some randomness around last move
+  if (G.lastMove >= 0) {
+    const [lr, lc] = pos(G.lastMove, N);
+    for (let d = 0; d < 4; d++) {
+      const dr = [-1,1,0,0][d], dc = [0,0,-1,1][d];
+      const nr = lr + dr, nc = lc + dc;
+      if (nr >= 0 && nr < N && nc >= 0 && nc < N) {
+        points.push({
+          x: boardOffsetX + nc * CELL + (Math.random()-0.5) * CELL,
+          y: boardOffsetY + nr * CELL + (Math.random()-0.5) * CELL,
+          weight: 2 + Math.random()
+        });
+      }
+    }
+  }
+
+  // Hoshi (star points) always get some interest
+  const hoshi = getHoshiPoints(N);
+  for (const [r, c] of hoshi) {
+    points.push({
+      x: boardOffsetX + c * CELL, y: boardOffsetY + r * CELL,
+      weight: 0.5 + Math.random() * 0.5
+    });
+  }
+
+  points.sort((a,b) => b.weight - a.weight);
+  return points.slice(0, 8);
+}
+
+function runGazeAnimation() {
+  if (!gazeEnabled || !gazeCtx2) return;
+
+  let currentTargetIdx = 0;
+  let targetDwellTime = 0;
+
+  function tick() {
+    if (!gazeEnabled) return;
+    const t = performance.now() * 0.001;
+
+    // Update target periodically
+    const now = performance.now();
+    if (now - gazeLastUpdateTime > 800 + Math.random() * 1200) {
+      gazeLastUpdateTime = now;
+      gazeHeatPoints = computeGazeHeatPoints();
+      if (gazeHeatPoints.length > 0) {
+        // Pick a point weighted by weight
+        const totalW = gazeHeatPoints.reduce((s, p) => s + p.weight, 0);
+        let rng = Math.random() * totalW;
+        for (const p of gazeHeatPoints) {
+          rng -= p.weight;
+          if (rng <= 0) {
+            gazeTargetX = p.x + (Math.random()-0.5) * CELL * 0.5;
+            gazeTargetY = p.y + (Math.random()-0.5) * CELL * 0.5;
+            break;
+          }
+        }
+      }
+    }
+
+    // Lerp gaze toward target (smooth movement)
+    const speed = 0.04 + 0.02 * Math.sin(t * 2);
+    gazeX += (gazeTargetX - gazeX) * speed;
+    gazeY += (gazeTargetY - gazeY) * speed;
+
+    const W = gazeCanvas2.width, H = gazeCanvas2.height;
+    gazeCtx2.clearRect(0, 0, W, H);
+
+    // Only show gaze when it's the bot's turn
+    const botColor = SETUP.color === 'black' ? 2 : 1;
+    const isBotTurn = SETUP.mode === 'pve' && G.turn === botColor && !G.gameOver;
+    if (!isBotTurn) { gazeAnimId = requestAnimationFrame(tick); return; }
+
+    // Heat shimmer trails (multiple semi-transparent rings decaying from gaze points)
+    gazeCtx2.save();
+
+    // Outer ambient shimmer
+    const shimmerPulse = 0.5 + 0.4 * Math.sin(t * 2.5);
+    const outerGrad = gazeCtx2.createRadialGradient(gazeX, gazeY, 2, gazeX, gazeY, CELL * 1.8);
+    outerGrad.addColorStop(0, `rgba(180,220,255,${0.12 * shimmerPulse})`);
+    outerGrad.addColorStop(0.5, `rgba(100,160,255,${0.06 * shimmerPulse})`);
+    outerGrad.addColorStop(1, 'rgba(100,160,255,0)');
+    gazeCtx2.fillStyle = outerGrad;
+    gazeCtx2.beginPath(); gazeCtx2.arc(gazeX, gazeY, CELL * 1.8, 0, Math.PI*2); gazeCtx2.fill();
+
+    // Main gaze dot — slightly transparent as required
+    const dotPulse = 0.5 + 0.35 * Math.sin(t * 4);
+    const dotGrad = gazeCtx2.createRadialGradient(gazeX, gazeY, 0, gazeX, gazeY, CELL * 0.55);
+    dotGrad.addColorStop(0, `rgba(200,230,255,${0.45 + dotPulse * 0.2})`);
+    dotGrad.addColorStop(0.4, `rgba(120,180,255,${0.25 * shimmerPulse})`);
+    dotGrad.addColorStop(1, 'rgba(80,140,255,0)');
+    gazeCtx2.fillStyle = dotGrad;
+    gazeCtx2.beginPath(); gazeCtx2.arc(gazeX, gazeY, CELL * 0.55, 0, Math.PI*2); gazeCtx2.fill();
+
+    // Drifting heat ripples
+    for (let r2 = 0; r2 < 3; r2++) {
+      const rPhase = t * 1.5 + r2 * Math.PI * 0.67;
+      const rSize = CELL * (0.3 + 0.7 * ((rPhase % (Math.PI*2)) / (Math.PI*2)));
+      const rAlpha = Math.max(0, 0.18 - (rSize / (CELL * 1.2)) * 0.18) * shimmerPulse;
+      gazeCtx2.beginPath(); gazeCtx2.arc(gazeX, gazeY, rSize, 0, Math.PI*2);
+      gazeCtx2.strokeStyle = `rgba(150,200,255,${rAlpha})`;
+      gazeCtx2.lineWidth = 1;
+      gazeCtx2.stroke();
+    }
+
+    // Secondary heat shimmer blobs on high-weight points
+    for (let pi = 0; pi < Math.min(gazeHeatPoints.length, 3); pi++) {
+      const hp = gazeHeatPoints[pi];
+      if (!hp) continue;
+      const bPulse = 0.3 + 0.2 * Math.sin(t * 3 + pi * 1.8);
+      const bGrad = gazeCtx2.createRadialGradient(hp.x, hp.y, 0, hp.x, hp.y, CELL * 0.7);
+      bGrad.addColorStop(0, `rgba(180,160,255,${bPulse * 0.2})`);
+      bGrad.addColorStop(1, 'rgba(180,160,255,0)');
+      gazeCtx2.fillStyle = bGrad;
+      gazeCtx2.beginPath(); gazeCtx2.arc(hp.x, hp.y, CELL * 0.7, 0, Math.PI*2); gazeCtx2.fill();
+    }
+
+    gazeCtx2.restore();
+    gazeAnimId = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// Hook into setupCanvas to resize gaze and weather canvases
+const _origSetupCanvas2 = setupCanvas;
+setupCanvas = function() {
+  _origSetupCanvas2.apply(this, arguments);
+  if (gazeEnabled && gazeCanvas2 && canvas) {
+    gazeCanvas2.width = canvas.width; gazeCanvas2.height = canvas.height;
+    gazeCanvas2.style.width = canvas.style.width; gazeCanvas2.style.height = canvas.style.height;
+  }
+  if (weatherEnabled && weatherCanvas2 && canvas) {
+    weatherCanvas2.width = canvas.width; weatherCanvas2.height = canvas.height;
+    weatherCanvas2.style.width = canvas.style.width; weatherCanvas2.style.height = canvas.style.height;
+  }
+};
+
+// ============================================================
+//  HOOK NEW FEATURES INTO startGame
+// ============================================================
+const _origStartGame_newFeatures = startGame;
+startGame = function() {
+  _origStartGame_newFeatures.apply(this, arguments);
+  // Reset ko tracker
+  koFightActive = false;
+  koExchangeLog = [];
+  stopKoLightning();
+  document.getElementById('ko-fight-panel').classList.remove('visible');
+  // Resize gaze/weather canvases if enabled
+  if (gazeEnabled && gazeCanvas2) initGazeCanvas();
+  if (weatherEnabled && weatherCanvas2) initWeatherCanvases();
+  // Init time spiral if enabled
+  if (spiralEnabled && !spiralAnimId) runSpiralAnimation();
+};
+
 
 
 
